@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     static public Dictionary<string, Participant> Participant_db { get => participant_db; set => participant_db = value; }
 
     public GameObject combater;
+    bool inCombat;
 
     // Awake is called before the first frame update and before Starts
     void Awake()
@@ -26,15 +27,18 @@ public class GameManager : MonoBehaviour
         Participant_db.Add("person B", new Player());
         Participant_db["person B"].AddSkill(Skill_db["dummy B"]);
 
+        inCombat = false;
+
        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Submit"))
+        if (Input.GetButtonDown("Battle Start"))
         {
             Instantiate(combater);
+            inCombat = true;
         }
 
     }
