@@ -4,20 +4,14 @@ using UnityEngine;
 
 public class Environment : Participant 
 {
-
-}
-
-public class Environment_B : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
+    public Environment() : base(p_type.environment, "")
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public Environment(string name) : base(p_type.environment, name)
     {
-        
+
     }
+
 }

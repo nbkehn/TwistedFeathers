@@ -7,8 +7,10 @@ public class CombatManager : MonoBehaviour
     SortedSet<BattleEffect> pq;
     ArrayList battle_participants;
     int currentTurn;
-    bool waiting;
+    bool waitingPlayer;
+    int protagonistIndex;
 
+    //Method for taking a skill and queueing the effect into the PQ
     void queueSkill(Skill skill, Participant user, Participant target)
     {
         BattleEffect effect = skill.Effect;
@@ -18,54 +20,71 @@ public class CombatManager : MonoBehaviour
         pq.Add(effect);
     }
 
+    //Method for resolving all effects set to happen this turn in PQ
     void resolveEffects()
     {
+        Debug.Log("Effects Resolving!");
         while (pq.Count != 0 && pq.Min.Turnstamp <= currentTurn)
         {
             Debug.Log(pq.Min.Message);
             pq.Remove(pq.Min);
         }
+        Debug.Log("Effects Resolved!");
     }
 
     // Start is called before the first frame update
     void Start()
     {
         currentTurn = 0;
-
         pq = new SortedSet<BattleEffect>(new EffectComparator());
         battle_participants = new ArrayList();
-        
+        protagonistIndex = 0; 
+        //Dummy values for testing purposes
+        battle_participants.Add(GameManager.Participant_db["person A"]);
+        battle_participants.Add(GameManager.Participant_db["enemy B"]);
 
-        //pq.Add(GameManager.Skill_db["dummy A"].Effect);
-
-        //pq.Add(GameManager.Skill_db["dummy B"].Effect);
-
-        //Debug.Log(pq.Min.Message);
-
-        waiting = false;
-
+        waitingPlayer = false;
+        Debug.Log("TURN BEGIN");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (waiting)
+        if (waitingPlayer)
         {
-            if (Input.GetButtonDown("Add Effect"))
-            {
-                pq.Add(GameManager.Skill_db["dummy A"].Effect);
-            }
             if (Input.GetButtonDown("Turn Pass"))
             {
-                waiting = false;
-                pq.Add(GameManager.Skill_db["dummy B"].Effect);
+                Player protag = (Player) battle_participants[protagonistIndex]; 
+                queueSkill((Skill) protag.Skills[Random.Range(0, protag.Skills.Count)], protag, null);
+                waitingPlayer = false;
             }
         }
         else
         {
+            //Effects are resolved and turn ends
             resolveEffects();
+            Debug.Log("TURN END");
+            //New turn beings here
+            Debug.Log("TURN BEGIN");
             currentTurn++;
-            waiting = true;
+            foreach (Participant part in battle_participants)
+            {
+                if (part.Type != p_type.player)
+                {
+                    queueSkill((Skill) part.Skills[Random.Range(0, part.Skills.Count)], part, null);
+                }
+            }
+
+            //Forecast
+
+            Debug.Log("Forecast Begins!");
+            foreach (BattleEffect eff in pq)
+            {
+                Debug.Log(eff.User.Name);
+            }
+            Debug.Log("Forecast Over!");
+
+            waitingPlayer = true;
 
         }
         

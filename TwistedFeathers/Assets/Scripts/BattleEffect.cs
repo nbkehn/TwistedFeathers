@@ -80,18 +80,3 @@ public class EffectComparator : IComparer<BattleEffect>
     }
 }
 
-
-public class BattleEffect_B : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-}

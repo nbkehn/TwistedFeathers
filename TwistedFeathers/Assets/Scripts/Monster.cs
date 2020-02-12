@@ -4,20 +4,13 @@ using UnityEngine;
 
 public class Monster : Participant
 {
-
-}
-
-public class Monster_B : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
+    public Monster () : base(p_type.enemy, "")
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public Monster(string name) : base(p_type.enemy, name)
     {
-        
+
     }
 }
