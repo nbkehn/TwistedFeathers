@@ -15,6 +15,7 @@ public class ButtonHandler : MonoBehaviour
     private string currentText;
     public GameObject MiniMap;
     public GameObject MegaMap;
+    private bool extendedFore = false;
     
 
     public void Start() {
@@ -42,6 +43,11 @@ public class ButtonHandler : MonoBehaviour
         }
     }
 
+    public void newForecast(){
+        if(!extendedFore){
+            me.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 150);
+        }
+    }
     
     public void OpenForecast(){
         if(!ScrollView.activeSelf){

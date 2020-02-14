@@ -88,7 +88,7 @@ public class CombatManager : MonoBehaviour
                 ForecastText += "\n";
                 Debug.Log(eff.User.Name);
             }
-            ForecastOpener.GetComponent<ButtonHandler>().OpenForecast();
+            ForecastOpener.GetComponent<ButtonHandler>().newForecast();
             Debug.Log("Forecast Over!");
 
             waitingPlayer = true;
