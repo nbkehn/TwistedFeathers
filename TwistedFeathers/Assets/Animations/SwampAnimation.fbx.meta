@@ -1,229 +1,665 @@
 fileFormatVersion: 2
 guid: 90bbd6c1fdb3f4355871adb9d3d5d054
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: Arena1
-    100002: group
-    100004: pasted__pCone1
-    100006: pasted__pCone10
-    100008: pasted__pCone2
-    100010: pasted__pCone2 1
-    100012: pasted__pCone2 2
-    100014: pasted__pCone2 3
-    100016: pasted__pCone2 4
-    100018: pasted__pCone2 5
-    100020: pasted__pCone2 6
-    100022: pasted__pCone3
-    100024: pasted__pCone3 1
-    100026: pasted__pCone3 2
-    100028: pasted__pCone3 3
-    100030: pasted__pCone3 4
-    100032: pasted__pCone3 5
-    100034: pasted__pCone3 6
-    100036: pasted__pCone4
-    100038: pasted__pCone4 1
-    100040: pasted__pCone4 2
-    100042: pasted__pCone4 3
-    100044: pasted__pCone4 4
-    100046: pasted__pCone4 5
-    100048: pasted__pCone4 6
-    100050: pasted__pCone5
-    100052: pasted__pCone6
-    100054: pasted__pCone7
-    100056: pasted__pCone8
-    100058: pasted__pCone9
-    100060: pasted__pCylinder1
-    100062: pasted__pCylinder2
-    100064: pasted__pCylinder3
-    100066: pasted__pCylinder4
-    100068: pasted__pCylinder5
-    100070: pasted__pCylinder6
-    100072: pasted__pCylinder7
-    100074: pasted__pCylinder8
-    100076: //RootNode
-    100078: wall1
-    100080: wall3
-    100082: wall4
-    100084: wall5
-    400000: Arena1
-    400002: group
-    400004: pasted__pCone1
-    400006: pasted__pCone10
-    400008: pasted__pCone2
-    400010: pasted__pCone2 1
-    400012: pasted__pCone2 2
-    400014: pasted__pCone2 3
-    400016: pasted__pCone2 4
-    400018: pasted__pCone2 5
-    400020: pasted__pCone2 6
-    400022: pasted__pCone3
-    400024: pasted__pCone3 1
-    400026: pasted__pCone3 2
-    400028: pasted__pCone3 3
-    400030: pasted__pCone3 4
-    400032: pasted__pCone3 5
-    400034: pasted__pCone3 6
-    400036: pasted__pCone4
-    400038: pasted__pCone4 1
-    400040: pasted__pCone4 2
-    400042: pasted__pCone4 3
-    400044: pasted__pCone4 4
-    400046: pasted__pCone4 5
-    400048: pasted__pCone4 6
-    400050: pasted__pCone5
-    400052: pasted__pCone6
-    400054: pasted__pCone7
-    400056: pasted__pCone8
-    400058: pasted__pCone9
-    400060: pasted__pCylinder1
-    400062: pasted__pCylinder2
-    400064: pasted__pCylinder3
-    400066: pasted__pCylinder4
-    400068: pasted__pCylinder5
-    400070: pasted__pCylinder6
-    400072: pasted__pCylinder7
-    400074: pasted__pCylinder8
-    400076: //RootNode
-    400078: wall1
-    400080: wall3
-    400082: wall4
-    400084: wall5
-    2100000: lambert1
-    2100002: lambert3
-    2100004: lambert5
-    2100006: lambert2
-    2300000: Arena1
-    2300002: pasted__pCone1
-    2300004: pasted__pCone10
-    2300006: pasted__pCone2
-    2300008: pasted__pCone2 1
-    2300010: pasted__pCone2 2
-    2300012: pasted__pCone2 3
-    2300014: pasted__pCone2 4
-    2300016: pasted__pCone2 5
-    2300018: pasted__pCone2 6
-    2300020: pasted__pCone3
-    2300022: pasted__pCone3 1
-    2300024: pasted__pCone3 2
-    2300026: pasted__pCone3 3
-    2300028: pasted__pCone3 4
-    2300030: pasted__pCone3 5
-    2300032: pasted__pCone3 6
-    2300034: pasted__pCone4
-    2300036: pasted__pCone4 1
-    2300038: pasted__pCone4 2
-    2300040: pasted__pCone4 3
-    2300042: pasted__pCone4 4
-    2300044: pasted__pCone4 5
-    2300046: pasted__pCone4 6
-    2300048: pasted__pCone5
-    2300050: pasted__pCone6
-    2300052: pasted__pCone7
-    2300054: pasted__pCone8
-    2300056: pasted__pCone9
-    2300058: pasted__pCylinder1
-    2300060: pasted__pCylinder2
-    2300062: pasted__pCylinder3
-    2300064: pasted__pCylinder4
-    2300066: pasted__pCylinder5
-    2300068: pasted__pCylinder6
-    2300070: pasted__pCylinder7
-    2300072: pasted__pCylinder8
-    2300074: //RootNode
-    2300076: wall1
-    2300078: wall3
-    2300080: wall4
-    2300082: wall5
-    3300000: Arena1
-    3300002: pasted__pCone1
-    3300004: pasted__pCone10
-    3300006: pasted__pCone2
-    3300008: pasted__pCone2 1
-    3300010: pasted__pCone2 2
-    3300012: pasted__pCone2 3
-    3300014: pasted__pCone2 4
-    3300016: pasted__pCone2 5
-    3300018: pasted__pCone2 6
-    3300020: pasted__pCone3
-    3300022: pasted__pCone3 1
-    3300024: pasted__pCone3 2
-    3300026: pasted__pCone3 3
-    3300028: pasted__pCone3 4
-    3300030: pasted__pCone3 5
-    3300032: pasted__pCone3 6
-    3300034: pasted__pCone4
-    3300036: pasted__pCone4 1
-    3300038: pasted__pCone4 2
-    3300040: pasted__pCone4 3
-    3300042: pasted__pCone4 4
-    3300044: pasted__pCone4 5
-    3300046: pasted__pCone4 6
-    3300048: pasted__pCone5
-    3300050: pasted__pCone6
-    3300052: pasted__pCone7
-    3300054: pasted__pCone8
-    3300056: pasted__pCone9
-    3300058: pasted__pCylinder1
-    3300060: pasted__pCylinder2
-    3300062: pasted__pCylinder3
-    3300064: pasted__pCylinder4
-    3300066: pasted__pCylinder5
-    3300068: pasted__pCylinder6
-    3300070: pasted__pCylinder7
-    3300072: pasted__pCylinder8
-    3300074: //RootNode
-    3300076: wall1
-    3300078: wall3
-    3300080: wall4
-    3300082: wall5
-    4300000: Arena
-    4300002: wall1
-    4300004: wall3
-    4300006: wall4
-    4300008: wall5
-    4300010: pasted__pCylinder1
-    4300012: pasted__pCone1
-    4300014: pasted__pCone4
-    4300016: pasted__pCone3
-    4300018: pasted__pCone2
-    4300020: pasted__pCylinder2
-    4300022: pasted__pCylinder3
-    4300024: pasted__pCylinder4
-    4300026: pasted__pCylinder5
-    4300028: pasted__pCylinder6
-    4300030: pasted__pCylinder7
-    4300032: pasted__pCylinder8
-    4300034: pasted__pCone5
-    4300036: pasted__pCone4
-    4300038: pasted__pCone3
-    4300040: pasted__pCone2
-    4300042: pasted__pCone6
-    4300044: pasted__pCone4
-    4300046: pasted__pCone3
-    4300048: pasted__pCone2
-    4300050: pasted__pCone7
-    4300052: pasted__pCone4
-    4300054: pasted__pCone3
-    4300056: pasted__pCone2
-    4300058: pasted__pCone8
-    4300060: pasted__pCone4
-    4300062: pasted__pCone3
-    4300064: pasted__pCone2
-    4300066: pasted__pCone9
-    4300068: pasted__pCone4
-    4300070: pasted__pCone3
-    4300072: pasted__pCone2
-    4300074: pasted__pCone10
-    4300076: pasted__pCone4
-    4300078: pasted__pCone3
-    4300080: pasted__pCone2
-    4300082: Arena1
-    7400000: Take 001
-    9500000: //RootNode
+  serializedVersion: 19300
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Arena1
+  - first:
+      1: 100002
+    second: group
+  - first:
+      1: 100004
+    second: pasted__pCone1
+  - first:
+      1: 100006
+    second: pasted__pCone10
+  - first:
+      1: 100008
+    second: pasted__pCone2
+  - first:
+      1: 100010
+    second: pasted__pCone2 1
+  - first:
+      1: 100012
+    second: pasted__pCone2 2
+  - first:
+      1: 100014
+    second: pasted__pCone2 3
+  - first:
+      1: 100016
+    second: pasted__pCone2 4
+  - first:
+      1: 100018
+    second: pasted__pCone2 5
+  - first:
+      1: 100020
+    second: pasted__pCone2 6
+  - first:
+      1: 100022
+    second: pasted__pCone3
+  - first:
+      1: 100024
+    second: pasted__pCone3 1
+  - first:
+      1: 100026
+    second: pasted__pCone3 2
+  - first:
+      1: 100028
+    second: pasted__pCone3 3
+  - first:
+      1: 100030
+    second: pasted__pCone3 4
+  - first:
+      1: 100032
+    second: pasted__pCone3 5
+  - first:
+      1: 100034
+    second: pasted__pCone3 6
+  - first:
+      1: 100036
+    second: pasted__pCone4
+  - first:
+      1: 100038
+    second: pasted__pCone4 1
+  - first:
+      1: 100040
+    second: pasted__pCone4 2
+  - first:
+      1: 100042
+    second: pasted__pCone4 3
+  - first:
+      1: 100044
+    second: pasted__pCone4 4
+  - first:
+      1: 100046
+    second: pasted__pCone4 5
+  - first:
+      1: 100048
+    second: pasted__pCone4 6
+  - first:
+      1: 100050
+    second: pasted__pCone5
+  - first:
+      1: 100052
+    second: pasted__pCone6
+  - first:
+      1: 100054
+    second: pasted__pCone7
+  - first:
+      1: 100056
+    second: pasted__pCone8
+  - first:
+      1: 100058
+    second: pasted__pCone9
+  - first:
+      1: 100060
+    second: pasted__pCylinder1
+  - first:
+      1: 100062
+    second: pasted__pCylinder2
+  - first:
+      1: 100064
+    second: pasted__pCylinder3
+  - first:
+      1: 100066
+    second: pasted__pCylinder4
+  - first:
+      1: 100068
+    second: pasted__pCylinder5
+  - first:
+      1: 100070
+    second: pasted__pCylinder6
+  - first:
+      1: 100072
+    second: pasted__pCylinder7
+  - first:
+      1: 100074
+    second: pasted__pCylinder8
+  - first:
+      1: 100076
+    second: //RootNode
+  - first:
+      1: 100078
+    second: wall1
+  - first:
+      1: 100080
+    second: wall3
+  - first:
+      1: 100082
+    second: wall4
+  - first:
+      1: 100084
+    second: wall5
+  - first:
+      4: 400000
+    second: Arena1
+  - first:
+      4: 400002
+    second: group
+  - first:
+      4: 400004
+    second: pasted__pCone1
+  - first:
+      4: 400006
+    second: pasted__pCone10
+  - first:
+      4: 400008
+    second: pasted__pCone2
+  - first:
+      4: 400010
+    second: pasted__pCone2 1
+  - first:
+      4: 400012
+    second: pasted__pCone2 2
+  - first:
+      4: 400014
+    second: pasted__pCone2 3
+  - first:
+      4: 400016
+    second: pasted__pCone2 4
+  - first:
+      4: 400018
+    second: pasted__pCone2 5
+  - first:
+      4: 400020
+    second: pasted__pCone2 6
+  - first:
+      4: 400022
+    second: pasted__pCone3
+  - first:
+      4: 400024
+    second: pasted__pCone3 1
+  - first:
+      4: 400026
+    second: pasted__pCone3 2
+  - first:
+      4: 400028
+    second: pasted__pCone3 3
+  - first:
+      4: 400030
+    second: pasted__pCone3 4
+  - first:
+      4: 400032
+    second: pasted__pCone3 5
+  - first:
+      4: 400034
+    second: pasted__pCone3 6
+  - first:
+      4: 400036
+    second: pasted__pCone4
+  - first:
+      4: 400038
+    second: pasted__pCone4 1
+  - first:
+      4: 400040
+    second: pasted__pCone4 2
+  - first:
+      4: 400042
+    second: pasted__pCone4 3
+  - first:
+      4: 400044
+    second: pasted__pCone4 4
+  - first:
+      4: 400046
+    second: pasted__pCone4 5
+  - first:
+      4: 400048
+    second: pasted__pCone4 6
+  - first:
+      4: 400050
+    second: pasted__pCone5
+  - first:
+      4: 400052
+    second: pasted__pCone6
+  - first:
+      4: 400054
+    second: pasted__pCone7
+  - first:
+      4: 400056
+    second: pasted__pCone8
+  - first:
+      4: 400058
+    second: pasted__pCone9
+  - first:
+      4: 400060
+    second: pasted__pCylinder1
+  - first:
+      4: 400062
+    second: pasted__pCylinder2
+  - first:
+      4: 400064
+    second: pasted__pCylinder3
+  - first:
+      4: 400066
+    second: pasted__pCylinder4
+  - first:
+      4: 400068
+    second: pasted__pCylinder5
+  - first:
+      4: 400070
+    second: pasted__pCylinder6
+  - first:
+      4: 400072
+    second: pasted__pCylinder7
+  - first:
+      4: 400074
+    second: pasted__pCylinder8
+  - first:
+      4: 400076
+    second: //RootNode
+  - first:
+      4: 400078
+    second: wall1
+  - first:
+      4: 400080
+    second: wall3
+  - first:
+      4: 400082
+    second: wall4
+  - first:
+      4: 400084
+    second: wall5
+  - first:
+      21: 2100000
+    second: lambert1
+  - first:
+      21: 2100002
+    second: lambert3
+  - first:
+      21: 2100004
+    second: lambert5
+  - first:
+      21: 2100006
+    second: lambert2
+  - first:
+      23: 2300000
+    second: Arena1
+  - first:
+      23: 2300002
+    second: pasted__pCone1
+  - first:
+      23: 2300004
+    second: pasted__pCone10
+  - first:
+      23: 2300006
+    second: pasted__pCone2
+  - first:
+      23: 2300008
+    second: pasted__pCone2 1
+  - first:
+      23: 2300010
+    second: pasted__pCone2 2
+  - first:
+      23: 2300012
+    second: pasted__pCone2 3
+  - first:
+      23: 2300014
+    second: pasted__pCone2 4
+  - first:
+      23: 2300016
+    second: pasted__pCone2 5
+  - first:
+      23: 2300018
+    second: pasted__pCone2 6
+  - first:
+      23: 2300020
+    second: pasted__pCone3
+  - first:
+      23: 2300022
+    second: pasted__pCone3 1
+  - first:
+      23: 2300024
+    second: pasted__pCone3 2
+  - first:
+      23: 2300026
+    second: pasted__pCone3 3
+  - first:
+      23: 2300028
+    second: pasted__pCone3 4
+  - first:
+      23: 2300030
+    second: pasted__pCone3 5
+  - first:
+      23: 2300032
+    second: pasted__pCone3 6
+  - first:
+      23: 2300034
+    second: pasted__pCone4
+  - first:
+      23: 2300036
+    second: pasted__pCone4 1
+  - first:
+      23: 2300038
+    second: pasted__pCone4 2
+  - first:
+      23: 2300040
+    second: pasted__pCone4 3
+  - first:
+      23: 2300042
+    second: pasted__pCone4 4
+  - first:
+      23: 2300044
+    second: pasted__pCone4 5
+  - first:
+      23: 2300046
+    second: pasted__pCone4 6
+  - first:
+      23: 2300048
+    second: pasted__pCone5
+  - first:
+      23: 2300050
+    second: pasted__pCone6
+  - first:
+      23: 2300052
+    second: pasted__pCone7
+  - first:
+      23: 2300054
+    second: pasted__pCone8
+  - first:
+      23: 2300056
+    second: pasted__pCone9
+  - first:
+      23: 2300058
+    second: pasted__pCylinder1
+  - first:
+      23: 2300060
+    second: pasted__pCylinder2
+  - first:
+      23: 2300062
+    second: pasted__pCylinder3
+  - first:
+      23: 2300064
+    second: pasted__pCylinder4
+  - first:
+      23: 2300066
+    second: pasted__pCylinder5
+  - first:
+      23: 2300068
+    second: pasted__pCylinder6
+  - first:
+      23: 2300070
+    second: pasted__pCylinder7
+  - first:
+      23: 2300072
+    second: pasted__pCylinder8
+  - first:
+      23: 2300074
+    second: //RootNode
+  - first:
+      23: 2300076
+    second: wall1
+  - first:
+      23: 2300078
+    second: wall3
+  - first:
+      23: 2300080
+    second: wall4
+  - first:
+      23: 2300082
+    second: wall5
+  - first:
+      33: 3300000
+    second: Arena1
+  - first:
+      33: 3300002
+    second: pasted__pCone1
+  - first:
+      33: 3300004
+    second: pasted__pCone10
+  - first:
+      33: 3300006
+    second: pasted__pCone2
+  - first:
+      33: 3300008
+    second: pasted__pCone2 1
+  - first:
+      33: 3300010
+    second: pasted__pCone2 2
+  - first:
+      33: 3300012
+    second: pasted__pCone2 3
+  - first:
+      33: 3300014
+    second: pasted__pCone2 4
+  - first:
+      33: 3300016
+    second: pasted__pCone2 5
+  - first:
+      33: 3300018
+    second: pasted__pCone2 6
+  - first:
+      33: 3300020
+    second: pasted__pCone3
+  - first:
+      33: 3300022
+    second: pasted__pCone3 1
+  - first:
+      33: 3300024
+    second: pasted__pCone3 2
+  - first:
+      33: 3300026
+    second: pasted__pCone3 3
+  - first:
+      33: 3300028
+    second: pasted__pCone3 4
+  - first:
+      33: 3300030
+    second: pasted__pCone3 5
+  - first:
+      33: 3300032
+    second: pasted__pCone3 6
+  - first:
+      33: 3300034
+    second: pasted__pCone4
+  - first:
+      33: 3300036
+    second: pasted__pCone4 1
+  - first:
+      33: 3300038
+    second: pasted__pCone4 2
+  - first:
+      33: 3300040
+    second: pasted__pCone4 3
+  - first:
+      33: 3300042
+    second: pasted__pCone4 4
+  - first:
+      33: 3300044
+    second: pasted__pCone4 5
+  - first:
+      33: 3300046
+    second: pasted__pCone4 6
+  - first:
+      33: 3300048
+    second: pasted__pCone5
+  - first:
+      33: 3300050
+    second: pasted__pCone6
+  - first:
+      33: 3300052
+    second: pasted__pCone7
+  - first:
+      33: 3300054
+    second: pasted__pCone8
+  - first:
+      33: 3300056
+    second: pasted__pCone9
+  - first:
+      33: 3300058
+    second: pasted__pCylinder1
+  - first:
+      33: 3300060
+    second: pasted__pCylinder2
+  - first:
+      33: 3300062
+    second: pasted__pCylinder3
+  - first:
+      33: 3300064
+    second: pasted__pCylinder4
+  - first:
+      33: 3300066
+    second: pasted__pCylinder5
+  - first:
+      33: 3300068
+    second: pasted__pCylinder6
+  - first:
+      33: 3300070
+    second: pasted__pCylinder7
+  - first:
+      33: 3300072
+    second: pasted__pCylinder8
+  - first:
+      33: 3300074
+    second: //RootNode
+  - first:
+      33: 3300076
+    second: wall1
+  - first:
+      33: 3300078
+    second: wall3
+  - first:
+      33: 3300080
+    second: wall4
+  - first:
+      33: 3300082
+    second: wall5
+  - first:
+      43: 4300000
+    second: Arena
+  - first:
+      43: 4300002
+    second: wall1
+  - first:
+      43: 4300004
+    second: wall3
+  - first:
+      43: 4300006
+    second: wall4
+  - first:
+      43: 4300008
+    second: wall5
+  - first:
+      43: 4300010
+    second: pasted__pCylinder1
+  - first:
+      43: 4300012
+    second: pasted__pCone1
+  - first:
+      43: 4300014
+    second: pasted__pCone4
+  - first:
+      43: 4300016
+    second: pasted__pCone3
+  - first:
+      43: 4300018
+    second: pasted__pCone2
+  - first:
+      43: 4300020
+    second: pasted__pCylinder2
+  - first:
+      43: 4300022
+    second: pasted__pCylinder3
+  - first:
+      43: 4300024
+    second: pasted__pCylinder4
+  - first:
+      43: 4300026
+    second: pasted__pCylinder5
+  - first:
+      43: 4300028
+    second: pasted__pCylinder6
+  - first:
+      43: 4300030
+    second: pasted__pCylinder7
+  - first:
+      43: 4300032
+    second: pasted__pCylinder8
+  - first:
+      43: 4300034
+    second: pasted__pCone5
+  - first:
+      43: 4300036
+    second: pasted__pCone4
+  - first:
+      43: 4300038
+    second: pasted__pCone3
+  - first:
+      43: 4300040
+    second: pasted__pCone2
+  - first:
+      43: 4300042
+    second: pasted__pCone6
+  - first:
+      43: 4300044
+    second: pasted__pCone4
+  - first:
+      43: 4300046
+    second: pasted__pCone3
+  - first:
+      43: 4300048
+    second: pasted__pCone2
+  - first:
+      43: 4300050
+    second: pasted__pCone7
+  - first:
+      43: 4300052
+    second: pasted__pCone4
+  - first:
+      43: 4300054
+    second: pasted__pCone3
+  - first:
+      43: 4300056
+    second: pasted__pCone2
+  - first:
+      43: 4300058
+    second: pasted__pCone8
+  - first:
+      43: 4300060
+    second: pasted__pCone4
+  - first:
+      43: 4300062
+    second: pasted__pCone3
+  - first:
+      43: 4300064
+    second: pasted__pCone2
+  - first:
+      43: 4300066
+    second: pasted__pCone9
+  - first:
+      43: 4300068
+    second: pasted__pCone4
+  - first:
+      43: 4300070
+    second: pasted__pCone3
+  - first:
+      43: 4300072
+    second: pasted__pCone2
+  - first:
+      43: 4300074
+    second: pasted__pCone10
+  - first:
+      43: 4300076
+    second: pasted__pCone4
+  - first:
+      43: 4300078
+    second: pasted__pCone3
+  - first:
+      43: 4300080
+    second: pasted__pCone2
+  - first:
+      43: 4300082
+    second: Arena1
+  - first:
+      74: 7400000
+    second: Take 001
+  - first:
+      95: 9500000
+    second: //RootNode
   externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -231,7 +667,7 @@ ModelImporter:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     resampleCurves: 1
-    optimizeGameObjects: 0
+    optimizeGameObjects: 1
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -252,6 +688,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Take 001
       takeName: Take 001
+      internalID: 0
       firstFrame: 1
       lastFrame: 319
       wrapMode: 0
@@ -284,6 +721,7 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 0
     importBlendShapes: 0
     importCameras: 0
@@ -291,18 +729,19 @@ ModelImporter:
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 0
     keepQuads: 0
     weldVertices: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: 1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 0.5
-    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -311,10 +750,10 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -324,13 +763,16 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 0.5
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
