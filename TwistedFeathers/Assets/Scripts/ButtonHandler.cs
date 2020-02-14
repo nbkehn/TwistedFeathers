@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Completed;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ButtonHandler : MonoBehaviour
 {
@@ -53,5 +54,9 @@ public class ButtonHandler : MonoBehaviour
             me.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 30);
             MiniMap.SetActive(true);
         }
+    }
+
+    public void SwitchScene(){
+        SceneManager.LoadScene("EnvironmentSwitching");
     }
 }
