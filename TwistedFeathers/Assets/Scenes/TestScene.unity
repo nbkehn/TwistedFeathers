@@ -740,9 +740,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3054fc092a5a64c5cbe40c00bda8aad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectWithScript: {fileID: 0}
+  objectWithScript: {fileID: 1805896289}
   ScrollView: {fileID: 0}
-  myText: {fileID: 0}
-  me: {fileID: 0}
+  myText: {fileID: 87737972}
+  me: {fileID: 82641607}
   MiniMap: {fileID: 0}
   MegaMap: {fileID: 0}

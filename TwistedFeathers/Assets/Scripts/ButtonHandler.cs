@@ -15,6 +15,7 @@ public class ButtonHandler : MonoBehaviour
     private string currentText;
     public GameObject MiniMap;
     public GameObject MegaMap;
+    
 
     public void Start() {
         currentText = myText.text;
@@ -46,7 +47,7 @@ public class ButtonHandler : MonoBehaviour
         if(!ScrollView.activeSelf){
             ScrollView.SetActive(true);
             myText.text = "Close";
-            me.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 251);
+            me.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 150);
             MiniMap.SetActive(false);
         } else {
             ScrollView.SetActive(false);
@@ -54,6 +55,7 @@ public class ButtonHandler : MonoBehaviour
             me.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 30);
             MiniMap.SetActive(true);
         }
+        ScrollView.transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = CombatManager.ForecastText;
     }
 
     public void SwitchScene(){

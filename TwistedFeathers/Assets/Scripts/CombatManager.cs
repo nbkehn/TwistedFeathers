@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CombatManager : MonoBehaviour
 {
@@ -9,6 +10,10 @@ public class CombatManager : MonoBehaviour
     int currentTurn;
     bool waitingPlayer;
     int protagonistIndex;
+    public GameObject ForecastOpener;
+    static string forecastText;
+
+    public static string ForecastText { get => forecastText; set => forecastText = value; }
 
     //Method for taking a skill and queueing the effect into the PQ
     void queueSkill(Skill skill, Participant user, Participant target)
@@ -35,6 +40,8 @@ public class CombatManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        ForecastText = "";
         currentTurn = 0;
         pq = new SortedSet<BattleEffect>(new EffectComparator());
         battle_participants = new ArrayList();
@@ -47,19 +54,16 @@ public class CombatManager : MonoBehaviour
         Debug.Log("TURN BEGIN");
     }
 
+    public void chooseSkill(){
+        Player protag = (Player) battle_participants[protagonistIndex]; 
+        queueSkill((Skill) protag.Skills[Random.Range(0, protag.Skills.Count)], protag, null);
+        waitingPlayer = false;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (waitingPlayer)
-        {
-            if (Input.GetButtonDown("Turn Pass"))
-            {
-                Player protag = (Player) battle_participants[protagonistIndex]; 
-                queueSkill((Skill) protag.Skills[Random.Range(0, protag.Skills.Count)], protag, null);
-                waitingPlayer = false;
-            }
-        }
-        else
+        if (!waitingPlayer)
         {
             //Effects are resolved and turn ends
             resolveEffects();
@@ -80,8 +84,11 @@ public class CombatManager : MonoBehaviour
             Debug.Log("Forecast Begins!");
             foreach (BattleEffect eff in pq)
             {
+                ForecastText += eff.User.Name;
+                ForecastText += "\n";
                 Debug.Log(eff.User.Name);
             }
+            ForecastOpener.GetComponent<ButtonHandler>().OpenForecast();
             Debug.Log("Forecast Over!");
 
             waitingPlayer = true;
