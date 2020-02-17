@@ -12,6 +12,11 @@ public class CombatManager : MonoBehaviour
     int protagonistIndex;
     public GameObject ForecastOpener;
     static string forecastText;
+    public GameObject textPrefab;
+
+    private GameObject newText;
+    public GameObject forecastContent;
+    int numTexts = 0;
 
     public static string ForecastText { get => forecastText; set => forecastText = value; }
 
@@ -53,11 +58,17 @@ public class CombatManager : MonoBehaviour
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
     }
+    
+    public void SelectSkill(string skill){
+        Debug.Log(skill); // change this to actually do what the skill does
+        chooseSkill();
+    }
 
     public void chooseSkill(){
         Player protag = (Player) battle_participants[protagonistIndex]; 
         queueSkill((Skill) protag.Skills[Random.Range(0, protag.Skills.Count)], protag, null);
         waitingPlayer = false;
+
     }
 
     // Update is called once per frame
@@ -82,10 +93,17 @@ public class CombatManager : MonoBehaviour
             //Forecast
 
             Debug.Log("Forecast Begins!");
+            
             foreach (BattleEffect eff in pq)
             {
-                ForecastText += eff.User.Name;
-                ForecastText += "\n";
+                newText = Instantiate(textPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                newText.transform.SetParent(forecastContent.transform, false);
+                newText.GetComponent<RectTransform>().localScale = new Vector3(0.6968032f, 1.7355f, 1.7355f);
+                newText.transform.position = new Vector3(forecastContent.transform.position.x + 275, forecastContent.transform.position.y - 40*numTexts -30);
+                newText.GetComponent<Text>().text = eff.User.Name;
+                newText.GetComponent<Text>().color = Color.white;
+
+                numTexts++;
                 Debug.Log(eff.User.Name);
             }
             ForecastOpener.GetComponent<ButtonHandler>().newForecast();
