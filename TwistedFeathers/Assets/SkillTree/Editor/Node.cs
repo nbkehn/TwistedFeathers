@@ -25,6 +25,10 @@ public class Node
     public Rect rectUnlockLabel;
     public Rect rectUnlocked;
 
+    // Two Rect for the effect field (1 for the label and other for the checkbox)
+    public Rect rectEffectLabel;
+    public Rect rectEffect;
+
     // Two Rect for the level field (1 for the label and other for the text field)
     public Rect rectLevelLabel;
     public Rect rectLevel;
@@ -56,7 +60,7 @@ public class Node
     public Node(Vector2 position, float width, float height, GUIStyle nodeStyle, 
         GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, 
         Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint,
-        Action<Node> OnClickRemoveNode, int id, string name, string desc, bool unlocked, int level_req, int dependency)
+        Action<Node> OnClickRemoveNode, int id, string name, string desc, Effect effect, bool unlocked, int level_req, int dependency)
     {
         rect = new Rect(position.x, position.y, width, height);
         style = nodeStyle;
@@ -68,29 +72,36 @@ public class Node
         OnRemoveNode = OnClickRemoveNode;
 
         // Create new Rect and GUIStyle for our title and custom fields
-        float rowHeight = height / 7;
-        float adj_x = position.x + 10;
-        float adj_width = (width - 20) / 5;
+        float rowHeight = 18;
+        float col_2 = 2 * (width - 20) / 5;
+        float col_3 = 3 * (width - 20) / 5;
+        float col_5 = (width - 20);
+        float x_pos = position.x + 10;
+        float y_pos = position.y + 10;
+        float offset = 20;
 
         styleField = new GUIStyle();
         styleField.alignment = TextAnchor.UpperRight;
 
 
-        rectID = new Rect(position.x, position.y + 2 * rowHeight, width, rowHeight);
-        styleID = new GUIStyle();
-        styleID.alignment = TextAnchor.UpperCenter;
+        //rectID = new Rect(position.x, position.y + 2 * rowHeight, width, rowHeight);
+        //styleID = new GUIStyle();
+        //styleID.alignment = TextAnchor.UpperCenter;
 
-        rectNameLabel = new Rect(adj_x, position.y + rowHeight, adj_width * 2, rowHeight);
-        rectName = new Rect(adj_x + adj_width * 2, position.y + rowHeight, adj_width * 3, rowHeight);
+        rectNameLabel = new Rect(x_pos, y_pos, col_2, rowHeight);
+        rectName = new Rect(x_pos + col_2, y_pos, col_3, rowHeight);
 
-        rectLevelLabel = new Rect(adj_x, position.y + rowHeight * 2, adj_width * 2, rowHeight);
-        rectLevel = new Rect(adj_x + adj_width * 2, position.y + rowHeight * 2, adj_width * 3, rowHeight);
+        rectLevelLabel = new Rect(x_pos, y_pos + offset, col_2, rowHeight);
+        rectLevel = new Rect(x_pos + col_2, y_pos + offset, col_3, rowHeight);
 
-        rectUnlockLabel = new Rect(adj_x, position.y + rowHeight * 3, adj_width * 2, rowHeight);
-        rectUnlocked = new Rect(adj_x + adj_width * 2, position.y + rowHeight * 3, adj_width * 3, rowHeight);
+        rectUnlockLabel = new Rect(x_pos, y_pos + offset * 2, col_2, rowHeight);
+        rectUnlocked = new Rect(x_pos + col_2, y_pos + offset * 2, col_3, rowHeight);
 
-        rectDescLabel = new Rect(adj_x, position.y + rowHeight * 4, adj_width * 2, rowHeight);
-        rectDesc = new Rect(adj_x, position.y + rowHeight * 5, adj_width * 5, rowHeight);
+        rectEffectLabel = new Rect(x_pos, y_pos + offset * 3, col_2, rowHeight);
+        rectEffect = new Rect(x_pos + col_2, y_pos + offset * 3, col_3, rowHeight);
+
+        rectDescLabel = new Rect(x_pos, y_pos + offset * 4, col_2, rowHeight);
+        rectDesc = new Rect(x_pos, y_pos + offset * 5, col_5, rowHeight * 2);
 
         this.unlocked = unlocked;
 
@@ -99,6 +110,7 @@ public class Node
         skill.name = name;
         skill.id_Skill = id;
         skill.description = desc;
+        skill.effect = effect;
         skill.unlocked = unlocked;
         skill.level_req = level_req;
         skill.pre_req = dependency;
@@ -118,6 +130,8 @@ public class Node
         rectID.position += delta;
         rectUnlocked.position += delta;
         rectUnlockLabel.position += delta;
+        rectEffect.position += delta;
+        rectEffectLabel.position += delta;
         rectLevel.position += delta;
         rectLevelLabel.position += delta;
         rectDescLabel.position += delta;
@@ -132,6 +146,8 @@ public class Node
         rectID.position = pos;
         rectUnlocked.position = pos;
         rectUnlockLabel.position = pos;
+        rectEffect.position = pos;
+        rectEffectLabel.position = pos;
         rectLevel.position = pos;
         rectLevelLabel.position = pos;
         rectDescLabel.position = pos;
@@ -145,31 +161,32 @@ public class Node
         GUI.Box(rect, title, style);
 
         // Print the name
-        GUIStyle styleCenter = new GUIStyle(GUI.skin.box);
-        styleCenter.alignment = TextAnchor.MiddleCenter;
-
-        GUI.Label(rectNameLabel, "Name: ");
-        skill.name = GUI.TextField(rectName, skill.name);
+        EditorGUI.LabelField(rectNameLabel, "Name: ");
+        skill.name = EditorGUI.TextField(rectName, skill.name);
 
         // Print the id
         //GUI.Label(rectID, nodeTitle.ToString(), styleID);
 
         // Print the level field
-        GUI.Label(rectLevelLabel, "Level: ");
-        skill.level_req = int.Parse(GUI.TextField(rectLevel, skill.level_req.ToString()));
+        EditorGUI.LabelField(rectLevelLabel, "Level: ");
+        skill.level_req = EditorGUI.IntField(rectLevel, skill.level_req);
 
         // Print the unlock field
-        GUI.Label(rectUnlockLabel, "Unlocked: ");
-        if (GUI.Toggle(rectUnlocked, unlocked, ""))
+        EditorGUI.LabelField(rectUnlockLabel, "Unlocked: ");
+        if (EditorGUI.Toggle(rectUnlocked, unlocked))
             unlocked = true;
         else
             unlocked = false;
 
         skill.unlocked = unlocked;
 
+        // Print effect dropdown
+        EditorGUI.LabelField(rectEffectLabel, "Effect: ");
+        skill.effect = (Effect)EditorGUI.EnumPopup(rectEffect, skill.effect);
+
         // Print the description area
-        GUI.Label(rectDescLabel, "Description:");
-        skill.description = GUI.TextArea(rectDesc, skill.description);
+        EditorGUI.LabelField(rectDescLabel, "Description:");
+        skill.description = EditorGUI.TextArea(rectDesc, skill.description);
     }
 
     public bool ProcessEvents(Event e)

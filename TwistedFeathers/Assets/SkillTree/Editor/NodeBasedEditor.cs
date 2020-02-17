@@ -77,13 +77,13 @@ public class NodeBasedEditor : EditorWindow
         DrawGrid(20, 0.2f, Color.gray);
         DrawGrid(100, 0.4f, Color.gray);
 
-        // We draw our new buttons (Clear, Load and Save)
-        DrawButtons();
-
         DrawNodes();
         DrawConnections();
 
         DrawConnectionLine(Event.current);
+
+        // We draw our new buttons (Clear, Load and Save)
+        DrawButtons();
 
         ProcessNodeEvents(Event.current);
         ProcessEvents(Event.current);
@@ -142,12 +142,22 @@ public class NodeBasedEditor : EditorWindow
     // Draw our new buttons for managing the skill tree
     private void DrawButtons()
     {
-        if (GUI.Button(rectButtonClear, "Clear"))
+        GUILayout.BeginArea(new Rect(0, 0, position.width, 20), EditorStyles.toolbar);
+        GUILayout.BeginHorizontal();
+
+        if (GUILayout.Button(new GUIContent("Clear"), EditorStyles.toolbarButton))
             ClearNodes();
-        if (GUI.Button(rectButtonSave, "Save"))
+
+        GUILayout.Space(5);
+        if (GUILayout.Button(new GUIContent("Save"), EditorStyles.toolbarButton))
             SaveSkillTree();
-        if (GUI.Button(rectButtonLoad, "Load"))
+
+        GUILayout.Space(5);
+        if (GUILayout.Button(new GUIContent("Load"), EditorStyles.toolbarButton))
             LoadNodes();
+
+        GUILayout.EndHorizontal();
+        GUILayout.EndArea();
     }
 
     private void ProcessEvents(Event e)
@@ -256,9 +266,9 @@ public class NodeBasedEditor : EditorWindow
         }
 
         // We create the node with the default info for the node
-        nodes.Add(new Node(mousePosition, 200, 100, nodeStyle, selectedNodeStyle,
+        nodes.Add(new Node(mousePosition, 200, 200, nodeStyle, selectedNodeStyle,
             inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode,
-            nodeCount, "", "", false, 0, -1));
+            nodeCount, "", "", Effect.None, false, 0, -1));
         ++nodeCount;
     }
 
@@ -385,7 +395,7 @@ public class NodeBasedEditor : EditorWindow
                             {
                                 if (connections[j].outPoint == nodes[k].outPoint)
                                 {
-                                    dependency = k;
+                                    dependency = nodes[k].skill.id_Skill;
                                     break;
                                 }
                             }
@@ -528,9 +538,9 @@ public class NodeBasedEditor : EditorWindow
             nodes = new List<Node>();
         }
 
-        nodes.Add(new Node(position, 200, 100, nodeStyle, selectedNodeStyle,
+        nodes.Add(new Node(position, 200, 200, nodeStyle, selectedNodeStyle,
             inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode, 
-            skill.id_Skill, skill.name, skill.description, skill.unlocked, skill.level_req, skill.pre_req));
-        ++nodeCount;
+            skill.id_Skill, skill.name, skill.description, skill.effect, skill.unlocked, skill.level_req, skill.pre_req));
+        nodeCount = Mathf.Max(nodeCount, skill.id_Skill) + 1;
     }
 }
