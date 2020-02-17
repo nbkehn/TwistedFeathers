@@ -21,10 +21,10 @@ public class GameManager : MonoBehaviour
         inCombat = false;
 
         //Dummy values for testing purposes
-        Skill_db.Add("dummy A", new Skill("Test Skill", "Does nothing", p_type.none, new BattleEffect(e_type.nothing, "This is A dummy", 0)));
-        Skill_db.Add("dummy B", new Skill("Test Skill", "Does nothing", p_type.none, new BattleEffect(e_type.damage, "This is B dummy", 0)));
-        Skill_db.Add("smarty A", new Skill("Test Skill", "Does nothing", p_type.none, new BattleEffect(e_type.nothing, "This is A smarty", 0)));
-        Skill_db.Add("smarty B", new Skill("Test Skill", "Does nothing", p_type.none, new BattleEffect(e_type.damage, "This is B smarty", 0)));
+        Skill_db.Add("dummy A", new Skill("Test Skill", "Does nothing", p_type.none, new BattleEffect(e_type.nothing, "This is A dummy", 0), false));
+        Skill_db.Add("dummy B", new Skill("Test Skill", "Does nothing", p_type.none, new BattleEffect(e_type.damage, "This is B dummy", 0), false));
+        Skill_db.Add("smarty A", new Skill("Test Skill", "Does nothing", p_type.none, new BattleEffect(e_type.nothing, "This is A smarty", 0), false));
+        Skill_db.Add("smarty B", new Skill("Test Skill", "Does nothing", p_type.none, new BattleEffect(e_type.damage, "This is B smarty", 0), false));
 
         Participant_db.Add("person A", new Player("Adam"));
         Participant_db["person A"].AddSkill(Skill_db["smarty A"]);
