@@ -16,7 +16,10 @@ public class CombatManager : MonoBehaviour
 
     private GameObject newText;
     public GameObject forecastContent;
+    public Environment[,] map;
     int numTexts = 0;
+    public int rows = 3;
+    public int cols = 4;
 
     public static string ForecastText { get => forecastText; set => forecastText = value; }
 
@@ -57,6 +60,7 @@ public class CombatManager : MonoBehaviour
 
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
+        buildMap(rows, cols);
     }
     
     public void SelectSkill(string skill){
@@ -113,5 +117,65 @@ public class CombatManager : MonoBehaviour
 
         }
         
+    }
+
+    public void buildMap(int rows, int cols){
+        map = new Environment[cols, rows];
+        for(int i = 0; i < cols; i++){
+            for(int j = 0; j < rows; j++){
+                map[i,j] = GameManager.environments[0];
+            }
+        }
+        InitialiseList(rows, cols);
+    }
+
+    private List <Vector3> gridPositions = new List <Vector3> ();
+
+    private Transform mapHolder; 
+
+    void InitialiseList (int rows, int cols)
+    {
+        //Clear our list gridPositions.
+        gridPositions.Clear ();
+
+        //Loop through x axis (columns).
+        for(int x = 1; x < cols; x++)
+        {
+            //Within each column, loop through y axis (rows).
+            for(int y = 1; y < rows; y++)
+            {
+                //At each index add a new Vector3 to our list with the x and y coordinates of that position.
+                gridPositions.Add (new Vector3(x, y, 0f));
+            }
+        }
+        MapSetup(rows, cols);
+    }
+
+    void MapSetup (int rows, int cols)
+    {
+        //Instantiate Board and set boardHolder to its transform.
+        mapHolder = new GameObject ("Board", typeof(RectTransform)).transform;
+
+        //Loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles.
+        for(int x = 0; x < cols; x++)
+        {
+            //Loop along y axis, starting from -1 to place floor or outerwall tiles.
+            for(int y = 0; y < rows; y++)
+            {
+                GameObject toInstantiate = map[x,y].miniIcon;
+                GameObject instance = Instantiate (toInstantiate, new Vector3 (x*60, y*60, 0f), Quaternion.identity) as GameObject;
+                //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
+                instance.transform.SetParent (mapHolder);
+
+            }
+        }
+        mapHolder.SetParent(GameObject.Find("Panel").transform);
+
+        GameObject go = GameObject.Find("Panel");
+        float width = go.GetComponent<RectTransform>().rect.width;
+        float height = go.GetComponent<RectTransform>().rect.height;
+        Debug.Log(width);
+        GameObject child = mapHolder.GetChild(0).gameObject;
+        mapHolder.gameObject.GetComponent<RectTransform>().localPosition = new Vector3((-1*(width/2))+ (child.GetComponent<RectTransform>().rect.width/2)*2 + 100 , (-1*(height/2))+ (child.GetComponent<RectTransform>().rect.height/2)*5 + 100 , 0f);
     }
 }

@@ -427,6 +427,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   combater: {fileID: 1635477742820407397, guid: 19a7948af5eb3934aa4289189805b548,
     type: 3}
+  environmentPrefabs:
+  - {fileID: 2749972663444745878, guid: d24f07b35600840b28d11d1d454d4eb1, type: 3}
+  - {fileID: 6878414667720973492, guid: a7e9ad935fbd3448fbc54b8fb7e49997, type: 3}
 --- !u!4 &805186689
 Transform:
   m_ObjectHideFlags: 0
