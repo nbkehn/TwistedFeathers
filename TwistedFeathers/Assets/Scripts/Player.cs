@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : Participant
 {
+    private Dictionary<string, Skill> learnedSkills;
     public Player() : base(p_type.player, "")
     {
 
@@ -14,6 +15,10 @@ public class Player : Participant
 
     }
 
+    //public Dictionary<string, Skill> skill_db getSkillList()
+    //{
+    //    return this.learnedSkills;
+    //}
 }
 
 
