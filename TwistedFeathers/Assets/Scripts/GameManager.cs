@@ -15,7 +15,6 @@ public class GameManager : MonoBehaviour
     bool inCombat;
     private static GameManager _instance;
     public static GameManager Instance { get { return _instance; } }
-
     public List<GameObject> environmentPrefabs;
     public static List<Environment> environments;
 
@@ -50,9 +49,10 @@ public class GameManager : MonoBehaviour
             Participant_db.Add("enemy B", new Monster("Beelzebub"));
             Participant_db["enemy B"].AddSkill(Skill_db["dummy B"]);
             environments = new List<Environment>();
-            foreach(GameObject pref in environmentPrefabs){
-                environments.Add(new Environment("default",pref));
-            }
+            
+            environments.Add(new Environment("desert",environmentPrefabs[0]));
+            environments.Add(new Environment("swamp",environmentPrefabs[1]));
+            environments.Add(new Environment("empty",environmentPrefabs[2]));
         }
     }
 

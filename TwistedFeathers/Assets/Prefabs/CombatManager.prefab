@@ -46,5 +46,5 @@ MonoBehaviour:
   ForecastOpener: {fileID: 0}
   textPrefab: {fileID: 0}
   forecastContent: {fileID: 0}
-  rows: 3
-  cols: 4
+  rows: 2
+  cols: 5

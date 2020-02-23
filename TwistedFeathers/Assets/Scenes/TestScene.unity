@@ -430,6 +430,7 @@ MonoBehaviour:
   environmentPrefabs:
   - {fileID: 2749972663444745878, guid: d24f07b35600840b28d11d1d454d4eb1, type: 3}
   - {fileID: 6878414667720973492, guid: a7e9ad935fbd3448fbc54b8fb7e49997, type: 3}
+  - {fileID: 6558175892258665387, guid: b984a0d5aab904adbb3f464841aafdab, type: 3}
 --- !u!4 &805186689
 Transform:
   m_ObjectHideFlags: 0
@@ -683,8 +684,8 @@ Camera:
   m_GameObject: {fileID: 1805896289}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -748,4 +749,3 @@ MonoBehaviour:
   myText: {fileID: 87737972}
   me: {fileID: 82641607}
   MiniMap: {fileID: 0}
-  MegaMap: {fileID: 0}
