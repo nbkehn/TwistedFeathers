@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static System.Math;
 
 using Completed;
 
@@ -29,6 +30,8 @@ public class CombatManager : MonoBehaviour
 
     public bool selectingMap = false;
     public bool validMove = true;
+
+    public int allowedMoves = 2;
 
     public static string ForecastText { get => forecastText; set => forecastText = value; }
 
@@ -85,6 +88,11 @@ public class CombatManager : MonoBehaviour
 
     public void StartSelecting(){
         selectingMap = true;
+        GameObject.Find("Board").transform.Find("SelectionEntity").gameObject.SetActive(true);
+        GameObject.Find("Panel").transform.Find("Confirmation").gameObject.SetActive(true);
+        GameObject.Find("Panel").transform.Find("Cancel").gameObject.SetActive(true);
+        GameObject.Find("SelectionEntity").transform.SetAsFirstSibling(); //move to the front (on parent)
+        GameObject.Find("CurrentLocation").transform.SetAsLastSibling();
     }
 
     public void ConfirmSelecting(){
@@ -103,18 +111,11 @@ public class CombatManager : MonoBehaviour
     void Update()
     {
         if(selectingMap){
-            GameObject.Find("Board").transform.Find("SelectionEntity").gameObject.SetActive(true);
-            GameObject.Find("Panel").transform.Find("Confirmation").gameObject.SetActive(true);
-            GameObject.Find("Panel").transform.Find("Cancel").gameObject.SetActive(true);
-            GameObject.Find("SelectionEntity").GetComponent<RectTransform>().localPosition = new Vector3 (changingLocation.x*60, changingLocation.y*60, -1f);
-            if(changingLocation.x <= currentLocation.x+1 && changingLocation.x >= currentLocation.x-1) {
-                if(changingLocation.y <= currentLocation.y+1 && changingLocation.y >= currentLocation.y-1){
-                    GameObject.Find("SelectionEntity").GetComponent<Image>().color = Color.yellow;
+            GameObject.Find("SelectionEntity").GetComponent<RectTransform>().localPosition = new Vector3 (changingLocation.x*60, changingLocation.y*60, -10f);
+            int totalMove = Abs((int)(currentLocation.x - changingLocation.x)) + Abs((int)(currentLocation.y - changingLocation.y));
+            if(totalMove <= allowedMoves) {
+                GameObject.Find("SelectionEntity").GetComponent<Image>().color = Color.yellow;
                     validMove = true;
-                } else {
-                    validMove = false;
-                    GameObject.Find("SelectionEntity").GetComponent<Image>().color = Color.grey;
-                } 
             } else {
                 validMove = false;
                 GameObject.Find("SelectionEntity").GetComponent<Image>().color = Color.grey;
@@ -189,11 +190,10 @@ public class CombatManager : MonoBehaviour
                 float randomInt = Random.Range(0f, 10.0f);
                 if(randomInt >=0 && randomInt <=3){
                     map[i,j] = GameManager.environments[0];
-                } else if(randomInt >=3 && randomInt <=7){
+                } else if(randomInt >=3 && randomInt <=9){
                     map[i,j] = GameManager.environments[1];
-                } else if(randomInt >=7 && randomInt <=10){
-                    map[i,j] = GameManager.environments[1];
-                    //map[i,j] = GameManager.environments[GameManager.environments.Count-1];
+                } else if(randomInt >=9 && randomInt <=10){
+                    map[i,j] = GameManager.environments[GameManager.environments.Count-1];
                 }
             }
         }
