@@ -35,11 +35,9 @@ public class ButtonHandler : MonoBehaviour
     public void OpenSkillSelect(){
         if(!ScrollView.activeSelf){
             ScrollView.SetActive(true);
-            myText.text = "Nevermind";
             
         } else {
             ScrollView.SetActive(false);
-            myText.text = currentText;
         }
     }
 
@@ -67,4 +65,5 @@ public class ButtonHandler : MonoBehaviour
     public void SwitchScene(){
         SceneManager.LoadScene("EnvironmentSwitching");
     }
+
 }
