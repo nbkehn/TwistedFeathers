@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class GameManager : MonoBehaviour
     bool inCombat;
     private static GameManager _instance;
     public static GameManager Instance { get { return _instance; } }
+    public List<GameObject> environmentPrefabs;
+    public static List<Environment> environments;
 
     // Awake is called before the first frame update and before Starts
     void Awake()
@@ -45,6 +48,11 @@ public class GameManager : MonoBehaviour
             Participant_db["enemy A"].AddSkill(Skill_db["dummy A"]);
             Participant_db.Add("enemy B", new Monster("Beelzebub"));
             Participant_db["enemy B"].AddSkill(Skill_db["dummy B"]);
+            environments = new List<Environment>();
+            
+            environments.Add(new Environment("desert",environmentPrefabs[0]));
+            environments.Add(new Environment("swamp",environmentPrefabs[1]));
+            environments.Add(new Environment("empty",environmentPrefabs[2]));
         }
     }
 

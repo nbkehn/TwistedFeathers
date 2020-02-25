@@ -43,3 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1cf3a99a19f3d444a8e92869a342cb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ForecastOpener: {fileID: 0}
+  textPrefab: {fileID: 0}
+  forecastContent: {fileID: 0}
+  rows: 2
+  cols: 5

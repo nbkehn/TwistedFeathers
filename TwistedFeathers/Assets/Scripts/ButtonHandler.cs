@@ -14,8 +14,8 @@ public class ButtonHandler : MonoBehaviour
     public GameObject me;
     private string currentText;
     public GameObject MiniMap;
-    public GameObject MegaMap;
     private bool extendedFore = false;
+    private RectTransform smallMapTransform;
     
 
     public void Start() {
@@ -24,12 +24,48 @@ public class ButtonHandler : MonoBehaviour
     
     public void SwitchEnvironment()
     {
-        if(objectWithScript.GetComponent<SceneShift>().scene == 0){
-            objectWithScript.GetComponent<SceneShift>().scene = 1;
-        } else {
-            objectWithScript.GetComponent<SceneShift>().scene = 0;
-        }
+        MiniMap = GameObject.Find("Panel");
+        smallMapTransform = MiniMap.GetComponent<RectTransform>();
+        MiniMap.GetComponent<RectTransform>().localPosition = new Vector3(0,0,0);
+        MiniMap.GetComponent<RectTransform>().localScale = new Vector3(0.75f,0.75f,0);
+        GameObject.Find("CheckEnemy").SetActive(false);
+        GameObject.Find("Forecast").SetActive(false);
+        GameObject.Find("SwitchEnvironment").SetActive(false);
+        GameObject.Find("OpenSkills").SetActive(false);
+        GameObject.Find("CombatManager").GetComponent<CombatManager>().StartSelecting();
 
+    }
+
+    public void ConfirmMapSelect(){
+        if(GameObject.Find("CombatManager").GetComponent<CombatManager>().validMove){
+            MiniMap = GameObject.Find("Panel");
+            MiniMap.GetComponent<RectTransform>().localPosition = new Vector3(533,-263,0);
+            MiniMap.GetComponent<RectTransform>().localScale = new Vector3(0.2067623f,0.1873575f,0.2265888f);
+            GameObject.Find("Canvas").transform.Find("CheckEnemy").gameObject.SetActive(true);
+            GameObject.Find("Canvas").transform.Find("Forecast").gameObject.SetActive(true);
+            GameObject.Find("Canvas").transform.Find("SwitchEnvironment").gameObject.SetActive(true);
+            GameObject.Find("Canvas").transform.Find("OpenSkills").gameObject.SetActive(true);
+            GameObject.Find("Confirmation").SetActive(false);
+            GameObject.Find("Cancel").SetActive(false);
+            GameObject.Find("SelectionEntity").SetActive(false);
+            GameObject.Find("CombatManager").GetComponent<CombatManager>().ConfirmSelecting(); 
+            
+        } else {
+            Debug.Log("Invalid move");
+        }
+    }
+    public void CancelMapSelect(){
+        MiniMap = GameObject.Find("Panel");
+        MiniMap.GetComponent<RectTransform>().localPosition = new Vector3(533,-263,0);
+        MiniMap.GetComponent<RectTransform>().localScale = new Vector3(0.2067623f,0.1873575f,0.2265888f);
+        GameObject.Find("Canvas").transform.Find("CheckEnemy").gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.Find("SwitchEnvironment").gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.Find("Forecast").gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.Find("OpenSkills").gameObject.SetActive(true);
+        GameObject.Find("Confirmation").SetActive(false);
+        GameObject.Find("Cancel").SetActive(false);
+        GameObject.Find("SelectionEntity").SetActive(false);
+        GameObject.Find("CombatManager").GetComponent<CombatManager>().CancelSelecting(); 
     }
 
     public void OpenSkillSelect(){
@@ -65,5 +101,4 @@ public class ButtonHandler : MonoBehaviour
     public void SwitchScene(){
         SceneManager.LoadScene("EnvironmentSwitching");
     }
-
 }
