@@ -9,7 +9,7 @@ using Completed;
 public class CombatManager : MonoBehaviour
 {
     SortedSet<BattleEffect> pq;
-    ArrayList battle_participants;
+    List<Participant> battle_participants;
     int currentTurn;
     bool waitingPlayer;
     int protagonistIndex;
@@ -38,11 +38,12 @@ public class CombatManager : MonoBehaviour
     //Method for taking a skill and queueing the effect into the PQ
     void queueSkill(Skill skill, Participant user, Participant target)
     {
-        BattleEffect effect = skill.Effect;
-        effect.User = user;
-        effect.Target = target;
-        effect.Turnstamp = currentTurn;
-        pq.Add(effect);
+        foreach(BattleEffect effect in skill.Effect)
+        {
+            BattleEffect battle_effect = effect;
+            battle_effect.select(user, target, currentTurn);
+            pq.Add(battle_effect);
+        }
     }
 
     //Method for resolving all effects set to happen this turn in PQ
@@ -51,7 +52,7 @@ public class CombatManager : MonoBehaviour
         Debug.Log("Effects Resolving!");
         while (pq.Count != 0 && pq.Min.Turnstamp <= currentTurn)
         {
-            Debug.Log(pq.Min.Message);
+            pq.Min.run();
             pq.Remove(pq.Min);
         }
         Debug.Log("Effects Resolved!");
@@ -64,7 +65,7 @@ public class CombatManager : MonoBehaviour
         ForecastText = "";
         currentTurn = 0;
         pq = new SortedSet<BattleEffect>(new EffectComparator());
-        battle_participants = new ArrayList();
+        battle_participants = new List<Participant>();
         protagonistIndex = 0; 
         //Dummy values for testing purposes
         battle_participants.Add(GameManager.Participant_db["person A"]);
@@ -82,7 +83,7 @@ public class CombatManager : MonoBehaviour
 
     public void chooseSkill(){
         Player protag = (Player) battle_participants[protagonistIndex]; 
-        queueSkill((Skill) protag.Skills[Random.Range(0, protag.Skills.Count)], protag, null);
+        queueSkill( protag.Skills[Random.Range(0, protag.Skills.Count)], protag, null);
         waitingPlayer = false;
     }
 
@@ -141,9 +142,12 @@ public class CombatManager : MonoBehaviour
                 }
             }
         } else {
-            if (!waitingPlayer){
+            if (!waitingPlayer)
+            {
                 //Effects are resolved and turn ends
                 resolveEffects();
+                //Testing HP damage
+                Debug.Log("Adam HP: " + battle_participants[protagonistIndex].Current_hp);
                 Debug.Log("TURN END");
                 //New turn beings here
                 Debug.Log("TURN BEGIN");
@@ -152,7 +156,7 @@ public class CombatManager : MonoBehaviour
                 {
                     if (part.Type != p_type.player)
                     {
-                        queueSkill((Skill) part.Skills[Random.Range(0, part.Skills.Count)], part, null);
+                        queueSkill((Skill) part.Skills[Random.Range(0, part.Skills.Count)], part, battle_participants[protagonistIndex]);
                     }
                 }
 
@@ -171,6 +175,7 @@ public class CombatManager : MonoBehaviour
 
                     numTexts++;
                     Debug.Log(eff.User.Name);
+
                 }
                 ForecastOpener.GetComponent<ButtonHandler>().newForecast();
                 Debug.Log("Forecast Over!");
