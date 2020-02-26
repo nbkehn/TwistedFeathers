@@ -9,7 +9,10 @@ using Completed;
 public class CombatManager : MonoBehaviour
 {
     SortedSet<BattleEffect> pq;
-    List<Participant> battle_participants;
+    List<Player> battle_players;
+    List<Monster> battle_monsters;
+    Environment env;
+    //Weather weath;
     int currentTurn;
     bool waitingPlayer;
     int protagonistIndex;
@@ -65,11 +68,12 @@ public class CombatManager : MonoBehaviour
         ForecastText = "";
         currentTurn = 0;
         pq = new SortedSet<BattleEffect>(new EffectComparator());
-        battle_participants = new List<Participant>();
+        battle_players = new List<Player>();
+        battle_monsters = new List<Monster>();
         protagonistIndex = 0; 
         //Dummy values for testing purposes
-        battle_participants.Add(GameManager.Participant_db["person A"]);
-        battle_participants.Add(GameManager.Participant_db["enemy B"]);
+        battle_players.Add((Player) GameManager.Participant_db["person A"]);
+        battle_monsters.Add((Monster) GameManager.Participant_db["enemy B"]);
 
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
@@ -82,7 +86,7 @@ public class CombatManager : MonoBehaviour
     }
 
     public void chooseSkill(){
-        Player protag = (Player) battle_participants[protagonistIndex]; 
+        Player protag = (Player) battle_players[protagonistIndex]; 
         queueSkill( protag.Skills[Random.Range(0, protag.Skills.Count)], protag, null);
         waitingPlayer = false;
     }
@@ -147,17 +151,14 @@ public class CombatManager : MonoBehaviour
                 //Effects are resolved and turn ends
                 resolveEffects();
                 //Testing HP damage
-                Debug.Log("Adam HP: " + battle_participants[protagonistIndex].Current_hp);
+                Debug.Log("Adam HP: " + battle_players[protagonistIndex].Current_hp);
                 Debug.Log("TURN END");
                 //New turn beings here
                 Debug.Log("TURN BEGIN");
                 currentTurn++;
-                foreach (Participant part in battle_participants)
+                foreach (Participant part in battle_monsters)
                 {
-                    if (part.Type != p_type.player)
-                    {
-                        queueSkill((Skill) part.Skills[Random.Range(0, part.Skills.Count)], part, battle_participants[protagonistIndex]);
-                    }
+                    queueSkill((Skill) part.Skills[Random.Range(0, part.Skills.Count)], part, battle_monsters[protagonistIndex]);
                 }
 
                 //Forecast
