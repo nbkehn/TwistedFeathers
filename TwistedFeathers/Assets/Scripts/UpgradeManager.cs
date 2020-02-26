@@ -48,4 +48,11 @@ public class UpgradeManager : MonoBehaviour
         }
         //upgrader.skill_db.;
     }
+
+
+    public void Reroll()
+    {
+
+
+    }
 }
