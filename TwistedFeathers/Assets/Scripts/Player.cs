@@ -15,10 +15,15 @@ public class Player : Participant
 
     }
 
-    //public Dictionary<string, Skill> skill_db getSkillList()
-    //{
-    //    return this.learnedSkills;
-    //}
+    public Dictionary<string, Skill> getSkillList()
+    {
+        return this.learnedSkills;
+    }
+
+    public void learnSkill(Skill skill)
+    {
+        learnedSkills.Add(skill.Name, skill);
+    }
 }
 
 

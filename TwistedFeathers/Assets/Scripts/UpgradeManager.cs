@@ -1,26 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UpgradeManager : MonoBehaviour
 {
     //player that is upgrading their skils
     public Player upgrader;
 
-    //Is player in Upgrade phase?
+    //is Player in upgrade phase?
     public bool upPhase;
+    public bool done;
     //buttons for upgrade options
-    public Button u1;
-    public Button u2;
-    public Button u3;
-    public Button u4;
+    public Button u1,u2,u3,u4;
     //reroll button
     public Button Re;
+    private bool rerolled = false;
 
     //Strings of Skill options on buttons
-    public string opt1, opt2, opt3, opt4, optRe;
+    public string opt1, opt2, opt3, opt4;
+    //Strings of enemy skill options on buttons
+    public string opte1, opte2, opte3, opte4, optReE;
     public string constRe = "Reroll - ";
+    public string dash = " - ";
     //needs to:
     //  get the player's current skills
     //  get the pool of available skills
@@ -28,13 +32,18 @@ public class UpgradeManager : MonoBehaviour
 
     private void Start()
     {
-        upPhase = true;
+
+        done = false;
+        populate();
+        
+        //GameManager.Player_db.TryGetValue("person A", out upgrader);
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (upPhase)
         {
+            done = false;
             //other.GetComponent<Scoop>().Scoopee = ingred;
             string button = Re.GetComponentInChildren<Text>().text;
             Re.GetComponentInChildren<Text>().text = constRe;
@@ -49,10 +58,90 @@ public class UpgradeManager : MonoBehaviour
         //upgrader.skill_db.;
     }
 
+    public void populate()
+    {
+        //retrieve skill pool
+        //fetch 4 skills from pool
+        //  add criteria later
+        //parse names, combine them with enemy skills
+        //set names to text of buttons b1-b4
+        Dictionary<string, Skill> skillPool = GameManager.Skill_db;
+        //skillNames = skillPool.Keys;
+        //int size = skillNames.count;
+        List<Skill> foundPlayerSkills = new List<Skill>();
+        List<Skill> foundEnemySkills = new List<Skill>();
+        List<Skill> pickUs = Enumerable.ToList(skillPool.Values);
+
+        while (foundPlayerSkills.Count < 4)
+        {
+            int i = (int)Random.Range(0, skillPool.Count - 1);
+            //XXX = ; //Random between 0-size
+            if (pickUs[i].Part_type == p_type.player)
+            {
+                if (!foundPlayerSkills.Contains(pickUs[i]))
+                {
+                    foundPlayerSkills.Add(pickUs[i]);
+                }
+            }
+        }
+        while(foundEnemySkills.Count < 5)
+        {
+            int i = (int)Random.Range(0, skillPool.Count - 1);
+            //XXX = ; //Random between 0-size
+            if (pickUs[i].Part_type == p_type.enemy)
+            {
+                if (!foundEnemySkills.Contains(pickUs[i]))
+                {
+                    foundEnemySkills.Add(pickUs[i]);
+                }
+            }
+        }
+        opt1 = foundPlayerSkills[0].Name;
+        opt2 = foundPlayerSkills[1].Name;
+        opt3 = foundPlayerSkills[2].Name;
+        opt4 = foundPlayerSkills[3].Name;
+        opte1 = foundEnemySkills[0].Name;
+        opte2 = foundEnemySkills[1].Name;
+        opte3 = foundEnemySkills[2].Name;
+        opte4 = foundEnemySkills[3].Name;
+        optReE = foundEnemySkills[4].Name;
+
+        //Use strings
+        u1.GetComponentInChildren<Text>().text = opt1 + dash + opte1;
+        u2.GetComponentInChildren<Text>().text = opt2 + dash + opte2;
+        u3.GetComponentInChildren<Text>().text = opt3 + dash + opte3;
+        u4.GetComponentInChildren<Text>().text = opt4 + dash + opte4;
+        Re.GetComponentInChildren<Text>().text = constRe + optReE;
+    }
+
+    public void addSkill(string name)
+    {
+        //learn skill based off name
+        if (!done)
+        {
+            done = true;
+            this.upgrader.learnSkill(new Skill());
+            Invoke("FinishUpgrade", 1f);
+        }
+    }
+
 
     public void Reroll()
     {
+        //GameManager.eLearnedSkills.Add();
+        if (!rerolled)
+        {
+            rerolled = true;
+            populate();
+        }
+        //redo all skill names
+        //add skill to enemy skill list
+        //make reroll unavailable after clicking
 
+    }
 
+    private void FinishUpgrade()
+    {
+        SceneManager.LoadScene("TransitionScene");
     }
 }

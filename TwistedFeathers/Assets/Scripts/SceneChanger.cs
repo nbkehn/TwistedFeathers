@@ -8,6 +8,6 @@ public class SceneChanger : MonoBehaviour
 {
     public void change(string scene)
     {
-        SceneManager.LoadScene(scene);
+        SceneManager.LoadScene("UpgradeScreen");
     }
 }
