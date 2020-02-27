@@ -35,7 +35,7 @@ public class UpgradeManager : MonoBehaviour
 
     private void Start()
     {
-
+        upgrader = GameManager.Player_db["player1"];
         done = false;
         u1.name = "u1";
         u2.name = "u2";
@@ -127,8 +127,7 @@ public class UpgradeManager : MonoBehaviour
      *
      */
     public void addSkill(GameObject name)
-    {
-        upgrader = GameManager.Player_db["player1"];
+    { 
         Debug.Log("Attempting to Add Skill");
         string[] skillName;
         string[] splitter = new string[] { " " };
