@@ -10,6 +10,9 @@ public class UpgradeManager : MonoBehaviour
     //player that is upgrading their skils
     public Player upgrader;
 
+    //Skills to pick
+    List<Skill> pickUs;
+
     //is Player in upgrade phase?
     public bool upPhase;
     public bool done;
@@ -34,9 +37,11 @@ public class UpgradeManager : MonoBehaviour
     {
 
         done = false;
+        u1.name = "u1";
+        u2.name = "u2";
+        u3.name = "u3";
+        u4.name = "u4";
         populate();
-        
-        //GameManager.Player_db.TryGetValue("person A", out upgrader);
     }
 
     void FixedUpdate()
@@ -70,7 +75,7 @@ public class UpgradeManager : MonoBehaviour
         //int size = skillNames.count;
         List<Skill> foundPlayerSkills = new List<Skill>();
         List<Skill> foundEnemySkills = new List<Skill>();
-        List<Skill> pickUs = Enumerable.ToList(skillPool.Values);
+        pickUs = Enumerable.ToList(skillPool.Values);
 
         while (foundPlayerSkills.Count < 4)
         {
@@ -114,13 +119,35 @@ public class UpgradeManager : MonoBehaviour
         Re.GetComponentInChildren<Text>().text = constRe + optReE;
     }
 
-    public void addSkill(string name)
+    /**Gets the text of the button, which has been set to the skill names.
+     * It then splits the string to get the player skill, and searches the pickUs
+     * list for a skill with that name. The function then calls the player learnSkill
+     * function to complete the learning process.
+     * @param name name of the button
+     *
+     */
+    public void addSkill(GameObject name)
     {
+        upgrader = GameManager.Player_db["player1"];
+        Debug.Log("Attempting to Add Skill");
+        string[] skillName;
+        string[] splitter = new string[] { " " };
         //learn skill based off name
+        
         if (!done)
         {
+            skillName = name.GetComponent<Text>().text.Split(splitter, System.StringSplitOptions.None);
+            for(int i = 0; i < pickUs.Count; i++)
+            {
+                if(pickUs[i].Name == skillName[0])
+                {
+                    Debug.Log(pickUs[i].Name);
+                    upgrader.learnSkill(pickUs[i]);
+                    break;
+                }
+            }
+            //Skill picked = pickUs.
             done = true;
-            this.upgrader.learnSkill(new Skill());
             Invoke("FinishUpgrade", 1f);
         }
     }

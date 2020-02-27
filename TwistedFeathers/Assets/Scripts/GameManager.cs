@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     {
         Skill_db = new Dictionary<string, Skill>();
         Participant_db = new Dictionary<string, Participant>();
+        Player_db = new Dictionary<string, Player>();
+        eLearnedSkills = new Dictionary<string, Skill>();
         inCombat = false;
 
         //Dummy values for testing purposes
@@ -49,10 +51,11 @@ public class GameManager : MonoBehaviour
         Participant_db.Add("person B", new Player("Ben"));
         Participant_db["person B"].AddSkill(Skill_db["smarty B"]);
 
-        Player_db.Add("person A", new Player("Adam"));
-        Player_db["person A"].AddSkill(Skill_db["smarty A"]);
-        Player_db.Add("person B", new Player("Ben"));
-        Player_db["person B"].AddSkill(Skill_db["smarty B"]);
+        Debug.Log(Player_db);
+        Player_db.Add("player1", new Player("Adam"));
+        Player_db["player1"].AddSkill(Skill_db["smarty A"]);
+        Player_db.Add("player2", new Player("Ben"));
+        Player_db["player2"].AddSkill(Skill_db["smarty B"]);
 
         Participant_db.Add("enemy A", new Monster("Azazel"));
         Participant_db["enemy A"].AddSkill(Skill_db["dummy A"]);
@@ -65,7 +68,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetButtonDown("Battle Start") && !inCombat)
         {

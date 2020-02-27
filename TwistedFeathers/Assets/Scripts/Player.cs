@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : Participant
 {
-    private Dictionary<string, Skill> learnedSkills;
+    private Dictionary<string, Skill> learnedSkills = new Dictionary<string, Skill>();
     public Player() : base(p_type.player, "")
     {
 
