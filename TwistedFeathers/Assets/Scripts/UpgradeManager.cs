@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class UpgradeManager : MonoBehaviour
 {
+
     //player that is upgrading their skils
     public Player upgrader;
 
@@ -14,7 +15,6 @@ public class UpgradeManager : MonoBehaviour
     List<Skill> pickUs;
 
     //is Player in upgrade phase?
-    public bool upPhase;
     public bool done;
     //buttons for upgrade options
     public Button u1,u2,u3,u4;
@@ -46,20 +46,15 @@ public class UpgradeManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (upPhase)
-        {
-            done = false;
-            //other.GetComponent<Scoop>().Scoopee = ingred;
-            string button = Re.GetComponentInChildren<Text>().text;
-            Re.GetComponentInChildren<Text>().text = constRe;
-            Debug.Log(button);
-        }
-        else
-        {
-            //string button = Re.GetComponentInChildren<Text>().text;
-            //Re.GetComponentInChildren<Text>().text = "Inactive";
-            //Debug.Log(button);
-        }
+
+        //other.GetComponent<Scoop>().Scoopee = ingred;
+        string button = Re.GetComponentInChildren<Text>().text;
+        Re.GetComponentInChildren<Text>().text = constRe;
+        
+        //string button = Re.GetComponentInChildren<Text>().text;
+        //Re.GetComponentInChildren<Text>().text = "Inactive";
+        //Debug.Log(button);
+        
         //upgrader.skill_db.;
     }
 
