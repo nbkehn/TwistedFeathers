@@ -47,15 +47,7 @@ public class UpgradeManager : MonoBehaviour
     void FixedUpdate()
     {
 
-        //other.GetComponent<Scoop>().Scoopee = ingred;
-        string button = Re.GetComponentInChildren<Text>().text;
-        Re.GetComponentInChildren<Text>().text = constRe;
         
-        //string button = Re.GetComponentInChildren<Text>().text;
-        //Re.GetComponentInChildren<Text>().text = "Inactive";
-        //Debug.Log(button);
-        
-        //upgrader.skill_db.;
     }
 
     public void populate()
