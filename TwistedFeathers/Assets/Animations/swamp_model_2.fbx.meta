@@ -1,0 +1,343 @@
+fileFormatVersion: 2
+guid: 96f8f38ab561b4e439d895cc2d6af902
+ModelImporter:
+  serializedVersion: 19300
+  internalIDToNameTable:
+  - first:
+      74: 1827226128182048838
+    second: Take 001
+  externalObjects: {}
+  materials:
+    materialImportMode: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Take 001
+      takeName: Take 001
+      internalID: 0
+      firstFrame: 1
+      lastFrame: 319
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 50
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: swamp_model_2(Clone)
+      parentName: 
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 50, y: 1, z: 50}
+    - name: wall1
+      parentName: swamp_model_2(Clone)
+      position: {x: -0.25, y: 7.25, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 0.02, y: 30, z: 1}
+    - name: wall3
+      parentName: swamp_model_2(Clone)
+      position: {x: -0, y: 7.25, z: 0.25}
+      rotation: {x: -0, y: -0.7071068, z: 0, w: 0.7071068}
+      scale: {x: 0, y: 0, z: 0}
+    - name: wall4
+      parentName: swamp_model_2(Clone)
+      position: {x: -0, y: 7.25, z: -0.25}
+      rotation: {x: -0, y: -0.7071068, z: 0, w: 0.7071068}
+      scale: {x: 0.02, y: 30, z: 1}
+    - name: wall5
+      parentName: swamp_model_2(Clone)
+      position: {x: 0.25, y: 7.25, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 0, y: 0, z: 0}
+    - name: group
+      parentName: swamp_model_2(Clone)
+      position: {x: -0.022289773, y: 8.4690485, z: -0.040872663}
+      rotation: {x: 6.800499e-17, y: 0.99306846, z: -6.800499e-17, w: 0.117537394}
+      scale: {x: 0.042166892, y: 2.1083446, z: 0.042166892}
+    - name: pasted__pCylinder1
+      parentName: group
+      position: {x: -5.0960803, y: -0.33710647, z: -3.7841496}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 7.292869, z: 1}
+    - name: pasted__pCone1
+      parentName: group
+      position: {x: -1.5607718, y: -3.118046, z: 2.4665413}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 0.2717083, y: 1, z: 0.81556654}
+    - name: pasted__pCone4
+      parentName: pasted__pCone1
+      position: {x: -0, y: 0.20316434, z: 0.20925045}
+      rotation: {x: 0.0045121955, y: -0, z: -0, w: 0.9999898}
+      scale: {x: 1, y: 1.4454858, z: 0.99998635}
+    - name: pasted__pCone3
+      parentName: pasted__pCone1
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone2
+      parentName: pasted__pCone1
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCylinder2
+      parentName: group
+      position: {x: 2.188911, y: 1.0806952, z: 1.2313511}
+      rotation: {x: 0.59393054, y: -0, z: -0, w: 0.8045164}
+      scale: {x: 0.38987407, y: 0.73643774, z: 0.38987407}
+    - name: pasted__pCylinder3
+      parentName: group
+      position: {x: 2.274023, y: -0.33710647, z: -5.287644}
+      rotation: {x: 0, y: 0.24953066, z: -0, w: 0.9683669}
+      scale: {x: 1.0213778, y: 7.4487743, z: 0.7582759}
+    - name: pasted__pCylinder4
+      parentName: group
+      position: {x: -0.729789, y: -0.33710647, z: -5.287644}
+      rotation: {x: 0, y: -0.46690485, z: -0, w: 0.88430756}
+      scale: {x: 0.62388575, y: 8.980172, z: 0.46317586}
+    - name: pasted__pCylinder5
+      parentName: group
+      position: {x: 2.0734682, y: -0.33710647, z: 3.0479875}
+      rotation: {x: 7.1657796e-17, y: 0.9821474, z: -7.1657796e-17, w: 0.18811315}
+      scale: {x: 1.0213778, y: 7.4487743, z: 0.7582759}
+    - name: pasted__pCylinder6
+      parentName: group
+      position: {x: 2.1746392, y: 0.08646488, z: -1.6012648}
+      rotation: {x: 0.48309162, y: 0.2622217, z: -0.3008095, w: 0.77934325}
+      scale: {x: 0.38987407, y: 0.73643774, z: 0.58743703}
+    - name: pasted__pCylinder7
+      parentName: group
+      position: {x: -3.4386268, y: -0.80221486, z: 3.2057257}
+      rotation: {x: 0.5383573, y: -0.54583174, z: 0.37507764, w: 0.5211102}
+      scale: {x: 0.38987407, y: 1.0784734, z: 0.58743703}
+    - name: pasted__pCylinder8
+      parentName: group
+      position: {x: -3.478022, y: 0.22829866, z: -2.8738894}
+      rotation: {x: -0.2573854, y: 0.7320398, z: -0.48904124, w: -0.39838332}
+      scale: {x: 0.38987407, y: 0.90930676, z: 0.58743703}
+    - name: pasted__pCone5
+      parentName: group
+      position: {x: -1.5607718, y: -3.118046, z: -3.7830749}
+      rotation: {x: 0, y: -0.25659704, z: -0, w: 0.9665185}
+      scale: {x: 0.2717083, y: 1.2687687, z: 1.0465754}
+    - name: pasted__pCone4 2
+      parentName: pasted__pCone5
+      position: {x: -0, y: 0.20316434, z: 0.20925045}
+      rotation: {x: 0.0045121955, y: -0, z: -0, w: 0.9999898}
+      scale: {x: 1, y: 1.4454858, z: 0.99998635}
+    - name: pasted__pCone3 2
+      parentName: pasted__pCone5
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone2 2
+      parentName: pasted__pCone5
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone6
+      parentName: group
+      position: {x: 3.106627, y: -3.118046, z: -3.7830749}
+      rotation: {x: 0, y: -0.5794456, z: -0, w: 0.8150109}
+      scale: {x: 0.2717083, y: 1.2687687, z: 1.0465754}
+    - name: pasted__pCone4 3
+      parentName: pasted__pCone6
+      position: {x: -0, y: 0.20316434, z: 0.20925045}
+      rotation: {x: 0.0045121955, y: -0, z: -0, w: 0.9999898}
+      scale: {x: 1, y: 1.4454858, z: 0.99998635}
+    - name: pasted__pCone3 3
+      parentName: pasted__pCone6
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone2 3
+      parentName: pasted__pCone6
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone7
+      parentName: group
+      position: {x: 3.106627, y: -3.118046, z: 2.131295}
+      rotation: {x: -1.589446e-17, y: -0.8248817, z: 1.589446e-17, w: 0.5653054}
+      scale: {x: 0.2717083, y: 1.2687687, z: 1.0465754}
+    - name: pasted__pCone4 4
+      parentName: pasted__pCone7
+      position: {x: -0, y: 0.20316434, z: 0.20925045}
+      rotation: {x: 0.0045121955, y: -0, z: -0, w: 0.9999898}
+      scale: {x: 1, y: 1.4454858, z: 0.99998635}
+    - name: pasted__pCone3 4
+      parentName: pasted__pCone7
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone2 4
+      parentName: pasted__pCone7
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone8
+      parentName: group
+      position: {x: 4.210414, y: -3.118046, z: 2.2889462}
+      rotation: {x: 3.9048917e-17, y: 0.9499919, z: -3.9048917e-17, w: -0.31227466}
+      scale: {x: 0.36785787, y: 1.7177486, z: 1.4169277}
+    - name: pasted__pCone4 5
+      parentName: pasted__pCone8
+      position: {x: -0, y: 0.20316434, z: 0.20925045}
+      rotation: {x: 0.0045121955, y: -0, z: -0, w: 0.9999898}
+      scale: {x: 1, y: 1.4454858, z: 0.99998635}
+    - name: pasted__pCone3 5
+      parentName: pasted__pCone8
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone2 5
+      parentName: pasted__pCone8
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone9
+      parentName: group
+      position: {x: -3.3443604, y: -3.118046, z: 2.2889462}
+      rotation: {x: 3.9048917e-17, y: 0.9499919, z: -3.9048917e-17, w: -0.31227466}
+      scale: {x: 0.5442696, y: 2.5415206, z: 2.0964365}
+    - name: pasted__pCone4 6
+      parentName: pasted__pCone9
+      position: {x: -0, y: 0.20316434, z: 0.20925045}
+      rotation: {x: 0.0045121955, y: -0, z: -0, w: 0.9999898}
+      scale: {x: 1, y: 1.4454858, z: 0.99998635}
+    - name: pasted__pCone3 6
+      parentName: pasted__pCone9
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone2 6
+      parentName: pasted__pCone9
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone10
+      parentName: group
+      position: {x: -3.3443604, y: -3.118046, z: 3.39998}
+      rotation: {x: -0.091768906, y: 0.9455491, z: 0.030165618, w: -0.31081423}
+      scale: {x: 0.68729115, y: 3.209374, z: 2.647332}
+    - name: pasted__pCone4 1
+      parentName: pasted__pCone10
+      position: {x: -0, y: 0.20316434, z: 0.20925045}
+      rotation: {x: 0.0045121955, y: -0, z: -0, w: 0.9999898}
+      scale: {x: 1, y: 1.4454858, z: 0.99998635}
+    - name: pasted__pCone3 1
+      parentName: pasted__pCone10
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: pasted__pCone2 1
+      parentName: pasted__pCone10
+      position: {x: -0, y: 0, z: 8.881784e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Arena1
+      parentName: swamp_model_2(Clone)
+      position: {x: -0, y: 0.45576346, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1.6616943, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 50
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,202 +1,584 @@
 fileFormatVersion: 2
 guid: 3083e8af068c940ee8b4ecfe58dec43a
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: Arena
-    100002: battlefield
-    100004: camera1
-    100006: //RootNode
-    100008: Enemy
-    100010: group
-    100012: pasted__group
-    100014: pasted__pasted__pCylinder1
-    100016: pasted__pCone1
-    100018: pasted__pCylinder1
-    100020: pasted__pCylinder2
-    100022: pasted__pCylinder3
-    100024: pasted__pSphere1
-    100026: pasted__pSphere2
-    100028: pasted__pSphere2 1
-    100030: pasted__pSphere2 2
-    100032: pasted__pSphere2 3
-    100034: pasted__pSphere2 4
-    100036: pasted__pSphere2 5
-    100038: pasted__pSphere2 6
-    100040: pasted__pSphere2 7
-    100042: pasted__pSphere3
-    100044: pasted__pSphere3 1
-    100046: pasted__pSphere3 2
-    100048: pasted__pSphere3 3
-    100050: pasted__pSphere4
-    100052: pasted__pSphere5
-    100054: pasted__pSphere6
-    100056: Player
-    100058: wall1
-    100060: wall3
-    100062: wall4
-    100064: wall5
-    400000: Arena
-    400002: battlefield
-    400004: camera1
-    400006: //RootNode
-    400008: Enemy
-    400010: group
-    400012: pasted__group
-    400014: pasted__pasted__pCylinder1
-    400016: pasted__pCone1
-    400018: pasted__pCylinder1
-    400020: pasted__pCylinder2
-    400022: pasted__pCylinder3
-    400024: pasted__pSphere1
-    400026: pasted__pSphere2
-    400028: pasted__pSphere2 1
-    400030: pasted__pSphere2 2
-    400032: pasted__pSphere2 3
-    400034: pasted__pSphere2 4
-    400036: pasted__pSphere2 5
-    400038: pasted__pSphere2 6
-    400040: pasted__pSphere2 7
-    400042: pasted__pSphere3
-    400044: pasted__pSphere3 1
-    400046: pasted__pSphere3 2
-    400048: pasted__pSphere3 3
-    400050: pasted__pSphere4
-    400052: pasted__pSphere5
-    400054: pasted__pSphere6
-    400056: Player
-    400058: wall1
-    400060: wall3
-    400062: wall4
-    400064: wall5
-    2000000: camera1
-    2100000: lambert1
-    2100002: lambert5
-    2100004: lambert6
-    2100006: lambert4
-    2100008: lambert2
-    2100010: lambert3
-    2300000: Arena
-    2300002: battlefield
-    2300004: Enemy
-    2300006: pasted__pasted__pCylinder1
-    2300008: pasted__pCone1
-    2300010: pasted__pCylinder1
-    2300012: pasted__pCylinder2
-    2300014: pasted__pCylinder3
-    2300016: pasted__pSphere1
-    2300018: pasted__pSphere2
-    2300020: pasted__pSphere2 1
-    2300022: pasted__pSphere2 2
-    2300024: pasted__pSphere2 3
-    2300026: pasted__pSphere2 4
-    2300028: pasted__pSphere2 5
-    2300030: pasted__pSphere2 6
-    2300032: pasted__pSphere2 7
-    2300034: pasted__pSphere3
-    2300036: pasted__pSphere3 1
-    2300038: pasted__pSphere3 2
-    2300040: pasted__pSphere3 3
-    2300042: pasted__pSphere4
-    2300044: pasted__pSphere5
-    2300046: pasted__pSphere6
-    2300048: Player
-    2300050: wall1
-    2300052: wall3
-    2300054: wall4
-    2300056: wall5
-    3300000: Arena
-    3300002: battlefield
-    3300004: Enemy
-    3300006: pasted__pasted__pCylinder1
-    3300008: pasted__pCone1
-    3300010: pasted__pCylinder1
-    3300012: pasted__pCylinder2
-    3300014: pasted__pCylinder3
-    3300016: pasted__pSphere1
-    3300018: pasted__pSphere2
-    3300020: pasted__pSphere2 1
-    3300022: pasted__pSphere2 2
-    3300024: pasted__pSphere2 3
-    3300026: pasted__pSphere2 4
-    3300028: pasted__pSphere2 5
-    3300030: pasted__pSphere2 6
-    3300032: pasted__pSphere2 7
-    3300034: pasted__pSphere3
-    3300036: pasted__pSphere3 1
-    3300038: pasted__pSphere3 2
-    3300040: pasted__pSphere3 3
-    3300042: pasted__pSphere4
-    3300044: pasted__pSphere5
-    3300046: pasted__pSphere6
-    3300048: Player
-    3300050: wall1
-    3300052: wall3
-    3300054: wall4
-    3300056: wall5
-    4300000: Arena
-    4300002: wall1
-    4300004: wall3
-    4300006: wall4
-    4300008: wall5
-    4300010: pasted__pCylinder1
-    4300012: pasted__pSphere1
-    4300014: pasted__pSphere2
-    4300016: pasted__pSphere3
-    4300018: pasted__pSphere2
-    4300020: pasted__pCone1
-    4300022: pasted__pSphere4
-    4300024: pasted__pSphere2
-    4300026: pasted__pSphere3
-    4300028: pasted__pSphere2
-    4300030: pasted__pCylinder2
-    4300032: pasted__pSphere5
-    4300034: pasted__pSphere2
-    4300036: pasted__pSphere3
-    4300038: pasted__pSphere2
-    4300040: pasted__pCylinder3
-    4300042: pasted__pSphere6
-    4300044: pasted__pSphere2
-    4300046: pasted__pSphere3
-    4300048: pasted__pSphere2
-    4300050: pasted__pasted__pCylinder1
-    4300052: battlefield
-    4300054: Player
-    4300056: Enemy
-    6400000: Arena
-    6400002: battlefield
-    6400004: Enemy
-    6400006: pasted__pasted__pCylinder1
-    6400008: pasted__pCone1
-    6400010: pasted__pCylinder1
-    6400012: pasted__pCylinder2
-    6400014: pasted__pCylinder3
-    6400016: pasted__pSphere1
-    6400018: pasted__pSphere2
-    6400020: pasted__pSphere2 1
-    6400022: pasted__pSphere2 2
-    6400024: pasted__pSphere2 3
-    6400026: pasted__pSphere2 4
-    6400028: pasted__pSphere2 5
-    6400030: pasted__pSphere2 6
-    6400032: pasted__pSphere2 7
-    6400034: pasted__pSphere3
-    6400036: pasted__pSphere3 1
-    6400038: pasted__pSphere3 2
-    6400040: pasted__pSphere3 3
-    6400042: pasted__pSphere4
-    6400044: pasted__pSphere5
-    6400046: pasted__pSphere6
-    6400048: Player
-    6400050: wall1
-    6400052: wall3
-    6400054: wall4
-    6400056: wall5
-    7400000: Take 001
-    9500000: //RootNode
+  serializedVersion: 19300
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Arena
+  - first:
+      1: 100002
+    second: battlefield
+  - first:
+      1: 100004
+    second: camera1
+  - first:
+      1: 100006
+    second: //RootNode
+  - first:
+      1: 100008
+    second: Enemy
+  - first:
+      1: 100010
+    second: group
+  - first:
+      1: 100012
+    second: pasted__group
+  - first:
+      1: 100014
+    second: pasted__pasted__pCylinder1
+  - first:
+      1: 100016
+    second: pasted__pCone1
+  - first:
+      1: 100018
+    second: pasted__pCylinder1
+  - first:
+      1: 100020
+    second: pasted__pCylinder2
+  - first:
+      1: 100022
+    second: pasted__pCylinder3
+  - first:
+      1: 100024
+    second: pasted__pSphere1
+  - first:
+      1: 100026
+    second: pasted__pSphere2
+  - first:
+      1: 100028
+    second: pasted__pSphere2 1
+  - first:
+      1: 100030
+    second: pasted__pSphere2 2
+  - first:
+      1: 100032
+    second: pasted__pSphere2 3
+  - first:
+      1: 100034
+    second: pasted__pSphere2 4
+  - first:
+      1: 100036
+    second: pasted__pSphere2 5
+  - first:
+      1: 100038
+    second: pasted__pSphere2 6
+  - first:
+      1: 100040
+    second: pasted__pSphere2 7
+  - first:
+      1: 100042
+    second: pasted__pSphere3
+  - first:
+      1: 100044
+    second: pasted__pSphere3 1
+  - first:
+      1: 100046
+    second: pasted__pSphere3 2
+  - first:
+      1: 100048
+    second: pasted__pSphere3 3
+  - first:
+      1: 100050
+    second: pasted__pSphere4
+  - first:
+      1: 100052
+    second: pasted__pSphere5
+  - first:
+      1: 100054
+    second: pasted__pSphere6
+  - first:
+      1: 100056
+    second: Player
+  - first:
+      1: 100058
+    second: wall1
+  - first:
+      1: 100060
+    second: wall3
+  - first:
+      1: 100062
+    second: wall4
+  - first:
+      1: 100064
+    second: wall5
+  - first:
+      4: 400000
+    second: Arena
+  - first:
+      4: 400002
+    second: battlefield
+  - first:
+      4: 400004
+    second: camera1
+  - first:
+      4: 400006
+    second: //RootNode
+  - first:
+      4: 400008
+    second: Enemy
+  - first:
+      4: 400010
+    second: group
+  - first:
+      4: 400012
+    second: pasted__group
+  - first:
+      4: 400014
+    second: pasted__pasted__pCylinder1
+  - first:
+      4: 400016
+    second: pasted__pCone1
+  - first:
+      4: 400018
+    second: pasted__pCylinder1
+  - first:
+      4: 400020
+    second: pasted__pCylinder2
+  - first:
+      4: 400022
+    second: pasted__pCylinder3
+  - first:
+      4: 400024
+    second: pasted__pSphere1
+  - first:
+      4: 400026
+    second: pasted__pSphere2
+  - first:
+      4: 400028
+    second: pasted__pSphere2 1
+  - first:
+      4: 400030
+    second: pasted__pSphere2 2
+  - first:
+      4: 400032
+    second: pasted__pSphere2 3
+  - first:
+      4: 400034
+    second: pasted__pSphere2 4
+  - first:
+      4: 400036
+    second: pasted__pSphere2 5
+  - first:
+      4: 400038
+    second: pasted__pSphere2 6
+  - first:
+      4: 400040
+    second: pasted__pSphere2 7
+  - first:
+      4: 400042
+    second: pasted__pSphere3
+  - first:
+      4: 400044
+    second: pasted__pSphere3 1
+  - first:
+      4: 400046
+    second: pasted__pSphere3 2
+  - first:
+      4: 400048
+    second: pasted__pSphere3 3
+  - first:
+      4: 400050
+    second: pasted__pSphere4
+  - first:
+      4: 400052
+    second: pasted__pSphere5
+  - first:
+      4: 400054
+    second: pasted__pSphere6
+  - first:
+      4: 400056
+    second: Player
+  - first:
+      4: 400058
+    second: wall1
+  - first:
+      4: 400060
+    second: wall3
+  - first:
+      4: 400062
+    second: wall4
+  - first:
+      4: 400064
+    second: wall5
+  - first:
+      20: 2000000
+    second: camera1
+  - first:
+      21: 2100000
+    second: lambert1
+  - first:
+      21: 2100002
+    second: lambert5
+  - first:
+      21: 2100004
+    second: lambert6
+  - first:
+      21: 2100006
+    second: lambert4
+  - first:
+      21: 2100008
+    second: lambert2
+  - first:
+      21: 2100010
+    second: lambert3
+  - first:
+      23: 2300000
+    second: Arena
+  - first:
+      23: 2300002
+    second: battlefield
+  - first:
+      23: 2300004
+    second: Enemy
+  - first:
+      23: 2300006
+    second: pasted__pasted__pCylinder1
+  - first:
+      23: 2300008
+    second: pasted__pCone1
+  - first:
+      23: 2300010
+    second: pasted__pCylinder1
+  - first:
+      23: 2300012
+    second: pasted__pCylinder2
+  - first:
+      23: 2300014
+    second: pasted__pCylinder3
+  - first:
+      23: 2300016
+    second: pasted__pSphere1
+  - first:
+      23: 2300018
+    second: pasted__pSphere2
+  - first:
+      23: 2300020
+    second: pasted__pSphere2 1
+  - first:
+      23: 2300022
+    second: pasted__pSphere2 2
+  - first:
+      23: 2300024
+    second: pasted__pSphere2 3
+  - first:
+      23: 2300026
+    second: pasted__pSphere2 4
+  - first:
+      23: 2300028
+    second: pasted__pSphere2 5
+  - first:
+      23: 2300030
+    second: pasted__pSphere2 6
+  - first:
+      23: 2300032
+    second: pasted__pSphere2 7
+  - first:
+      23: 2300034
+    second: pasted__pSphere3
+  - first:
+      23: 2300036
+    second: pasted__pSphere3 1
+  - first:
+      23: 2300038
+    second: pasted__pSphere3 2
+  - first:
+      23: 2300040
+    second: pasted__pSphere3 3
+  - first:
+      23: 2300042
+    second: pasted__pSphere4
+  - first:
+      23: 2300044
+    second: pasted__pSphere5
+  - first:
+      23: 2300046
+    second: pasted__pSphere6
+  - first:
+      23: 2300048
+    second: Player
+  - first:
+      23: 2300050
+    second: wall1
+  - first:
+      23: 2300052
+    second: wall3
+  - first:
+      23: 2300054
+    second: wall4
+  - first:
+      23: 2300056
+    second: wall5
+  - first:
+      33: 3300000
+    second: Arena
+  - first:
+      33: 3300002
+    second: battlefield
+  - first:
+      33: 3300004
+    second: Enemy
+  - first:
+      33: 3300006
+    second: pasted__pasted__pCylinder1
+  - first:
+      33: 3300008
+    second: pasted__pCone1
+  - first:
+      33: 3300010
+    second: pasted__pCylinder1
+  - first:
+      33: 3300012
+    second: pasted__pCylinder2
+  - first:
+      33: 3300014
+    second: pasted__pCylinder3
+  - first:
+      33: 3300016
+    second: pasted__pSphere1
+  - first:
+      33: 3300018
+    second: pasted__pSphere2
+  - first:
+      33: 3300020
+    second: pasted__pSphere2 1
+  - first:
+      33: 3300022
+    second: pasted__pSphere2 2
+  - first:
+      33: 3300024
+    second: pasted__pSphere2 3
+  - first:
+      33: 3300026
+    second: pasted__pSphere2 4
+  - first:
+      33: 3300028
+    second: pasted__pSphere2 5
+  - first:
+      33: 3300030
+    second: pasted__pSphere2 6
+  - first:
+      33: 3300032
+    second: pasted__pSphere2 7
+  - first:
+      33: 3300034
+    second: pasted__pSphere3
+  - first:
+      33: 3300036
+    second: pasted__pSphere3 1
+  - first:
+      33: 3300038
+    second: pasted__pSphere3 2
+  - first:
+      33: 3300040
+    second: pasted__pSphere3 3
+  - first:
+      33: 3300042
+    second: pasted__pSphere4
+  - first:
+      33: 3300044
+    second: pasted__pSphere5
+  - first:
+      33: 3300046
+    second: pasted__pSphere6
+  - first:
+      33: 3300048
+    second: Player
+  - first:
+      33: 3300050
+    second: wall1
+  - first:
+      33: 3300052
+    second: wall3
+  - first:
+      33: 3300054
+    second: wall4
+  - first:
+      33: 3300056
+    second: wall5
+  - first:
+      43: 4300000
+    second: Arena
+  - first:
+      43: 4300002
+    second: wall1
+  - first:
+      43: 4300004
+    second: wall3
+  - first:
+      43: 4300006
+    second: wall4
+  - first:
+      43: 4300008
+    second: wall5
+  - first:
+      43: 4300010
+    second: pasted__pCylinder1
+  - first:
+      43: 4300012
+    second: pasted__pSphere1
+  - first:
+      43: 4300014
+    second: pasted__pSphere2
+  - first:
+      43: 4300016
+    second: pasted__pSphere3
+  - first:
+      43: 4300018
+    second: pasted__pSphere2
+  - first:
+      43: 4300020
+    second: pasted__pCone1
+  - first:
+      43: 4300022
+    second: pasted__pSphere4
+  - first:
+      43: 4300024
+    second: pasted__pSphere2
+  - first:
+      43: 4300026
+    second: pasted__pSphere3
+  - first:
+      43: 4300028
+    second: pasted__pSphere2
+  - first:
+      43: 4300030
+    second: pasted__pCylinder2
+  - first:
+      43: 4300032
+    second: pasted__pSphere5
+  - first:
+      43: 4300034
+    second: pasted__pSphere2
+  - first:
+      43: 4300036
+    second: pasted__pSphere3
+  - first:
+      43: 4300038
+    second: pasted__pSphere2
+  - first:
+      43: 4300040
+    second: pasted__pCylinder3
+  - first:
+      43: 4300042
+    second: pasted__pSphere6
+  - first:
+      43: 4300044
+    second: pasted__pSphere2
+  - first:
+      43: 4300046
+    second: pasted__pSphere3
+  - first:
+      43: 4300048
+    second: pasted__pSphere2
+  - first:
+      43: 4300050
+    second: pasted__pasted__pCylinder1
+  - first:
+      43: 4300052
+    second: battlefield
+  - first:
+      43: 4300054
+    second: Player
+  - first:
+      43: 4300056
+    second: Enemy
+  - first:
+      64: 6400000
+    second: Arena
+  - first:
+      64: 6400002
+    second: battlefield
+  - first:
+      64: 6400004
+    second: Enemy
+  - first:
+      64: 6400006
+    second: pasted__pasted__pCylinder1
+  - first:
+      64: 6400008
+    second: pasted__pCone1
+  - first:
+      64: 6400010
+    second: pasted__pCylinder1
+  - first:
+      64: 6400012
+    second: pasted__pCylinder2
+  - first:
+      64: 6400014
+    second: pasted__pCylinder3
+  - first:
+      64: 6400016
+    second: pasted__pSphere1
+  - first:
+      64: 6400018
+    second: pasted__pSphere2
+  - first:
+      64: 6400020
+    second: pasted__pSphere2 1
+  - first:
+      64: 6400022
+    second: pasted__pSphere2 2
+  - first:
+      64: 6400024
+    second: pasted__pSphere2 3
+  - first:
+      64: 6400026
+    second: pasted__pSphere2 4
+  - first:
+      64: 6400028
+    second: pasted__pSphere2 5
+  - first:
+      64: 6400030
+    second: pasted__pSphere2 6
+  - first:
+      64: 6400032
+    second: pasted__pSphere2 7
+  - first:
+      64: 6400034
+    second: pasted__pSphere3
+  - first:
+      64: 6400036
+    second: pasted__pSphere3 1
+  - first:
+      64: 6400038
+    second: pasted__pSphere3 2
+  - first:
+      64: 6400040
+    second: pasted__pSphere3 3
+  - first:
+      64: 6400042
+    second: pasted__pSphere4
+  - first:
+      64: 6400044
+    second: pasted__pSphere5
+  - first:
+      64: 6400046
+    second: pasted__pSphere6
+  - first:
+      64: 6400048
+    second: Player
+  - first:
+      64: 6400050
+    second: wall1
+  - first:
+      64: 6400052
+    second: wall3
+  - first:
+      64: 6400054
+    second: wall4
+  - first:
+      64: 6400056
+    second: wall5
+  - first:
+      74: 7400000
+    second: Take 001
+  - first:
+      95: 9500000
+    second: //RootNode
   externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -225,6 +607,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Take 001
       takeName: Take 001
+      internalID: 0
       firstFrame: 1
       lastFrame: 319
       wrapMode: 0
@@ -257,6 +640,7 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 0
     importBlendShapes: 0
     importCameras: 0
@@ -264,18 +648,19 @@ ModelImporter:
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 0
     keepQuads: 0
-    weldVertices: 0
+    weldVertices: 1
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: 1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 0.01
-    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -284,10 +669,10 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -297,13 +682,16 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
