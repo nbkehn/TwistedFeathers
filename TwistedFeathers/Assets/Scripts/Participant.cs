@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Photon.Pun;
 public enum p_type {none, player, enemy, environment, weather};
 
-public abstract class Participant
+public abstract class Participant : ScriptableObject, IPunObservable
 {
     private p_type type;
     private int max_hp;
@@ -52,5 +52,32 @@ public abstract class Participant
     {
         this.skills.Add(new_skill);
     }
+
+    #region IPunObservable implementation
+
+    /**
+     * This is how we send and receive data
+     */
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // We own this player: send the others our data
+            stream.SendNext(this.Current_hp);
+            stream.SendNext(this.Attack);
+            stream.SendNext(this.Defense);
+            stream.SendNext(this.Dodge);
+        }
+        else
+        {
+            // Network player, receive data
+            this.Current_hp = (int)stream.ReceiveNext();
+            this.Attack = (float)stream.ReceiveNext();
+            this.Defense = (float)stream.ReceiveNext();
+            this.Dodge = (float)stream.ReceiveNext();
+        }
+    }
+
+    #endregion
 }
 
