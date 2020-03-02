@@ -38,8 +38,25 @@ public class CombatManager : MonoBehaviour
 
     public static string ForecastText { get => forecastText; set => forecastText = value; }
 
+    List<BattleParticipant> getBattleParticipants()
+    {
+        List<BattleParticipant> list = new List<BattleParticipant>();
+        foreach (Monster mon in battle_monsters)
+        {
+            list.Add(mon);
+        }
+
+        foreach (Player play in battle_players)
+        {
+            list.Add(play);
+        }
+
+        return list;
+
+    }
+
     //Method for taking a skill and queueing the effect into the PQ
-    void queueSkill(Skill skill, Participant user, Participant target)
+    void queueSkill(Skill skill, BattleParticipant user, BattleParticipant target)
     {
         foreach(BattleEffect effect in skill.Effect)
         {
@@ -59,6 +76,34 @@ public class CombatManager : MonoBehaviour
             pq.Remove(pq.Min);
         }
         Debug.Log("Effects Resolved!");
+    }
+
+    void resolveStatuses()
+    {
+        
+        foreach (BattleParticipant bat_part in getBattleParticipants())
+        {
+            foreach (KeyValuePair<string, BattleEffect> status in bat_part.Statuses.ToArray())
+            {
+                switch (status.Key)
+                {
+                    case "Poison":
+
+                        break;
+                    case "Burn":
+
+                        break;
+                    default:
+                        status.Value.Modifier -= 1;
+                        if (status.Value.Modifier <=0)
+                        {
+                            bat_part.Statuses.Remove(status);
+                        }
+                        break;
+                }
+            }
+        }
+        
     }
 
     // Start is called before the first frame update
@@ -87,7 +132,7 @@ public class CombatManager : MonoBehaviour
 
     public void chooseSkill(){
         Player protag = (Player) battle_players[protagonistIndex]; 
-        queueSkill( protag.Skills[Random.Range(0, protag.Skills.Count)], protag, null);
+        queueSkill( protag.Skills[Random.Range(0, protag.Skills.Count)], protag, battle_monsters[0]);
         waitingPlayer = false;
     }
 
@@ -150,15 +195,16 @@ public class CombatManager : MonoBehaviour
             {
                 //Effects are resolved and turn ends
                 resolveEffects();
+                //resolveStatuses();
                 //Testing HP damage
                 Debug.Log("Adam HP: " + battle_players[protagonistIndex].Current_hp);
                 Debug.Log("TURN END");
                 //New turn beings here
                 Debug.Log("TURN BEGIN");
                 currentTurn++;
-                foreach (Participant part in battle_monsters)
+                foreach (Monster part in battle_monsters)
                 {
-                    queueSkill((Skill) part.Skills[Random.Range(0, part.Skills.Count)], part, battle_monsters[protagonistIndex]);
+                    queueSkill((Skill) part.Skills[Random.Range(0, part.Skills.Count)], part, battle_players[protagonistIndex]);
                 }
 
                 //Forecast

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Participant
+public class Player : BattleParticipant
 {
-    public Player() : base(p_type.player, "")
+    public Player() : base()
     {
 
     }

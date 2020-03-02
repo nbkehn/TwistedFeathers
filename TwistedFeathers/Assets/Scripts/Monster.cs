@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Monster : Participant
+public class Monster : BattleParticipant
 {
-    public Monster () : base(p_type.enemy, "")
+    public Monster () : base()
     {
 
     }
