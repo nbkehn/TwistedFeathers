@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 public enum p_type {none, player, enemy, environment, weather};
 
-public abstract class Participant : ScriptableObject, IPunObservable
+public abstract class Participant : MonoBehaviourPunCallbacks, IPunObservable
 {
     private p_type type;
     private int max_hp;
@@ -79,5 +79,7 @@ public abstract class Participant : ScriptableObject, IPunObservable
     }
 
     #endregion
+
+    
 }
 
