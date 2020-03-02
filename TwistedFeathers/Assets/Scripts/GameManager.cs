@@ -39,14 +39,14 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("smarty A", new Skill("Test Skill", "Does nothing", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, "This is A smarty") }));
             Skill_db.Add("smarty B", new Skill("Test Skill", "Does nothing", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 5f, "This is B smarty") }));
 
-            Participant_db.Add("person A", new TwistedFeathersPlayer("Adam"));
-            Participant_db["person A"].AddSkill(Skill_db["smarty A"]);
-            Participant_db.Add("person B", new TwistedFeathersPlayer("Ben"));
-            Participant_db["person B"].AddSkill(Skill_db["smarty B"]);
+            Participant_db.Add("person A", new PlayerScriptableObject("Adam"));
+            Participant_db["person A"].AddSkill(Skill_db["smarty B"]);
+            Participant_db.Add("person B", new PlayerScriptableObject("Ben"));
+            Participant_db["person B"].AddSkill(Skill_db["smarty A"]);
 
-            Participant_db.Add("enemy A", new Monster("Azazel"));
+            Participant_db.Add("enemy A", new MonsterScriptableObject("Azazel"));
             Participant_db["enemy A"].AddSkill(Skill_db["dummy A"]);
-            Participant_db.Add("enemy B", new Monster("Beelzebub"));
+            Participant_db.Add("enemy B", new MonsterScriptableObject("Beelzebub"));
             Participant_db["enemy B"].AddSkill(Skill_db["dummy B"]);
             environments = new List<Environment>();
             
