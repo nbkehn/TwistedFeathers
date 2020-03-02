@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Monster : BattleParticipant
+namespace TwistedFeathers
 {
-    public Monster () : base()
+    public class Monster : BattleParticipant
     {
+        public Monster() : base()
+        {
 
-    }
+        }
 
-    public Monster(string name) : base(p_type.enemy, name)
-    {
+        public Monster(string name) : base(p_type.enemy, name)
+        {
 
+        }
     }
 }

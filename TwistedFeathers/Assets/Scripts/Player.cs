@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : BattleParticipant
+namespace TwistedFeathers
 {
-    public Player() : base()
+    public class Player : BattleParticipant
     {
+        public Player() : base()
+        {
+
+        }
+
+        public Player(string name) : base(p_type.player, name)
+        {
+
+        }
 
     }
-
-    public Player(string name) : base(p_type.player, name)
-    {
-
-    }
-
 }
 
 
