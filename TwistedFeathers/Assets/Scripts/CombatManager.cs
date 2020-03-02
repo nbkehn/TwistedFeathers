@@ -78,6 +78,13 @@ public class CombatManager : MonoBehaviour
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
         buildMap(rows, cols);
+        if(!GameObject.Find("GameManager").GetComponent<GameManager>().rotate){
+            Animator animator = GameObject.Find("DesertAnimation").GetComponent<Animator>();
+            animator.runtimeAnimatorController = Resources.Load("Animations/Empty") as RuntimeAnimatorController;
+            // animator = GameObject.Find("SwampAnimation").GetComponent<Animator>();
+            // animator.runtimeAnimatorController = Resources.Load("Animations/Empty") as RuntimeAnimatorController;
+        }
+
     }
     
     public void SelectSkill(string skill){
@@ -254,7 +261,6 @@ public class CombatManager : MonoBehaviour
                 //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
                 instance.transform.SetParent (mapHolder);
                 if(currentLocation.x == x && currentLocation.y ==y){
-                    Debug.Log($"setting CurrentLocation {x} {y}");
                     GameObject.Find("CurrentLocation").transform.SetParent (mapHolder);
                     GameObject.Find("CurrentLocation").GetComponent<RectTransform>().localPosition = new Vector3(x*60, y*60, 0f);
                     GameObject.Find("SelectionEntity").transform.SetParent (mapHolder);
@@ -267,12 +273,9 @@ public class CombatManager : MonoBehaviour
             }
         }
         mapHolder.SetParent(GameObject.Find("Panel").transform);
-
-        GameObject go = GameObject.Find("Panel");
-        float width = go.GetComponent<RectTransform>().rect.width;
-        float height = go.GetComponent<RectTransform>().rect.height;
-        GameObject child = mapHolder.GetChild(0).gameObject;
-        mapHolder.gameObject.GetComponent<RectTransform>().localPosition = new Vector3((-1*(width/2))+ (child.GetComponent<RectTransform>().rect.width/2)*2 + 100 , (-1*(height/2))+ (child.GetComponent<RectTransform>().rect.height/2)*5 + 100 , 0f);
+        mapHolder.GetComponent<RectTransform>().anchorMin = new Vector2(0f,0f);
+        mapHolder.GetComponent<RectTransform>().anchorMax = new Vector2(0f,0f);
+        mapHolder.GetComponent<RectTransform>().anchoredPosition = new Vector3(170, 230, 0f);
         GameObject.Find("Main Camera").GetComponent<SceneShift>().scene = CurrentEnvironment.envListIndex;
 
     }

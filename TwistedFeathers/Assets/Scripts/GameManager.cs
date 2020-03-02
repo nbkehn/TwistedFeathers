@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     public List<GameObject> environmentPrefabs;
     public static List<Environment> environments;
 
+    public bool rotate = true;
+
     // Awake is called before the first frame update and before Starts
     void Awake()
     {

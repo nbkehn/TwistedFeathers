@@ -24,10 +24,16 @@ public class ButtonHandler : MonoBehaviour
     
     public void SwitchEnvironment()
     {
-        MiniMap = GameObject.Find("Panel");
+        MiniMap.SetActive(true);
+        ScrollView.SetActive(false);
+        GameObject.Find("Forecast").transform.GetChild(0).gameObject.GetComponent<Text>().text = "";
+        GameObject.Find("Forecast").GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 30);
         smallMapTransform = MiniMap.GetComponent<RectTransform>();
-        MiniMap.GetComponent<RectTransform>().localPosition = new Vector3(0,0,0);
-        MiniMap.GetComponent<RectTransform>().localScale = new Vector3(0.75f,0.75f,0);
+        smallMapTransform.anchorMin = new Vector2(0.9f, 0.1f);
+        smallMapTransform.anchorMax = new Vector2(0.9f, 0.1f);
+        smallMapTransform.pivot = new Vector2(1f, 0f);
+        smallMapTransform.localScale = new Vector3(0.75f,0.75f,0);
+        smallMapTransform.anchoredPosition = new Vector3(0,0,0);
         GameObject.Find("CheckEnemy").SetActive(false);
         GameObject.Find("Forecast").SetActive(false);
         GameObject.Find("SwitchEnvironment").SetActive(false);
@@ -38,9 +44,12 @@ public class ButtonHandler : MonoBehaviour
 
     public void ConfirmMapSelect(){
         if(GameObject.Find("CombatManager").GetComponent<CombatManager>().validMove){
-            MiniMap = GameObject.Find("Panel");
-            MiniMap.GetComponent<RectTransform>().localPosition = new Vector3(533,-263,0);
-            MiniMap.GetComponent<RectTransform>().localScale = new Vector3(0.2067623f,0.1873575f,0.2265888f);
+            smallMapTransform = MiniMap.GetComponent<RectTransform>();
+            smallMapTransform.localScale = new Vector3(0.2067623f,0.1873575f,0.2265888f);
+            smallMapTransform.anchorMin = new Vector2(1f, 0f);
+            smallMapTransform.anchorMax = new Vector2(1f, 0f);
+            smallMapTransform.anchoredPosition = new Vector3(-40f,75f,0);
+            smallMapTransform.pivot = new Vector2(1f, 0f);
             GameObject.Find("Canvas").transform.Find("CheckEnemy").gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.Find("Forecast").gameObject.SetActive(true);
             GameObject.Find("Canvas").transform.Find("SwitchEnvironment").gameObject.SetActive(true);
@@ -55,9 +64,12 @@ public class ButtonHandler : MonoBehaviour
         }
     }
     public void CancelMapSelect(){
-        MiniMap = GameObject.Find("Panel");
-        MiniMap.GetComponent<RectTransform>().localPosition = new Vector3(533,-263,0);
-        MiniMap.GetComponent<RectTransform>().localScale = new Vector3(0.2067623f,0.1873575f,0.2265888f);
+        smallMapTransform = MiniMap.GetComponent<RectTransform>();
+        smallMapTransform.anchorMin = new Vector2(1f, 0f);
+        smallMapTransform.anchorMax = new Vector2(1f, 0f);
+        smallMapTransform.pivot = new Vector2(1f, 0f);
+        smallMapTransform.anchoredPosition = new Vector3(-40f,75,0);
+        smallMapTransform.localScale = new Vector3(0.2067623f,0.1873575f,0.2265888f);
         GameObject.Find("Canvas").transform.Find("CheckEnemy").gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.Find("SwitchEnvironment").gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.Find("Forecast").gameObject.SetActive(true);
@@ -100,5 +112,14 @@ public class ButtonHandler : MonoBehaviour
 
     public void SwitchScene(){
         SceneManager.LoadScene("EnvironmentSwitching");
+    }
+
+    public void toggleSettings(){
+        GameObject.Find("Settings").transform.GetChild(0).gameObject.SetActive(!GameObject.Find("Settings").transform.GetChild(0).gameObject.activeSelf);
+    }
+
+
+    public void toggleRotation(){
+        GameObject.Find("GameManager").GetComponent<GameManager>().rotate = !GameObject.Find("GameManager").GetComponent<GameManager>().rotate;
     }
 }
