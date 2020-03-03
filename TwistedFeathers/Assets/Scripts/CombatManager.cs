@@ -96,9 +96,8 @@ public class CombatManager : MonoBehaviour
 
                         break;
                     default:
-                        // This only works if we assume that modifier is holding the duration of the status effect
-                        status.Value.Modifier -= 1;
-                        if (status.Value.Modifier <=0)
+                        status.Value.Duration -= 1;
+                        if (status.Value.Duration <= 0)
                         {
                             bat_part.Statuses.Remove(status);
                         }

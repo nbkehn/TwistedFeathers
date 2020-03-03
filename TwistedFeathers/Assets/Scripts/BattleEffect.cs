@@ -18,7 +18,7 @@ namespace TwistedFeathers
         // These values are defined when stored in a skill
         private e_type type;
         private float modifier;
-
+        private float duration;
         private string specifier;
 
         // These values are only defined when it is selected in battle
@@ -30,6 +30,7 @@ namespace TwistedFeathers
         {
             this.type = e_type.nothing;
             this.modifier = 0f;
+            this.Duration = 0f;
             this.specifier = "This is an effect that works";
             this.target = null;
             this.user = null;
@@ -40,6 +41,7 @@ namespace TwistedFeathers
         {
             this.type = type;
             this.modifier = modifier;
+            this.Duration = 0f;
             this.specifier = specifier;
             this.target = null;
             this.user = null;
@@ -65,7 +67,7 @@ namespace TwistedFeathers
             set => user = value;
         }
 
-        public string Message
+        public string Specifier
         {
             get => specifier;
             set => specifier = value;
@@ -82,7 +84,7 @@ namespace TwistedFeathers
             get => modifier;
             set => modifier = value;
         }
-
+        public float Duration { get => duration; set => duration = value; }
 
         public void select(BattleParticipant user, List<BattleParticipant> target, int turnstamp)
         {
@@ -109,7 +111,7 @@ namespace TwistedFeathers
 
                 if (check_hit)
                 {
-                    Debug.Log(Message);
+                    Debug.Log(Specifier);
                     switch (Type)
                     {
                         case (e_type.damage):
