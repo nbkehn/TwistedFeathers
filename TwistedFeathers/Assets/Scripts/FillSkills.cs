@@ -24,7 +24,10 @@ public class FillSkills : MonoBehaviour
             newButton = Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             newButton.transform.SetParent(Content.transform, false);
             newButton.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            newButton.transform.position = new Vector3(Content.transform.position.x + 190, Content.transform.position.y - 40*numButtons - 20 , 0);
+            newButton.GetComponent<RectTransform>().anchorMin = new Vector2(0f, 1.0f);
+            newButton.GetComponent<RectTransform>().anchorMax = new Vector2(0f, 1.0f);
+            newButton.GetComponent<RectTransform>().pivot = new Vector2(0f, 1.0f);
+            newButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(20, -1 * (40*numButtons + 20) , 0);
             numButtons++;
             newButton.transform.GetChild(0).GetComponent<Text>().text = sk.Value.Name;
             newButton.GetComponent<Button>().onClick.AddListener(() => {
@@ -33,6 +36,21 @@ public class FillSkills : MonoBehaviour
             newButton.GetComponent<Button>().onClick.AddListener(() => {
                 Close();
             });
+        }
+    }
+
+        public void FillEnemyList(){
+        int numButtons = 0;
+        foreach(System.Collections.Generic.KeyValuePair<string, Skill> sk in skills){
+            newButton = Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            newButton.transform.SetParent(Content.transform, false);
+            newButton.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            newButton.GetComponent<RectTransform>().anchorMin = new Vector2(1f, 1.0f);
+            newButton.GetComponent<RectTransform>().anchorMax = new Vector2(1f, 1.0f);
+            newButton.GetComponent<RectTransform>().pivot = new Vector2(0f, 1.0f);
+            newButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(-290, -1 * (40*numButtons + 20) , 0);
+            numButtons++;
+            newButton.transform.GetChild(0).GetComponent<Text>().text = sk.Value.Name;
         }
     }
 

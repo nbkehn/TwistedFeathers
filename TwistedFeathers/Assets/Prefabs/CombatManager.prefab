@@ -48,3 +48,6 @@ MonoBehaviour:
   forecastContent: {fileID: 0}
   rows: 2
   cols: 5
+  selectingMap: 0
+  validMove: 1
+  allowedMoves: 1

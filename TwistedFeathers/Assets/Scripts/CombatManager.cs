@@ -39,6 +39,9 @@ public class CombatManager : MonoBehaviour
 
     public static string ForecastText { get => forecastText; set => forecastText = value; }
 
+
+    public UIManager UIManager;
+
     List<BattleParticipant> getBattleParticipants()
     {
         List<BattleParticipant> list = new List<BattleParticipant>();
@@ -55,6 +58,7 @@ public class CombatManager : MonoBehaviour
         return list;
 
     }
+
 
     //Method for taking a skill and queueing the effect into the PQ
     void queueSkill(Skill skill, BattleParticipant user, List<BattleParticipant> target)
@@ -111,7 +115,7 @@ public class CombatManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         ForecastText = "";
         currentTurn = 0;
         pq = new SortedSet<BattleEffect>(new EffectComparator());
@@ -125,6 +129,14 @@ public class CombatManager : MonoBehaviour
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
         buildMap(rows, cols);
+        if(!GameObject.Find("GameManager").GetComponent<GameManager>().rotate){
+            // Checks to see if the player has indicated that they want environmental rotation animations
+            Animator animator = GameObject.Find("DesertAnimation").GetComponent<Animator>();
+            animator.runtimeAnimatorController = Resources.Load("Animations/Empty") as RuntimeAnimatorController;
+            animator = GameObject.Find("SwampAnimation").GetComponent<Animator>();
+            animator.runtimeAnimatorController = Resources.Load("Animations/Empty") as RuntimeAnimatorController;
+        }
+
     }
     
     public void SelectSkill(string skill){
@@ -139,55 +151,74 @@ public class CombatManager : MonoBehaviour
     }
 
     public void StartSelecting(){
+        // We want to begin selecting our environment change, so update the flow
         selectingMap = true;
+        // deactivate buttons for the time being
         GameObject.Find("Board").transform.Find("SelectionEntity").gameObject.SetActive(true);
-        GameObject.Find("Panel").transform.Find("Confirmation").gameObject.SetActive(true);
-        GameObject.Find("Panel").transform.Find("Cancel").gameObject.SetActive(true);
+        UIManager.toggleMiniMapButtons(true);
+        // Enable the specific indicators for this portion
         GameObject.Find("SelectionEntity").transform.SetAsFirstSibling(); //move to the front (on parent)
         GameObject.Find("CurrentLocation").transform.SetAsLastSibling();
     }
 
     public void ConfirmSelecting(){
+        //If the movement is valid, this is called and go back to normal flow
         selectingMap = false;
+        // update the current location
         currentLocation = changingLocation;
+        // Update the currentEnvironment
         CurrentEnvironment = map[(int)currentLocation.x, (int)currentLocation.y];
+        //update the scene to represent the current environment
         GameObject.Find("Main Camera").GetComponent<SceneShift>().scene = CurrentEnvironment.envListIndex;
+        //update the currentLocation UI indicator
         GameObject.Find("CurrentLocation").GetComponent<RectTransform>().localPosition = new Vector3(currentLocation.x*60, currentLocation.y*60, 0f);
+        // a turn ahas been taken
         waitingPlayer = false;
+        // TODO at some point a method will be called here to play some animations
     }
 
-        public void CancelSelecting(){
+    public void CancelSelecting(){
+        // if cancelled, we just go back to normal
         selectingMap = false;
     }
     // Update is called once per frame
     void Update()
     {
+        // if the UI is in the change environment mode there is a different flow for the update method
         if(selectingMap){
+            // We are now selecting where we want to move to so we need to activate and show it over our current changing position
             GameObject.Find("SelectionEntity").GetComponent<RectTransform>().localPosition = new Vector3 (changingLocation.x*60, changingLocation.y*60, -10f);
+            //Checks to see if our move is out of scope
             int totalMove = Abs((int)(currentLocation.x - changingLocation.x)) + Abs((int)(currentLocation.y - changingLocation.y));
             if(totalMove <= allowedMoves) {
+                // if the move is allowed the selection entity notifies the player by turning yellow and valid move is set to true
                 GameObject.Find("SelectionEntity").GetComponent<Image>().color = Color.yellow;
-                    validMove = true;
+                validMove = true;
             } else {
+                //otherwise its grey and false
                 validMove = false;
                 GameObject.Find("SelectionEntity").GetComponent<Image>().color = Color.grey;
             }
-            if (Input.GetKeyDown("left")) {
+            if (Input.GetKeyDown("a")) {
+                //if left is pressed move the changing location over 1 unless at the edge
                 if(changingLocation.x != 0 && map[(int)changingLocation.x-1, (int)changingLocation.y] != GameManager.environments[GameManager.environments.Count-1]){
                     changingLocation.x = changingLocation.x-1;
                 }
             }
-            if (Input.GetKeyDown("up")) {
+            if (Input.GetKeyDown("w")) {
+                //if left up is pressed move the changing location over 1 unless at the edge
                 if(changingLocation.y != rows-1 && map[(int)changingLocation.x, (int)changingLocation.y+1] != GameManager.environments[GameManager.environments.Count-1]){
                     changingLocation.y = changingLocation.y+1;
                 }
             }
-            if (Input.GetKeyDown("right")) {
+            //if left right is pressed move the changing location over 1 unless at the edge
+            if (Input.GetKeyDown("d")) {
                 if(changingLocation.x != cols-1 && map[(int)changingLocation.x+1, (int)changingLocation.y] != GameManager.environments[GameManager.environments.Count-1]){
                     changingLocation.x = changingLocation.x+1;
                 }
             }
-            if (Input.GetKeyDown("down")) {
+            //if down is pressed move the changing location over 1 unless at the edge
+            if (Input.GetKeyDown("s")) {
                 if(changingLocation.y != 0 && map[(int)changingLocation.x, (int)changingLocation.y-1] != GameManager.environments[GameManager.environments.Count-1]){
                     changingLocation.y = changingLocation.y-1;
                 }
@@ -236,6 +267,7 @@ public class CombatManager : MonoBehaviour
         
     }
 
+    //Randomly generates the 2D array that represents the UI Map
     public void buildMap(int rows, int cols){
         map = new Environment[cols, rows];
         map[cols-1,rows-1] = GameManager.environments[0];
@@ -260,31 +292,13 @@ public class CombatManager : MonoBehaviour
                 }
             }
         }
-        InitialiseList(rows, cols);
-    }
-
-    private List <Vector3> gridPositions = new List <Vector3> ();
-
-    private Transform mapHolder; 
-
-    void InitialiseList (int rows, int cols)
-    {
-        //Clear our list gridPositions.
-        gridPositions.Clear ();
-
-        //Loop through x axis (columns).
-        for(int x = 1; x < cols; x++)
-        {
-            //Within each column, loop through y axis (rows).
-            for(int y = 1; y < rows; y++)
-            {
-                //At each index add a new Vector3 to our list with the x and y coordinates of that position.
-                gridPositions.Add (new Vector3(x, y, 0f));
-            }
-        }
         MapSetup(rows, cols);
     }
 
+    // the board object within the canvas that holds all of the environment
+    private Transform mapHolder; 
+
+    // Method that sets up the map and assigns map icons to the correct position in the UI
     void MapSetup (int rows, int cols)
     {
         //Instantiate Board and set boardHolder to its transform.
@@ -302,25 +316,19 @@ public class CombatManager : MonoBehaviour
                 //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
                 instance.transform.SetParent (mapHolder);
                 if(currentLocation.x == x && currentLocation.y ==y){
-                    Debug.Log($"setting CurrentLocation {x} {y}");
                     GameObject.Find("CurrentLocation").transform.SetParent (mapHolder);
                     GameObject.Find("CurrentLocation").GetComponent<RectTransform>().localPosition = new Vector3(x*60, y*60, 0f);
                     GameObject.Find("SelectionEntity").transform.SetParent (mapHolder);
                     GameObject.Find("SelectionEntity").GetComponent<RectTransform>().localPosition = new Vector3(x*60, y*60, 0f);
-                    GameObject.Find("SelectionEntity").SetActive(false);
-                    GameObject.Find("Confirmation").SetActive(false);
-                    GameObject.Find("Cancel").SetActive(false);
+                    GameObject.Find("SelectionEntity").SetActive(false); //move to the front (on parent)
                     CurrentEnvironment = map[x,y];
                 }
             }
         }
         mapHolder.SetParent(GameObject.Find("Panel").transform);
-
-        GameObject go = GameObject.Find("Panel");
-        float width = go.GetComponent<RectTransform>().rect.width;
-        float height = go.GetComponent<RectTransform>().rect.height;
-        GameObject child = mapHolder.GetChild(0).gameObject;
-        mapHolder.gameObject.GetComponent<RectTransform>().localPosition = new Vector3((-1*(width/2))+ (child.GetComponent<RectTransform>().rect.width/2)*2 + 100 , (-1*(height/2))+ (child.GetComponent<RectTransform>().rect.height/2)*5 + 100 , 0f);
+        mapHolder.GetComponent<RectTransform>().anchorMin = new Vector2(0f,0f);
+        mapHolder.GetComponent<RectTransform>().anchorMax = new Vector2(0f,0f);
+        mapHolder.GetComponent<RectTransform>().anchoredPosition = new Vector3(170, 230, 0f);
         GameObject.Find("Main Camera").GetComponent<SceneShift>().scene = CurrentEnvironment.envListIndex;
 
     }
