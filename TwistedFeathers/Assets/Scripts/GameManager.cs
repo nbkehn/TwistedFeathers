@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using TwistedFeathers;
+
 public class GameManager : MonoBehaviour
 {
     static Dictionary<string, Skill> skill_db;
