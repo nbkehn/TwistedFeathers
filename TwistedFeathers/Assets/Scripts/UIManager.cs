@@ -22,18 +22,35 @@ public class UIManager : MonoBehaviour
     public List<GameObject> enemyHealthBars;
 
     public GameObject forecastButton;
+    public GameObject transitionAnimation;
 
+    public bool starting = true;
+
+    public List<GameObject> animateableButtons;
 
     public void Start(){
-        GameObject newUIElement = Instantiate(playerHealthBar);
-        newUIElement = Instantiate(playerHealthBar, new Vector3(0f, 0f, 0f), Quaternion.identity);
-        newUIElement.transform.SetParent(GameObject.Find("Canvas").transform);
-        newUIElement.GetComponent<RectTransform>().anchoredPosition = new Vector3(25f, -25f, 0f);
-        playerHealthBars.Add(newUIElement);
-        newUIElement = Instantiate(enemyHealthBar, new Vector3(0f,0f,0f), Quaternion.identity);
-        newUIElement.transform.SetParent(GameObject.Find("Canvas").transform);
-        newUIElement.GetComponent<RectTransform>().anchoredPosition = new Vector3(-515f, -25f, 0f);
-        enemyHealthBars.Add(newUIElement);
+        foreach(GameObject button in animateableButtons){
+            button.GetComponent<Animator>().SetBool("enter", true);
+        }
+        transitionAnimation.SetActive(true);
+        transitionAnimation.GetComponent<Animator>().Play("TransitionAnimation",0,0.7f);
+        StartCoroutine(finishStart());
+
+    }
+
+    IEnumerator finishStart (){
+        yield return new WaitForSeconds(.3f);
+        starting = false;
+    }
+
+    public void Update(){
+        if(!starting){
+            if(transitionAnimation.activeSelf){
+                if(!(transitionAnimation.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("TransitionAnimation"))){
+                    transitionAnimation.SetActive(false);
+                }
+            }
+        }
     }
 
     // deactivates all buttons on page  
@@ -60,7 +77,18 @@ public class UIManager : MonoBehaviour
         if(popups[2].activeSelf){
             toggleForecast();
         }
+        foreach(GameObject button in animateableButtons){
+            button.GetComponent<Animator>().SetBool("enter", true);
+        }
         closePopUps();
+    }
+
+    public void playTransition() {
+        transitionAnimation.SetActive(true);
+        starting = true;
+        transitionAnimation.GetComponent<Animator>().Play("TransitionAnimation");
+        StartCoroutine(finishStart());
+
     }
 
     

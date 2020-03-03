@@ -32,12 +32,19 @@ public class ButtonHandler : MonoBehaviour
 
     public void ConfirmMapSelect(){
         if(GameObject.Find("CombatManager").GetComponent<CombatManager>().validMove){
-            UIManager.shrinkMiniMap();   
-            GameObject.Find("CombatManager").GetComponent<CombatManager>().ConfirmSelecting();         
+            UIManager.playTransition();
+            StartCoroutine(transitionOnTime());
         } else {
             Debug.Log("Invalid move");
         }
     }
+
+    IEnumerator transitionOnTime(){
+        yield return new WaitForSeconds(.7f);
+        UIManager.shrinkMiniMap();   
+        GameObject.Find("CombatManager").GetComponent<CombatManager>().ConfirmSelecting();  
+    }
+
     public void CancelMapSelect(){
         UIManager.shrinkMiniMap();
         GameObject.Find("CombatManager").GetComponent<CombatManager>().CancelSelecting(); 
@@ -59,7 +66,16 @@ public class ButtonHandler : MonoBehaviour
     }
 
     public void SwitchScene(){
+        GameObject animation = GameObject.Find("Canvas").transform.GetChild(3).gameObject;
+        animation.SetActive(true);
+        animation.gameObject.GetComponent<Animator>().Play("TransitionAnimation");
+        StartCoroutine(StartBattle());
+    }
+
+    IEnumerator StartBattle(){
+        yield return new WaitForSeconds(.7f);
         SceneManager.LoadScene("EnvironmentSwitching");
+
     }
 
     public void toggleSettings(){
