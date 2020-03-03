@@ -5,7 +5,6 @@ using UnityEngine;
 namespace TwistedFeathers
 {
 
-
     public enum e_type
     {
         nothing,
@@ -23,7 +22,7 @@ namespace TwistedFeathers
         private string specifier;
 
         // These values are only defined when it is selected in battle
-        private BattleParticipant target;
+        private List<BattleParticipant> target;
         private BattleParticipant user;
         private int turnstamp;
 
@@ -54,7 +53,7 @@ namespace TwistedFeathers
             set => type = value;
         }
 
-        public BattleParticipant Target
+        public List<BattleParticipant> Target
         {
             get => target;
             set => target = value;
@@ -85,7 +84,7 @@ namespace TwistedFeathers
         }
 
 
-        public void select(BattleParticipant user, BattleParticipant target, int turnstamp)
+        public void select(BattleParticipant user, List<BattleParticipant> target, int turnstamp)
         {
             User = user;
             Target = target;
@@ -94,30 +93,47 @@ namespace TwistedFeathers
 
         public void run()
         {
-            if (user.Type != target.Type)
+            bool check_hit = true;
+            foreach (BattleParticipant tar in target)
             {
-                float random_dodge = Random.Range(0.0f, 1.0f);
-                if (target.Dodge >= random_dodge)
+                //Check to see if effect actually hits target
+                if (user.Type != tar.Type)
                 {
-                    //Miss!
+                    float random_dodge = Random.Range(0.0f, 1.0f);
+                    if ((tar.Dodge-user.Accuracy) >= random_dodge)
+                    {
+                        //Miss!
+                        check_hit = false;
+                    }
+                }
+
+                if (check_hit)
+                {
+                    Debug.Log(Message);
+                    switch (Type)
+                    {
+                        case (e_type.damage):
+                            // Missing flat mod additions
+                            float damage = modifier + (modifier * user.Attack) - (modifier * tar.Defense);
+                            tar.Current_hp = (int)(tar.Current_hp - damage);
+                            break;
+                        case (e_type.status):
+                            tar.Statuses.Add(new KeyValuePair<string, BattleEffect>(specifier, this));
+                            break;
+                        default:
+                            //This is where special/unique effects need to be handled
+                            break;
+                    }
+                }
+                else
+                {
+                    //Miss case
+                    Debug.Log(user.Name + " Missed!");
                 }
             }
+            
 
-            Debug.Log(Message);
-            switch (Type)
-            {
-                case (e_type.damage):
-                    // Missing flat mod additions
-                    float damage = modifier + (modifier * user.Attack) - (modifier * target.Defense);
-                    target.Current_hp = (int) (target.Current_hp - damage);
-                    break;
-                case (e_type.status):
-                    target.Statuses.Add(new KeyValuePair<string, BattleEffect>(specifier, this));
-                    break;
-                default:
-                    //This is where special/unique effects need to be handled
-                    break;
-            }
+            
         }
 
     }

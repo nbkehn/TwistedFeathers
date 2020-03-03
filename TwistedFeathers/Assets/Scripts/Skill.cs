@@ -13,6 +13,7 @@ namespace TwistedFeathers
         int level_req;
         Skill pre_req;
         private List<BattleEffect> effect;
+        private List<BattleEffect> passive;
 
         public Skill()
         {
@@ -23,6 +24,7 @@ namespace TwistedFeathers
             this.level_req = 0;
             this.pre_req = null;
             this.effect = new List<BattleEffect>();
+            this.passive = new List<BattleEffect>();
         }
 
         public Skill(string name, string description, p_type user_type, List<BattleEffect> effect)
@@ -34,6 +36,7 @@ namespace TwistedFeathers
             this.level_req = 0;
             this.pre_req = null;
             this.effect = effect;
+            this.passive = new List<BattleEffect>();
         }
 
         public string Name
@@ -76,6 +79,19 @@ namespace TwistedFeathers
         {
             get => pre_req;
             set => pre_req = value;
+        }
+        public List<BattleEffect> Passive { get => passive; set => passive = value; }
+
+        // This method gets called when the skill is gained, it applies all the passives
+        void onGain()
+        {
+            
+        }
+
+        // This method gets called if/when the skill is lost, it removes all the passives
+        void onLose()
+        {
+
         }
     }
 

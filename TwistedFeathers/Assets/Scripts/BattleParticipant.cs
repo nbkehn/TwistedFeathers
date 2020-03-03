@@ -12,6 +12,7 @@ namespace TwistedFeathers
         private float defense;
         private float attack;
         private float dodge;
+        private float accuracy;
         private List<KeyValuePair<string, BattleEffect>> statuses;
 
         protected BattleParticipant() : base()
@@ -21,6 +22,7 @@ namespace TwistedFeathers
             this.defense = 0.0f;
             this.attack = 0.0f;
             this.dodge = 0.0f;
+            this.accuracy = 0.0f;
             this.statuses = new List<KeyValuePair<string, BattleEffect>>();
 
         }
@@ -32,6 +34,7 @@ namespace TwistedFeathers
             this.defense = 0.0f;
             this.attack = 0.0f;
             this.dodge = 0.0f;
+            this.accuracy = 0.0f;
             this.statuses = new List<KeyValuePair<string, BattleEffect>>();
         }
 
@@ -70,5 +73,6 @@ namespace TwistedFeathers
             get => statuses;
             set => statuses = value;
         }
+        public float Accuracy { get => accuracy; set => accuracy = value; }
     }
 }

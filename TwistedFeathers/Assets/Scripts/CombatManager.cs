@@ -11,7 +11,7 @@ public class CombatManager : MonoBehaviour
 {
     SortedSet<BattleEffect> pq;
     List<Player> battle_players;
-    List<Monster> battle_monsters;
+    private List<Monster> battle_monsters;
     Environment env;
     //Weather weath;
     int currentTurn;
@@ -57,7 +57,7 @@ public class CombatManager : MonoBehaviour
     }
 
     //Method for taking a skill and queueing the effect into the PQ
-    void queueSkill(Skill skill, BattleParticipant user, BattleParticipant target)
+    void queueSkill(Skill skill, BattleParticipant user, List<BattleParticipant> target)
     {
         foreach(BattleEffect effect in skill.Effect)
         {
@@ -86,6 +86,7 @@ public class CombatManager : MonoBehaviour
         {
             foreach (KeyValuePair<string, BattleEffect> status in bat_part.Statuses.ToArray())
             {
+                // This is where we code in what each status effect actually does
                 switch (status.Key)
                 {
                     case "Poison":
@@ -95,6 +96,7 @@ public class CombatManager : MonoBehaviour
 
                         break;
                     default:
+                        // This only works if we assume that modifier is holding the duration of the status effect
                         status.Value.Modifier -= 1;
                         if (status.Value.Modifier <=0)
                         {
@@ -133,7 +135,7 @@ public class CombatManager : MonoBehaviour
 
     public void chooseSkill(){
         Player protag = (Player) battle_players[protagonistIndex]; 
-        queueSkill( protag.Skills[Random.Range(0, protag.Skills.Count)], protag, battle_monsters[0]);
+        queueSkill( protag.Skills[Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>(){battle_monsters[0]});
         waitingPlayer = false;
     }
 
@@ -205,7 +207,7 @@ public class CombatManager : MonoBehaviour
                 currentTurn++;
                 foreach (Monster part in battle_monsters)
                 {
-                    queueSkill((Skill) part.Skills[Random.Range(0, part.Skills.Count)], part, battle_players[protagonistIndex]);
+                    queueSkill((Skill) part.Skills[Random.Range(0, part.Skills.Count)], part, new List<BattleParticipant>() { battle_players[protagonistIndex]});
                 }
 
                 //Forecast
