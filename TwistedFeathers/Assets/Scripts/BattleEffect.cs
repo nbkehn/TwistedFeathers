@@ -13,121 +13,105 @@ namespace TwistedFeathers
         buff
     };
 
-    public enum stat_type
-    {
-        nothing,
-        attack,
-        defense,
-        accuracy,
-        dodge
-    }
-
     public class BattleEffect
     {
-        // These values are defined when stored in a skill
-        private e_type type;
-        private float modifier;
-        private float duration;
-        private string specifier;
-
         // These values are only defined when it is selected in battle
-        private List<BattleParticipant> target;
-        private Participant user;
-        private int turnstamp;
+        public e_type Type { get; set; }
+        public List<BattleParticipant> Target { get; set; }
+        public Participant User { get; set; }
+        // These values are defined when stored in a skill
+        public string Specifier { get; set; }
+        public int Turnstamp { get; set; }
+        public float Modifier { get; set; }
+        public int Duration { get; set; }
         /*Whether or not the effect will show up in the forecast*/
-        private bool visible;
+        public bool Visible { get; set; }
+        public string SkillName { get; set; }
 
         public BattleEffect()
         {
-            this.type = e_type.nothing;
-            this.modifier = 0f;
-            this.Duration = 0f;
-            this.specifier = "This is an effect that works";
-            this.target = null;
-            this.user = null;
-            this.turnstamp = 0;
-            this.visible = true;
+            this.SkillName = ""; 
+            this.Type = e_type.nothing;
+            this.Modifier = 0f;
+            this.Duration = 0;
+            this.Specifier = "DEFAULT SPECIFIER";
+            this.Target = null;
+            this.User = null;
+            this.Turnstamp = 0;
+            this.Visible = true;
         }
 
         public BattleEffect(e_type type, float modifier, string specifier)
         {
-            this.type = type;
-            this.modifier = modifier;
-            this.Duration = 0f;
-            this.specifier = specifier;
-            this.target = null;
-            this.user = null;
-            this.turnstamp = 0;
-            this.visible = true;
+            this.SkillName = "";
+            this.Type = type;
+            this.Modifier = modifier;
+            this.Duration = 0;
+            this.Specifier = specifier;
+            this.Target = null;
+            this.User = null;
+            this.Turnstamp = 0;
+            this.Visible = true;
         }
 
-        public BattleEffect(e_type type, float modifier, float duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp, bool visible)
+        public BattleEffect(e_type type, float modifier, int duration, string specifier)
         {
-            this.type = type;
-            this.modifier = modifier;
-            this.duration = duration;
-            this.specifier = specifier;
-            this.target = target;
-            this.user = user;
-            this.turnstamp = turnstamp;
-            this.visible = visible;
+            this.SkillName = "";
+            this.Type = type;
+            this.Modifier = modifier;
+            this.Duration = duration;
+            this.Specifier = specifier;
+            this.Target = null;
+            this.User = null;
+            this.Turnstamp = 0;
+            this.Visible = true;
         }
 
-        public e_type Type
+        public BattleEffect(e_type type, float modifier, int duration, string specifier, int turnstamp)
         {
-            get => type;
-            set => type = value;
+            this.SkillName = "";
+            this.Type = type;
+            this.Modifier = modifier;
+            this.Duration = duration;
+            this.Specifier = specifier;
+            this.Target = null;
+            this.User = null;
+            this.Turnstamp = turnstamp;
+            this.Visible = true;
         }
 
-        public List<BattleParticipant> Target
+        public BattleEffect(string skill_name, e_type type, float modifier, int duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp, bool visible)
         {
-            get => target;
-            set => target = value;
+            this.SkillName = skill_name;
+            this.Type = type;
+            this.Modifier = modifier;
+            this.Duration = duration;
+            this.Specifier = specifier;
+            this.Target = target;
+            this.User = user;
+            this.Turnstamp = turnstamp;
+            this.Visible = visible;
         }
 
-        public Participant User
-        {
-            get => user;
-            set => user = value;
-        }
 
-        public string Specifier
-        {
-            get => specifier;
-            set => specifier = value;
-        }
-
-        public int Turnstamp
-        {
-            get => turnstamp;
-            set => turnstamp = value;
-        }
-
-        public float Modifier
-        {
-            get => modifier;
-            set => modifier = value;
-        }
-        public float Duration { get => duration; set => duration = value; }
-        public bool Visible { get => visible; set => visible = value; }
-
-        public void select(BattleParticipant user, List<BattleParticipant> target, int turnstamp)
+        public void select(Participant user, List<BattleParticipant> target, int turnstamp, string skill_name)
         {
             User = user;
             Target = target;
-            Turnstamp = turnstamp;
+            Turnstamp += turnstamp;
+            SkillName = skill_name;
         }
 
         public void run(SortedSet<BattleEffect> pq)
         {
             bool check_hit = true;
-            foreach (BattleParticipant tar in target)
+            foreach (BattleParticipant tar in Target)
             {
                 //Check to see if effect actually hits target
-                if (user.Type != tar.Type)
+                if (User.Type != tar.Type)
                 {
                     float random_dodge = Random.Range(0.0f, 1.0f);
-                    if ((tar.Dodge-user.Accuracy) >= random_dodge)
+                    if ((tar.Dodge-User.Accuracy) >= random_dodge)
                     {
                         //Miss!
                         check_hit = false;
@@ -141,34 +125,34 @@ namespace TwistedFeathers
                     {
                         case (e_type.damage):
                             // Missing flat mod additions
-                            float damage = modifier + (modifier * user.Attack) - (modifier * tar.Defense);
+                            float damage = Modifier + (Modifier * User.Attack) - (Modifier * tar.Defense);
                             tar.Current_hp = (int)(tar.Current_hp - damage);
                             break;
                         case (e_type.buff):
                             switch (Specifier)
                             {
                                 case ("attack"):
-                                    user.Attack += modifier;
+                                    User.Attack += Modifier;
                                     break;
                                 case ("defense"):
-                                    tar.Defense += modifier;
+                                    tar.Defense += Modifier;
                                     break;
                                 case ("accuracy"):
-                                    tar.Accuracy += modifier;
+                                    tar.Accuracy += Modifier;
                                     break;
                                 case ("dodge"):
-                                    tar.Dodge += modifier;
+                                    tar.Dodge += Modifier;
                                     break;
                                 default:
                                     break;
                             }
-                            if (duration > 0)
+                            if (Duration > 0)
                             {
-                                pq.Add(new BattleEffect(e_type.buff, -modifier, 0f, specifier, new List<BattleParticipant>() { tar }, tar, (int) (turnstamp + duration), false));
+                                pq.Add(new BattleEffect("", e_type.buff, -Modifier, 0, Specifier, new List<BattleParticipant>() { tar }, tar, Turnstamp + Duration, false));
                             }
                             break;
                         case (e_type.status):
-                            tar.Statuses.Add(new KeyValuePair<string, BattleEffect>(specifier, this));
+                            tar.Statuses.Add(new KeyValuePair<string, BattleEffect>(Specifier, this));
                             break;
                         default:
                             //This is where special/unique effects need to be handled
@@ -178,7 +162,7 @@ namespace TwistedFeathers
                 else
                 {
                     //Miss case
-                    Debug.Log(user.Name + " Missed!");
+                    Debug.Log(User.Name + " Missed!");
                 }
             }
             

@@ -48,10 +48,10 @@ public class GameManager : MonoBehaviour
             inCombat = false;
 
             //Dummy values for testing purposes
-            Skill_db.Add("dummy A", new Skill("Test Skill", "Does nothing", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, "This is A dummy") }));
-            Skill_db.Add("dummy B", new Skill("Test Skill", "Does nothing", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "This is B dummy") }));
-            Skill_db.Add("smarty A", new Skill("Test Skill", "Does nothing", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, "This is A smarty") }));
-            Skill_db.Add("smarty B", new Skill("Test Skill", "Does nothing", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "This is B smarty") }));
+            Skill_db.Add("dummy A", new Skill("Azazel's Skill", "Does nothing", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, 0, "This is A dummy") }));
+            Skill_db.Add("dummy B", new Skill("Beelzebub's Skill", "Deals 20 damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "This is B dummy") }));
+            Skill_db.Add("smarty A", new Skill("Adam's Skill", "Does nothing", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, "This is A smarty") }));
+            Skill_db.Add("smarty B", new Skill("Ben's Skill", "Deals 20 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "This is B smarty") }));
 
             Player_db.Add("person A", new Player("Adam"));
             Player_db["person A"].AddSkill(Skill_db["smarty A"]);
@@ -64,8 +64,20 @@ public class GameManager : MonoBehaviour
             Monster_db["enemy B"].AddSkill(Skill_db["dummy B"]);
             environments = new List<Environment>();
 
-            List<Skill> desert_skills = new List<Skill>() { };
-            List<Skill> swamp_skills = new List<Skill>() { };
+            List<Skill> desert_skills = new List<Skill>() 
+            { new Skill("Mirage", "Decreases Accuracy for all Battle Participants", p_type.environment, new List<BattleEffect>()
+                {
+                    new BattleEffect(e_type.buff, -0.25f, 2, "Accuracy")
+                })
+            };
+            List<Skill> swamp_skills = new List<Skill>() 
+            { new Skill("Swamp Thing", "A swamp creature deals damage to you for the next 3 turns", p_type.environment, new List<BattleEffect>()
+                {
+                    new BattleEffect(e_type.damage, 5, 0, "", 0), 
+                    new BattleEffect(e_type.damage, 5, 0, "", 1),
+                    new BattleEffect(e_type.damage, 5, 0, "", 2)
+                })
+            };
 
             environments.Add(new Environment("desert",environmentPrefabs[0], desert_skills));
             environments.Add(new Environment("swamp",environmentPrefabs[1], swamp_skills));

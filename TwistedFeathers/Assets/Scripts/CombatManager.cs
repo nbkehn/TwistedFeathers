@@ -61,12 +61,12 @@ public class CombatManager : MonoBehaviour
 
 
     //Method for taking a skill and queueing the effect into the PQ
-    void queueSkill(Skill skill, BattleParticipant user, List<BattleParticipant> target)
+    void queueSkill(Skill skill, Participant user, List<BattleParticipant> target)
     {
         foreach(BattleEffect effect in skill.Effect)
         {
             BattleEffect battle_effect = effect;
-            battle_effect.select(user, target, currentTurn);
+            battle_effect.select(user, target, currentTurn, skill.Name);
             pq.Add(battle_effect);
         }
     }
@@ -275,10 +275,10 @@ public class CombatManager : MonoBehaviour
                 //New turn beings here
                 Debug.Log("TURN BEGIN");
                 currentTurn++;
-                //queueSkill((Skill)CurrentEnvironment.Skills[Random.Range(0, CurrentEnvironment.Skills.Count)], null, getBattleParticipants());
+                queueSkill(CurrentEnvironment.Skills[Random.Range(0, CurrentEnvironment.Skills.Count)], CurrentEnvironment, getBattleParticipants());
                 foreach (Monster part in battle_monsters)
                 {
-                    queueSkill((Skill) part.Skills[Random.Range(0, part.Skills.Count)], part, new List<BattleParticipant>() { battle_players[protagonistIndex]});
+                    queueSkill(part.Skills[Random.Range(0, part.Skills.Count)], part, new List<BattleParticipant>() { battle_players[protagonistIndex]});
                 }
 
                 //Forecast
@@ -293,11 +293,11 @@ public class CombatManager : MonoBehaviour
                         newText.transform.SetParent(forecastContent.transform, false);
                         newText.GetComponent<RectTransform>().localScale = new Vector3(0.6968032f, 1.7355f, 1.7355f);
                         newText.transform.position = new Vector3(forecastContent.transform.position.x + 275, forecastContent.transform.position.y - 40 * numTexts - 30);
-                        newText.GetComponent<Text>().text = eff.User.Name;
+                        newText.GetComponent<Text>().text = eff.SkillName;
                         newText.GetComponent<Text>().color = Color.white;
 
                         numTexts++;
-                        Debug.Log(eff.User.Name);
+                        Debug.Log(eff.SkillName);
                     }
                 }
                 ForecastOpener.GetComponent<ButtonHandler>().newForecast();
