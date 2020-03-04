@@ -159,17 +159,26 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     public void SelectSkill(string skill){
         // we know that this will be the selected skill
         // if one player don't network the move
-        if (PhotonNetwork.PlayerList.Length == 1)
+        if (GameManager.singlePlayer)
         {
-            Debug.Log("Single Player choose skill");
-            chooseSkill(0);
-            chooseSkill(1);
+            singlePlayerChooseSkill();
+        }
+        else if(PhotonNetwork.PlayerList.Length == 1)
+        {
+            singlePlayerChooseSkill();
         }
         else
         {
             MakeTurn(skill);
         }
         Debug.Log(skill); // change this to actually do what the skill does
+    }
+
+    private void singlePlayerChooseSkill()
+    {
+        Debug.Log("Single Player choose skill");
+        chooseSkill(0);
+        chooseSkill(1);
     }
 
     public void chooseSkill(int index){
@@ -255,17 +264,25 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 }
             }
         } else {
-            if (PhotonNetwork.PlayerList.Length == 1 && !waitingPlayer)
+            if (GameManager.singlePlayer && !waitingPlayer)
             {
-                //Effects are resolved and turn ends
-                resolveEffects();
-                Debug.Log("TURN END");
-                //resolveStatuses();
-                TurnBegin();
+                singlePlayerTurn();
+            } else if(PhotonNetwork.PlayerList.Length == 1 && !waitingPlayer)
+            {
+                singlePlayerTurn();
             }
 
         }
         
+    }
+
+    private void singlePlayerTurn()
+    {
+        //Effects are resolved and turn ends
+        resolveEffects();
+        Debug.Log("TURN END");
+        //resolveStatuses();
+        TurnBegin();
     }
 
     private void TurnBegin()
@@ -410,7 +427,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-
         }
 
         if (PhotonNetwork.PlayerList.Length == 2)
@@ -418,7 +434,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             Debug.Log("Other player arrived");
             if (this.turnManager.Turn == 0)
             {
-                // when the room has two players, start the first turn (later on, joining players won't trigger a turn)
+                // when the room has a player, make sure that the player can play without needing to wait
                 this.StartTurn();
             }
         }
