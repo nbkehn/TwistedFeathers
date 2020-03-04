@@ -248,6 +248,7 @@ public class CombatManager : MonoBehaviour
                 //resolveStatuses();
                 //Testing HP damage
                 Debug.Log("Adam HP: " + battle_players[protagonistIndex].Current_hp);
+                Debug.Log("Adam Acc: " + battle_players[protagonistIndex].Accuracy);
                 //Check for BattleParticipant deaths
                 foreach (Player play in battle_players.ToArray())
                 {
