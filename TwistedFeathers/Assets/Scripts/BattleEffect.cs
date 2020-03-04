@@ -13,6 +13,15 @@ namespace TwistedFeathers
         buff
     };
 
+    public enum stat_type
+    {
+        nothing,
+        attack,
+        defense,
+        accuracy,
+        dodge
+    }
+
     public class BattleEffect
     {
         // These values are defined when stored in a skill
@@ -23,8 +32,10 @@ namespace TwistedFeathers
 
         // These values are only defined when it is selected in battle
         private List<BattleParticipant> target;
-        private BattleParticipant user;
+        private Participant user;
         private int turnstamp;
+        /*Whether or not the effect will show up in the forecast*/
+        private bool visible;
 
         public BattleEffect()
         {
@@ -35,6 +46,7 @@ namespace TwistedFeathers
             this.target = null;
             this.user = null;
             this.turnstamp = 0;
+            this.visible = true;
         }
 
         public BattleEffect(e_type type, float modifier, string specifier)
@@ -46,8 +58,20 @@ namespace TwistedFeathers
             this.target = null;
             this.user = null;
             this.turnstamp = 0;
+            this.visible = true;
         }
 
+        public BattleEffect(e_type type, float modifier, float duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp, bool visible)
+        {
+            this.type = type;
+            this.modifier = modifier;
+            this.duration = duration;
+            this.specifier = specifier;
+            this.target = target;
+            this.user = user;
+            this.turnstamp = turnstamp;
+            this.visible = visible;
+        }
 
         public e_type Type
         {
@@ -61,7 +85,7 @@ namespace TwistedFeathers
             set => target = value;
         }
 
-        public BattleParticipant User
+        public Participant User
         {
             get => user;
             set => user = value;
@@ -85,6 +109,7 @@ namespace TwistedFeathers
             set => modifier = value;
         }
         public float Duration { get => duration; set => duration = value; }
+        public bool Visible { get => visible; set => visible = value; }
 
         public void select(BattleParticipant user, List<BattleParticipant> target, int turnstamp)
         {
@@ -93,7 +118,7 @@ namespace TwistedFeathers
             Turnstamp = turnstamp;
         }
 
-        public void run()
+        public void run(SortedSet<BattleEffect> pq)
         {
             bool check_hit = true;
             foreach (BattleParticipant tar in target)
@@ -118,6 +143,29 @@ namespace TwistedFeathers
                             // Missing flat mod additions
                             float damage = modifier + (modifier * user.Attack) - (modifier * tar.Defense);
                             tar.Current_hp = (int)(tar.Current_hp - damage);
+                            break;
+                        case (e_type.buff):
+                            switch (Specifier)
+                            {
+                                case ("attack"):
+                                    user.Attack += modifier;
+                                    break;
+                                case ("defense"):
+                                    tar.Defense += modifier;
+                                    break;
+                                case ("accuracy"):
+                                    tar.Accuracy += modifier;
+                                    break;
+                                case ("dodge"):
+                                    tar.Dodge += modifier;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if (duration > 0)
+                            {
+                                pq.Add(new BattleEffect(e_type.buff, -modifier, 0f, specifier, new List<BattleParticipant>() { tar }, tar, (int) (turnstamp + duration), false));
+                            }
                             break;
                         case (e_type.status):
                             tar.Statuses.Add(new KeyValuePair<string, BattleEffect>(specifier, this));

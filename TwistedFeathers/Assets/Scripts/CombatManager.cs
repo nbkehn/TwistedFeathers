@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static System.Math;
 
@@ -12,7 +13,6 @@ public class CombatManager : MonoBehaviour
     SortedSet<BattleEffect> pq;
     List<Player> battle_players;
     private List<Monster> battle_monsters;
-    Environment env;
     //Weather weath;
     int currentTurn;
     bool waitingPlayer;
@@ -77,7 +77,7 @@ public class CombatManager : MonoBehaviour
         Debug.Log("Effects Resolving!");
         while (pq.Count != 0 && pq.Min.Turnstamp <= currentTurn)
         {
-            pq.Min.run();
+            pq.Min.run(pq);
             pq.Remove(pq.Min);
         }
         Debug.Log("Effects Resolved!");
@@ -112,19 +112,36 @@ public class CombatManager : MonoBehaviour
         
     }
 
+    void combatEnd(bool isVictory)
+    {
+        if (isVictory)
+        {
+            Debug.Log("Victory!!!");
+        }
+        else
+        {
+            Debug.Log("Defeat...");
+        }
+        SceneManager.LoadScene("TestScene");
+        //SceneManager.SetActiveScene(SceneManager.GetSceneByName("TestScene"));
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        //Set up UI
         UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         ForecastText = "";
+        //Set up priority queue
         currentTurn = 0;
         pq = new SortedSet<BattleEffect>(new EffectComparator());
+        //Set up BattleParticipants
         battle_players = new List<Player>();
         battle_monsters = new List<Monster>();
         protagonistIndex = 0; 
         //Dummy values for testing purposes
-        battle_players.Add((Player) GameManager.Participant_db["person A"]);
-        battle_monsters.Add((Monster) GameManager.Participant_db["enemy B"]);
+        battle_players.Add((Player) GameManager.Player_db["person A"]);
+        battle_monsters.Add((Monster) GameManager.Monster_db["enemy B"]);
 
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
@@ -231,10 +248,34 @@ public class CombatManager : MonoBehaviour
                 //resolveStatuses();
                 //Testing HP damage
                 Debug.Log("Adam HP: " + battle_players[protagonistIndex].Current_hp);
+                //Check for BattleParticipant deaths
+                foreach (Player play in battle_players.ToArray())
+                {
+                    if (play.Current_hp <= 0)
+                    {
+                        battle_players.Remove(play);
+                    }
+                }
+                if (battle_players.Count == 0)
+                {
+                    combatEnd(false);
+                }
+                foreach (Monster mon in battle_monsters.ToArray())
+                {
+                    if (mon.Current_hp <= 0)
+                    {
+                        battle_monsters.Remove(mon);
+                    }
+                }
+                if (battle_monsters.Count == 0)
+                {
+                    combatEnd(true);
+                }
                 Debug.Log("TURN END");
                 //New turn beings here
                 Debug.Log("TURN BEGIN");
                 currentTurn++;
+                //queueSkill((Skill)CurrentEnvironment.Skills[Random.Range(0, CurrentEnvironment.Skills.Count)], null, getBattleParticipants());
                 foreach (Monster part in battle_monsters)
                 {
                     queueSkill((Skill) part.Skills[Random.Range(0, part.Skills.Count)], part, new List<BattleParticipant>() { battle_players[protagonistIndex]});
@@ -246,16 +287,18 @@ public class CombatManager : MonoBehaviour
                 
                 foreach (BattleEffect eff in pq)
                 {
-                    newText = Instantiate(textPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-                    newText.transform.SetParent(forecastContent.transform, false);
-                    newText.GetComponent<RectTransform>().localScale = new Vector3(0.6968032f, 1.7355f, 1.7355f);
-                    newText.transform.position = new Vector3(forecastContent.transform.position.x + 275, forecastContent.transform.position.y - 40*numTexts -30);
-                    newText.GetComponent<Text>().text = eff.User.Name;
-                    newText.GetComponent<Text>().color = Color.white;
+                    if (eff.Visible)
+                    {
+                        newText = Instantiate(textPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                        newText.transform.SetParent(forecastContent.transform, false);
+                        newText.GetComponent<RectTransform>().localScale = new Vector3(0.6968032f, 1.7355f, 1.7355f);
+                        newText.transform.position = new Vector3(forecastContent.transform.position.x + 275, forecastContent.transform.position.y - 40 * numTexts - 30);
+                        newText.GetComponent<Text>().text = eff.User.Name;
+                        newText.GetComponent<Text>().color = Color.white;
 
-                    numTexts++;
-                    Debug.Log(eff.User.Name);
-
+                        numTexts++;
+                        Debug.Log(eff.User.Name);
+                    }
                 }
                 ForecastOpener.GetComponent<ButtonHandler>().newForecast();
                 Debug.Log("Forecast Over!");
