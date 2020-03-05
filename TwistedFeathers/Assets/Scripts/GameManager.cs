@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     public static Dictionary<string, Player> Player_db { get => player_db; set => player_db = value; }
 
 
+    static public bool singlePlayer = false;
+
     public GameObject combater;
     bool inCombat;
     private static GameManager _instance;
@@ -87,6 +89,11 @@ public class GameManager : MonoBehaviour
             environments.Add(new Environment("swamp",environmentPrefabs[1], swamp_skills));
             environments.Add(new Environment("empty",environmentPrefabs[2]));
         }
+    }
+
+    public void onSinglePlayer()
+    {
+        singlePlayer = true;
     }
 
     // Update is called once per frame
