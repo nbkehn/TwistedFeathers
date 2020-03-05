@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using static System.Math;
 
 using Completed;
@@ -50,10 +49,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     private PunTurnManager turnManager;
 
     [SerializeField]
-    private string localSelection;
+    private Skill localSelection;
 
     [SerializeField]
-    private string remoteSelection;
+    private Skill remoteSelection;
 
     List<BattleParticipant> getBattleParticipants()
     {
@@ -153,10 +152,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         battle_monsters = new List<Monster>();
         protagonistIndex = 0; 
         //Dummy values for testing purposes
-        battle_players.Add((TwistedFeathers.Player)GameManager.Participant_db["person A"]);
-        battle_players.Add((TwistedFeathers.Player)GameManager.Participant_db["person B"]);
-        battle_monsters.Add((Monster)GameManager.Participant_db["enemy B"]);
-        battle_monsters.Add((Monster)GameManager.Participant_db["enemy A"]);
+        battle_players.Add((TwistedFeathers.Player)GameManager.Player_db["person A"]);
+        battle_players.Add((TwistedFeathers.Player)GameManager.Player_db["person B"]);
+        battle_monsters.Add((Monster)GameManager.Monster_db["enemy B"]);
+        battle_monsters.Add((Monster)GameManager.Monster_db["enemy A"]);
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
         buildMap(rows, cols);
@@ -172,29 +171,28 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         this.turnManager.TurnManagerListener = this;
 
     }
-    public void SelectSkill(string skill){
+    public void SelectSkill(Skill skill){
         // we know that this will be the selected skill
         // if one player don't network the move
         if (GameManager.singlePlayer)
         {
-            singlePlayerChooseSkill();
+            singlePlayerChooseSkill(skill);
         }
         else if(PhotonNetwork.PlayerList.Length == 1)
         {
-            singlePlayerChooseSkill();
+            singlePlayerChooseSkill(skill);
         }
         else
         {
             MakeTurn(skill);
         }
-        Debug.Log(skill); // change this to actually do what the skill does
     }
 
-    private void singlePlayerChooseSkill()
+    private void singlePlayerChooseSkill(Skill skill)
     {
         Debug.Log("Single Player choose skill");
-        chooseSkill(0);
-        chooseSkill(1);
+        chooseSkill(0, skill);
+        chooseSkill(1, skill);
     }
     
     public List<Skill> GetActivePlayerSkills()
@@ -202,7 +200,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         return battle_players[protagonistIndex].Skills;
     }
 
-    public void chooseSkill(int index){
+    public void chooseSkill(int index, Skill skill){
         // set this method up to take a parameter index that specifies
         // whether the player or ally is choosing a skill
         // more work will have to be done with target selection
@@ -304,7 +302,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         //resolveStatuses();
         Debug.Log("TURN END");
         //Check for BattleParticipant deaths
-        foreach (Player play in battle_players.ToArray())
+        foreach (TwistedFeathers.Player play in battle_players.ToArray())
         {
             if (play.Current_hp <= 0)
             {
@@ -400,12 +398,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         {
             // once we get an actual functioning choose skill
             // we can pass in the selection
-            chooseSkill(0);
+            chooseSkill(0, localSelection);
         }
         if (this.remoteSelection != null)
         {
             //attacks.Enqueue(this.remoteSelection);
-            chooseSkill(1);
+            chooseSkill(1, remoteSelection);
         }
         Debug.Log("Calling execute skills");
 
@@ -429,11 +427,11 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         if (photonPlayer.IsLocal)
         {
-            this.localSelection = (string)move;
+            this.localSelection = (Skill)move;
         }
         else
         {
-            this.remoteSelection = (string)move;
+            this.remoteSelection = (Skill)move;
         }
     }
 
@@ -454,9 +452,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
     }
 
-    public void MakeTurn(string selection)
+    public void MakeTurn(Skill selection)
     {
-        this.turnManager.SendMove((string)selection, true);
+        this.turnManager.SendMove((Skill)selection, true);
     }
 
     public void OnEndTurn()
