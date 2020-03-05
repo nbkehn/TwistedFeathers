@@ -63,7 +63,7 @@ public class CombatManager : MonoBehaviour
     //Method for taking a skill and queueing the effect into the PQ
     void queueSkill(Skill skill, Participant user, List<BattleParticipant> target)
     {
-        foreach(BattleEffect effect in skill.Effect)
+        foreach(BattleEffect effect in skill.Effect.ToArray())
         {
             BattleEffect battle_effect = effect;
             battle_effect.select(user, target, currentTurn, skill.Name);
@@ -127,7 +127,7 @@ public class CombatManager : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         //Set up UI
         UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
@@ -155,15 +155,15 @@ public class CombatManager : MonoBehaviour
         }
 
     }
-    
-    public void SelectSkill(string skill){
-        Debug.Log(skill); // change this to actually do what the skill does
-        chooseSkill();
-    }
 
-    public void chooseSkill(){
-        Player protag = (Player) battle_players[protagonistIndex]; 
-        queueSkill( protag.Skills[Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>(){battle_monsters[0]});
+    public List<Skill> GetActivePlayerSkills()
+    {
+        return battle_players[protagonistIndex].Skills;
+    }
+    
+    public void SelectSkill(Skill skill){
+        Player protag = battle_players[protagonistIndex];
+        queueSkill(skill, protag, new List<BattleParticipant>() { battle_monsters[0] });
         waitingPlayer = false;
     }
 
@@ -240,7 +240,9 @@ public class CombatManager : MonoBehaviour
                     changingLocation.y = changingLocation.y-1;
                 }
             }
-        } else {
+        }
+        else
+        {
             if (!waitingPlayer)
             {
                 //Effects are resolved and turn ends
@@ -249,6 +251,8 @@ public class CombatManager : MonoBehaviour
                 //Testing HP damage
                 Debug.Log("Adam HP: " + battle_players[protagonistIndex].Current_hp);
                 Debug.Log("Adam Acc: " + battle_players[protagonistIndex].Accuracy);
+                Debug.Log("Beelzebub HP: " + battle_monsters[0].Current_hp);
+                Debug.Log("Beelzebub Acc: " + battle_monsters[0].Accuracy);
                 //Check for BattleParticipant deaths
                 foreach (Player play in battle_players.ToArray())
                 {
@@ -294,11 +298,16 @@ public class CombatManager : MonoBehaviour
                         newText.transform.SetParent(forecastContent.transform, false);
                         newText.GetComponent<RectTransform>().localScale = new Vector3(0.6968032f, 1.7355f, 1.7355f);
                         newText.transform.position = new Vector3(forecastContent.transform.position.x + 275, forecastContent.transform.position.y - 40 * numTexts - 30);
-                        newText.GetComponent<Text>().text = eff.SkillName;
-                        newText.GetComponent<Text>().color = Color.white;
+                        string prediction =  eff.Turnstamp - currentTurn + " turns away: " + eff.SkillName + " targeting: --";
+                        foreach (BattleParticipant tar in eff.Target)
+                        {
+                            prediction += tar.Name + "--";
+                        }
+                        newText.GetComponent<Text>().text = prediction;
+                        newText.GetComponent<Text>().color = Color.cyan;
 
                         numTexts++;
-                        Debug.Log(eff.SkillName);
+                        Debug.Log(prediction);
                     }
                 }
                 ForecastOpener.GetComponent<ButtonHandler>().newForecast();

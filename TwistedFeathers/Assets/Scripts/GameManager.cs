@@ -70,14 +70,15 @@ public class GameManager : MonoBehaviour
             { new Skill("Mirage", "Decreases Accuracy for all Battle Participants", p_type.environment, new List<BattleEffect>()
                 {
                     new BattleEffect(e_type.buff, -0.25f, 2, "accuracy")
-                })/*, environment_do_nothing*/
+                }),
+                environment_do_nothing
             };
             List<Skill> swamp_skills = new List<Skill>() 
-            { new Skill("Swamp Thing", "A swamp creature deals damage to you for the next 3 turns", p_type.environment, new List<BattleEffect>()
+            { new Skill("Leeches", "Leeches latch onto you and deal minor damage for 3 turns", p_type.environment, new List<BattleEffect>()
                 {
-                    new BattleEffect(e_type.damage, 5, 0, "", 0), 
-                    new BattleEffect(e_type.damage, 5, 0, "", 1),
-                    new BattleEffect(e_type.damage, 5, 0, "", 2)
+                    new BattleEffect(e_type.damage, 1, 0, "", 0), 
+                    new BattleEffect(e_type.damage, 1, 0, "", 1),
+                    new BattleEffect(e_type.damage, 1, 0, "", 2)
                 }),
                 environment_do_nothing
             };

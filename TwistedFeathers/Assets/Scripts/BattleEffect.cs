@@ -96,9 +96,10 @@ namespace TwistedFeathers
 
         public void select(Participant user, List<BattleParticipant> target, int turnstamp, string skill_name)
         {
+            Debug.Log("Turnstamp" + Turnstamp);
             User = user;
             Target = target;
-            Turnstamp += turnstamp;
+            Turnstamp = turnstamp;
             SkillName = skill_name;
         }
 
@@ -120,7 +121,6 @@ namespace TwistedFeathers
 
                 if (check_hit)
                 {
-                    Debug.Log(Specifier);
                     switch (Type)
                     {
                         case (e_type.damage):
