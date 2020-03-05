@@ -35,6 +35,9 @@ public class GameManager : MonoBehaviour
     public List<GameObject> environmentPrefabs;
     public static List<Environment> environments;
 
+    public GameObject playerPrefab;
+    public GameObject enemyPrefab;
+
     public bool rotate = true;
 
     // Awake is called before the first frame update and before Starts
@@ -96,6 +99,7 @@ public class GameManager : MonoBehaviour
             inCombat = false;
 
             //Dummy values for testing purposes
+
             Skill_db.Add("Azazel's Skill", new Skill("Azazel's Skill", "Does nothing", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, 0, "This is A dummy") }));
             Skill_db.Add("Beelzebub's Skill", new Skill("Beelzebub's Skill", "Deals 10 damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B dummy") }));
             Skill_db.Add("Adam's Skill", new Skill("Adam's Skill", "Does nothing", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, "This is A smarty") }));
@@ -103,13 +107,18 @@ public class GameManager : MonoBehaviour
 
             Player_db.Add("person A", new Player("Adam"));
             Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
+            Participant_db["person A"].myPrefab = playerPrefab;
             Player_db.Add("person B", new Player("Ben"));
             Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
+            Participant_db["person B"].myPrefab = playerPrefab;
 
             Monster_db.Add("enemy A", new Monster("Azazel"));
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
+            Participant_db["enemy A"].myPrefab = enemyPrefab;
             Monster_db.Add("enemy B", new Monster("Beelzebub"));
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
+            Participant_db["enemy B"].myPrefab = enemyPrefab;
+
             environments = new List<Environment>();
 
             Skill environment_do_nothing = new Skill("Nothing", "Environment does nothing", p_type.environment, new List<BattleEffect>());

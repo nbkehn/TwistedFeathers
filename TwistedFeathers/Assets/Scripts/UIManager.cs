@@ -14,10 +14,7 @@ public class UIManager : MonoBehaviour
     public GameObject playerHealthBar;
     public GameObject enemyHealthBar;
     public List<GameObject> buttons;
-    public GameObject miniMapButtons;
     public GameObject turnOptions;
-    public GameObject takeTurnButton;
-
     public List<GameObject> playerHealthBars;
     public List<GameObject> enemyHealthBars;
 
@@ -28,19 +25,36 @@ public class UIManager : MonoBehaviour
 
     public List<GameObject> animateableButtons;
 
+    public ButtonHandler buttonHandler;
+
     public void Start(){
         foreach(GameObject button in animateableButtons){
-            button.GetComponent<Animator>().SetBool("enter", true);
+            if(button.activeSelf){
+                button.GetComponent<Animator>().SetBool("enter", true);
+            }    
         }
         transitionAnimation.SetActive(true);
         transitionAnimation.GetComponent<Animator>().Play("TransitionAnimation",0,0.7f);
         StartCoroutine(finishStart());
 
+        turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(togglePlayerSkills);
+        turnOptions.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(buttonHandler.SwitchEnvironment);
     }
 
     IEnumerator finishStart (){
         yield return new WaitForSeconds(.3f);
         starting = false;
+        StartCoroutine(stopHealthBars());
+    }
+
+    IEnumerator stopHealthBars() {
+        yield return new WaitForSeconds(10f);
+        foreach(GameObject healthBar in playerHealthBars){
+            healthBar.GetComponent<Animator>().enabled = false;
+        }
+        foreach(GameObject healthBar in enemyHealthBars){
+            healthBar.GetComponent<Animator>().enabled = false;
+        }
     }
 
     public void Update(){
@@ -60,27 +74,47 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void toggleMiniMapButtons(bool show){
-        miniMapButtons.gameObject.SetActive(show);
-    }
-
     //shirnks the miniMap after confirming selection
     public void shrinkMiniMap(){
-        RectTransform mapTransform = miniMap.GetComponent<RectTransform>();
-        mapTransform.localScale = new Vector3(0.2067623f,0.1873575f,0.2265888f);
-        mapTransform.anchorMin = new Vector2(1f, 0f);
-        mapTransform.anchorMax = new Vector2(1f, 0f);
-        mapTransform.anchoredPosition = new Vector3(-42f,119f,0);
-        mapTransform.pivot = new Vector2(1f, 0f);
-        toggleButtons(true);
-        toggleMiniMapButtons(false);
+        miniMap.GetComponent<Animator>().Play("ShrinkPanel");
+        forecastButton.SetActive(true);
+        // RectTransform mapTransform = miniMap.GetComponent<RectTransform>();
+        // mapTransform.localScale = new Vector3(0.2067623f,0.1873575f,0.2265888f);
+        // mapTransform.anchorMin = new Vector2(1f, 0f);
+        // mapTransform.anchorMax = new Vector2(1f, 0f);
+        // mapTransform.anchoredPosition = new Vector3(-42f,119f,0);
+        // mapTransform.pivot = new Vector2(1f, 0f);
+        toggleTurnOptions(false);
         if(popups[2].activeSelf){
             toggleForecast();
         }
         foreach(GameObject button in animateableButtons){
-            button.GetComponent<Animator>().SetBool("enter", true);
+            if(button.activeSelf){
+                button.GetComponent<Animator>().SetBool("enter", true);
+            }
         }
         closePopUps();
+    }
+
+    public void toggleTurnOptions(bool bigMap){
+        if(bigMap){
+            turnOptions.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Cancel";
+            turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(buttonHandler.CancelMapSelect);
+            turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.RemoveListener (togglePlayerSkills);
+
+            turnOptions.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Confirm";
+            turnOptions.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(buttonHandler.ConfirmMapSelect);
+            turnOptions.transform.GetChild(1).GetComponent<Button>().onClick.RemoveListener (buttonHandler.SwitchEnvironment);
+        } else {
+            turnOptions.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Select Skill";
+            turnOptions.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Change Environment";
+
+            turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.RemoveListener(buttonHandler.CancelMapSelect);
+            turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.AddListener (togglePlayerSkills);
+
+            turnOptions.transform.GetChild(1).GetComponent<Button>().onClick.RemoveListener(buttonHandler.ConfirmMapSelect);
+            turnOptions.transform.GetChild(1).GetComponent<Button>().onClick.AddListener (buttonHandler.SwitchEnvironment);
+        }
     }
 
     public void playTransition() {
@@ -93,16 +127,17 @@ public class UIManager : MonoBehaviour
 
     
     public void growMiniMap(){
-        miniMapButtons.SetActive(true);
         miniMap.SetActive(true);
-        RectTransform mapTransform = miniMap.GetComponent<RectTransform>();
-        mapTransform.anchorMin = new Vector2(0.9f, 0.1f);
-        mapTransform.anchorMax = new Vector2(0.9f, 0.1f);
-        mapTransform.pivot = new Vector2(1f, 0f);
-        mapTransform.localScale = new Vector3(0.75f,0.75f,0);
-        mapTransform.anchoredPosition = new Vector3(0,0,0);
-        toggleButtons(false);
-        toggleMiniMapButtons(true);
+        forecastButton.SetActive(false);
+
+        miniMap.GetComponent<Animator>().Play("GrowPanel");
+        // RectTransform mapTransform = miniMap.GetComponent<RectTransform>();
+        // mapTransform.anchorMin = new Vector2(0.9f, 0.1f);
+        // mapTransform.anchorMax = new Vector2(0.9f, 0.1f);
+        // mapTransform.pivot = new Vector2(1f, 0f);
+        // mapTransform.localScale = new Vector3(0.75f,0.75f,0);
+        // mapTransform.anchoredPosition = new Vector3(0,0,0);
+        toggleTurnOptions(true);
     }
 
     public void togglePlayerSkills(){
@@ -111,12 +146,6 @@ public class UIManager : MonoBehaviour
 
     public void toggleEnemySkills(){
         popups[1].SetActive(!popups[1].gameObject.activeSelf);
-    }
-
-    public void toggleTakeTurn(){
-        turnOptions.SetActive(!turnOptions.gameObject.activeSelf);
-        takeTurnButton.SetActive(!takeTurnButton.gameObject.activeSelf);
-
     }
 
     public void toggleForecast(){

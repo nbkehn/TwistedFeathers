@@ -32,6 +32,7 @@ public class ButtonHandler : MonoBehaviour
 
     public void ConfirmMapSelect(){
         if(GameObject.Find("CombatManager").GetComponent<CombatManager>().validMove){
+            UIManager.shrinkMiniMap();  
             UIManager.playTransition();
             StartCoroutine(transitionOnTime());
         } else {
@@ -41,8 +42,7 @@ public class ButtonHandler : MonoBehaviour
 
     IEnumerator transitionOnTime(){
         yield return new WaitForSeconds(.7f);
-        UIManager.shrinkMiniMap();   
-        GameObject.Find("CombatManager").GetComponent<CombatManager>().ConfirmSelecting();  
+        GameObject.Find("CombatManager").GetComponent<CombatManager>().ConfirmSelecting();
     }
 
     public void CancelMapSelect(){
@@ -85,9 +85,5 @@ public class ButtonHandler : MonoBehaviour
 
     public void toggleRotation(){
         GameObject.Find("GameManager").GetComponent<GameManager>().rotate = !GameObject.Find("GameManager").GetComponent<GameManager>().rotate;
-    }
-
-    public void takeTurn(){
-        UIManager.toggleTakeTurn();
     }
 }

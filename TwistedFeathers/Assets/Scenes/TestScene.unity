@@ -1052,6 +1052,10 @@ MonoBehaviour:
   - {fileID: 2749972663444745878, guid: d24f07b35600840b28d11d1d454d4eb1, type: 3}
   - {fileID: 6878414667720973492, guid: a7e9ad935fbd3448fbc54b8fb7e49997, type: 3}
   - {fileID: 6558175892258665387, guid: b984a0d5aab904adbb3f464841aafdab, type: 3}
+  playerPrefab: {fileID: 6231222064021348454, guid: 5d51d6a1d011c43f0b307f73153e7354,
+    type: 3}
+  enemyPrefab: {fileID: 8361425163009145584, guid: 27bc3edfacd1d4c47835d5b9a562ecf3,
+    type: 3}
   rotate: 0
 --- !u!4 &805186689
 Transform:

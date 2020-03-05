@@ -43,8 +43,16 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
     public static string ForecastText { get => forecastText; set => forecastText = value; }
 
+    public List<GameObject> playerSpawnPoints;
+    public List<GameObject> enemySpawnPoints;
 
     public UIManager UIManager;
+    
+    public GameObject attackIndicator;
+    private Skill chosenSkill;
+
+    public bool selectingEnemy = false;
+    private int chosenEnemy = 0;
 
     private PunTurnManager turnManager;
 
@@ -69,6 +77,32 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         return list;
 
+    }
+
+    public void renderPlayers(){
+        int playerCount = 0;
+        int enemyCount = 0;
+        foreach(Participant player in battle_players){
+            GameObject newPlayer = Instantiate(player.myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            newPlayer.transform.SetParent(GameObject.Find("Participants").transform);
+            newPlayer.transform.position = playerSpawnPoints[playerCount].transform.position;
+            player.me = newPlayer;
+            playerCount++;
+        }
+
+        foreach(Participant monster in battle_monsters){
+            GameObject newEnemy = Instantiate(monster.myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            newEnemy.transform.SetParent(GameObject.Find("Participants").transform);
+            newEnemy.transform.position = enemySpawnPoints[enemyCount].transform.position;
+            monster.me = newEnemy;
+            enemyCount++;
+        }
+    }
+
+    public void moveIndicator(int enemy){
+        attackIndicator.transform.localPosition = enemySpawnPoints[enemy].transform.localPosition;
+        attackIndicator.transform.localPosition = attackIndicator.transform.localPosition + new Vector3(0, 8, 0);
+        chosenEnemy = enemy;
     }
 
 
@@ -152,10 +186,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         battle_monsters = new List<Monster>();
         protagonistIndex = 0; 
         //Dummy values for testing purposes
+
         battle_players.Add((TwistedFeathers.Player)GameManager.Player_db["person A"]);
         battle_players.Add((TwistedFeathers.Player)GameManager.Player_db["person B"]);
         battle_monsters.Add((Monster)GameManager.Monster_db["enemy B"]);
         battle_monsters.Add((Monster)GameManager.Monster_db["enemy A"]);
+
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
         buildMap(rows, cols);
@@ -166,6 +202,16 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             animator = GameObject.Find("SwampAnimation").GetComponent<Animator>();
             animator.runtimeAnimatorController = Resources.Load("Animations/Empty") as RuntimeAnimatorController;
         }
+        for(int i = 0; i < battle_monsters.Count; i++){
+            UIManager.enemyHealthBars[i].SetActive(true);
+            UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
+        }
+        for(int i = 0; i < battle_players.Count; i++){
+            UIManager.playerHealthBars[i].SetActive(true);
+            UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
+        }
+
+        renderPlayers();
 
         this.turnManager = this.gameObject.AddComponent<PunTurnManager>();
         this.turnManager.TurnManagerListener = this;
@@ -176,11 +222,27 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // if one player don't network the move
         if (GameManager.singlePlayer)
         {
-            singlePlayerChooseSkill(skill);
+           if(battle_monsters.Count > 1){
+            selectingEnemy = true;
+            attackIndicator.SetActive(true);
+            moveIndicator(0);
+            chosenSkill = skill;
+            }
+            else  {
+              singlePlayerChooseSkill(skill);
+            }
         }
         else if(PhotonNetwork.PlayerList.Length == 1)
         {
-            singlePlayerChooseSkill(skill);
+            if(battle_monsters.Count > 1){
+            selectingEnemy = true;
+            attackIndicator.SetActive(true);
+            moveIndicator(0);
+            chosenSkill = skill;
+            }
+            else  {
+              singlePlayerChooseSkill(skill);
+            }
         }
         else
         {
@@ -195,6 +257,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         chooseSkill(1, skill);
     }
     
+
     public List<Skill> GetActivePlayerSkills()
     {
         return battle_players[protagonistIndex].Skills;
@@ -204,6 +267,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // set this method up to take a parameter index that specifies
         // whether the player or ally is choosing a skill
         // more work will have to be done with target selection
+        attackIndicator.SetActive(false);
+        selectingEnemy = false;
         TwistedFeathers.Player protag = (TwistedFeathers.Player) battle_players[index]; 
         queueSkill(skill, protag, new List<BattleParticipant>() { battle_monsters[0] });
         waitingPlayer = false;
@@ -214,13 +279,13 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         selectingMap = true;
         // deactivate buttons for the time being
         GameObject.Find("Board").transform.Find("SelectionEntity").gameObject.SetActive(true);
-        UIManager.toggleMiniMapButtons(true);
         // Enable the specific indicators for this portion
         GameObject.Find("SelectionEntity").transform.SetAsFirstSibling(); //move to the front (on parent)
         GameObject.Find("CurrentLocation").transform.SetAsLastSibling();
     }
 
     public void ConfirmSelecting(){
+        Debug.Log("CONFIRMED");
         //If the movement is valid, this is called and go back to normal flow
         selectingMap = false;
         // update the current location
@@ -243,8 +308,21 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     // Update is called once per frame
     void Update()
     {
+        if(selectingEnemy){
+            if (Input.GetKeyDown("w")) {
+                //if up is pressed move the changing location over 1 unless at the edge
+                moveIndicator(0);
+            }
+            //if down is pressed move the changing location over 1 unless at the edge
+            if (Input.GetKeyDown("s")) {
+                moveIndicator(1);
+            }
+            if(Input.GetKeyDown("return")){
+                singlePlayerChooseSkill(chosenSkill);
+            }
+        }
         // if the UI is in the change environment mode there is a different flow for the update method
-        if(selectingMap){
+        else if(selectingMap){
             // We are now selecting where we want to move to so we need to activate and show it over our current changing position
             GameObject.Find("SelectionEntity").GetComponent<RectTransform>().localPosition = new Vector3 (changingLocation.x*60, changingLocation.y*60, -10f);
             //Checks to see if our move is out of scope
@@ -290,9 +368,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             {
                 singlePlayerTurn();
             }
-
         }
         
+    }
+
+    public float getHealthBarLengh(float currentHealth, float maxHealth){
+        return (currentHealth/maxHealth)*100;
     }
 
     private void singlePlayerTurn()
@@ -300,6 +381,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         //Effects are resolved and turn ends
         resolveEffects();
         //resolveStatuses();
+        for(int i = 0; i < battle_players.Count; i++){
+            RectTransform healthBar = UIManager.playerHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
+            healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_players[i].Current_hp, 50f), 100);
+        }
+        for(int i = 0; i < battle_players.Count; i++){
+            RectTransform healthBar = UIManager.enemyHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
+            healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_monsters[i].Current_hp, 50f), 100);
+        }
         Debug.Log("TURN END");
         //Check for BattleParticipant deaths
         foreach (TwistedFeathers.Player play in battle_players.ToArray())
@@ -513,6 +602,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         }
     }
+
 
     /// <summary>
     /// Called when the local player left the room. We need to load the launcher scene.

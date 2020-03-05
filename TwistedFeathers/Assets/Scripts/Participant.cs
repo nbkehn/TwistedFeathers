@@ -20,6 +20,8 @@ namespace TwistedFeathers
         private float attack;
         private float accuracy;
         private List<Skill> skills;
+        public GameObject myPrefab;
+        public GameObject me;
 
         protected Participant()
         {
