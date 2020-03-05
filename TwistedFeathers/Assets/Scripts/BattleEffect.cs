@@ -28,6 +28,20 @@ namespace TwistedFeathers
         public bool Visible { get; set; }
         public string SkillName { get; set; }
 
+        // Copy Constructor
+        public BattleEffect(BattleEffect effect)
+        {
+            this.Type = effect.Type;
+            this.Target = effect.Target;
+            this.User = effect.User;
+            this.Specifier = effect.Specifier;
+            this.Turnstamp = effect.Turnstamp;
+            this.Modifier = effect.Modifier;
+            this.Duration = effect.Duration;
+            this.Visible = effect.Visible;
+            this.SkillName = effect.SkillName;
+        }
+
         public BattleEffect()
         {
             this.SkillName = ""; 
@@ -96,7 +110,6 @@ namespace TwistedFeathers
 
         public void select(Participant user, List<BattleParticipant> target, int turnstamp, string skill_name)
         {
-            Debug.Log("Turnstamp" + Turnstamp);
             User = user;
             Target = target;
             Turnstamp = turnstamp;

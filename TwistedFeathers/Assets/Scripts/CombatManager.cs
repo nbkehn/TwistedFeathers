@@ -65,7 +65,7 @@ public class CombatManager : MonoBehaviour
     {
         foreach(BattleEffect effect in skill.Effect.ToArray())
         {
-            BattleEffect battle_effect = effect;
+            BattleEffect battle_effect = new BattleEffect(effect);
             battle_effect.select(user, target, currentTurn, skill.Name);
             pq.Add(battle_effect);
         }
