@@ -29,5 +29,20 @@ namespace TwistedFeathers
             }
         }
 
+        public Environment(string name, GameObject Icon, List<Skill> skills) : base(p_type.environment, name, skills)
+        {
+            miniIcon = Icon;
+            Debug.Log(miniIcon);
+            if (name == "swamp")
+            {
+                envListIndex = 1;
+            }
+
+            if (name == "desert")
+            {
+                envListIndex = 0;
+            }
+        }
+
     }
 }

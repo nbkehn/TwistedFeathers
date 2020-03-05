@@ -13,7 +13,11 @@ public class FillSkills : MonoBehaviour
     public CombatManager manager;
 
     void Start(){
-        skills = GameManager.Skill_db;
+        skills = new Dictionary<string, Skill>();
+        foreach (Skill sk in manager.GetComponent<CombatManager>().GetActivePlayerSkills())
+        {
+            skills.Add(sk.Name, sk);
+        }
     }
     
     // Update is called once per frame
@@ -31,7 +35,7 @@ public class FillSkills : MonoBehaviour
             numButtons++;
             newButton.transform.GetChild(0).GetComponent<Text>().text = sk.Value.Name;
             newButton.GetComponent<Button>().onClick.AddListener(() => {
-                manager.GetComponent<CombatManager>().SelectSkill(sk.Value.Name);
+                manager.GetComponent<CombatManager>().SelectSkill(sk.Value);
             });
             newButton.GetComponent<Button>().onClick.AddListener(() => {
                 Close();
