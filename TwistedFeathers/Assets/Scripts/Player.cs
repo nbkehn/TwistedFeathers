@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace TwistedFeathers
 {
+
     public class Player : BattleParticipant
     {
         public Player() : base()
@@ -15,6 +16,7 @@ namespace TwistedFeathers
         {
 
         }
+
 
     }
 }
