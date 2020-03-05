@@ -39,8 +39,15 @@ public class CombatManager : MonoBehaviour
 
     public static string ForecastText { get => forecastText; set => forecastText = value; }
 
+    public List<GameObject> playerSpawnPoints;
+    public List<GameObject> enemySpawnPoints;
 
     public UIManager UIManager;
+
+    public GameObject attackIndicator;
+
+    public bool selectingEnemy = false;
+    private int chosenEnemy = 0;
 
     List<BattleParticipant> getBattleParticipants()
     {
@@ -57,6 +64,32 @@ public class CombatManager : MonoBehaviour
 
         return list;
 
+    }
+
+    public void renderPlayers(){
+        int playerCount = 0;
+        int enemyCount = 0;
+        foreach(Participant player in battle_players){
+            GameObject newPlayer = Instantiate(player.myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            newPlayer.transform.SetParent(GameObject.Find("Participants").transform);
+            newPlayer.transform.position = playerSpawnPoints[playerCount].transform.position;
+            player.me = newPlayer;
+            playerCount++;
+        }
+
+        foreach(Participant monster in battle_monsters){
+            GameObject newEnemy = Instantiate(monster.myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            newEnemy.transform.SetParent(GameObject.Find("Participants").transform);
+            newEnemy.transform.position = enemySpawnPoints[enemyCount].transform.position;
+            monster.me = newEnemy;
+            enemyCount++;
+        }
+    }
+
+    public void moveIndicator(int enemy){
+        attackIndicator.transform.localPosition = enemySpawnPoints[enemy].transform.localPosition;
+        attackIndicator.transform.localPosition = attackIndicator.transform.localPosition + new Vector3(0, 8, 0);
+        chosenEnemy = enemy;
     }
 
 
@@ -125,6 +158,7 @@ public class CombatManager : MonoBehaviour
         //Dummy values for testing purposes
         battle_players.Add((Player) GameManager.Participant_db["person A"]);
         battle_monsters.Add((Monster) GameManager.Participant_db["enemy B"]);
+        battle_monsters.Add((Monster) GameManager.Participant_db["enemy A"]);
 
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
@@ -136,17 +170,36 @@ public class CombatManager : MonoBehaviour
             animator = GameObject.Find("SwampAnimation").GetComponent<Animator>();
             animator.runtimeAnimatorController = Resources.Load("Animations/Empty") as RuntimeAnimatorController;
         }
+        for(int i = 0; i < battle_monsters.Count; i++){
+            UIManager.enemyHealthBars[i].SetActive(true);
+            UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
+        }
+        for(int i = 0; i < battle_players.Count; i++){
+            UIManager.playerHealthBars[i].SetActive(true);
+            UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
+        }
+
+        renderPlayers();
 
     }
     
     public void SelectSkill(string skill){
+        if(battle_monsters.Count > 1){
+            selectingEnemy = true;
+            attackIndicator.SetActive(true);
+            moveIndicator(0);
+        }
+        else  {
+            chooseSkill();
+        }
         Debug.Log(skill); // change this to actually do what the skill does
-        chooseSkill();
     }
 
     public void chooseSkill(){
+        attackIndicator.SetActive(false);
+        selectingEnemy = false;
         Player protag = (Player) battle_players[protagonistIndex]; 
-        queueSkill( protag.Skills[Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>(){battle_monsters[0]});
+        queueSkill( protag.Skills[Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>(){battle_monsters[chosenEnemy]});
         waitingPlayer = false;
     }
 
@@ -155,13 +208,13 @@ public class CombatManager : MonoBehaviour
         selectingMap = true;
         // deactivate buttons for the time being
         GameObject.Find("Board").transform.Find("SelectionEntity").gameObject.SetActive(true);
-        UIManager.toggleMiniMapButtons(true);
         // Enable the specific indicators for this portion
         GameObject.Find("SelectionEntity").transform.SetAsFirstSibling(); //move to the front (on parent)
         GameObject.Find("CurrentLocation").transform.SetAsLastSibling();
     }
 
     public void ConfirmSelecting(){
+        Debug.Log("CONFIRMED");
         //If the movement is valid, this is called and go back to normal flow
         selectingMap = false;
         // update the current location
@@ -184,8 +237,21 @@ public class CombatManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(selectingEnemy){
+            if (Input.GetKeyDown("w")) {
+                //if up is pressed move the changing location over 1 unless at the edge
+                moveIndicator(0);
+            }
+            //if down is pressed move the changing location over 1 unless at the edge
+            if (Input.GetKeyDown("s")) {
+                moveIndicator(1);
+            }
+            if(Input.GetKeyDown("return")){
+                chooseSkill();
+            }
+        }
         // if the UI is in the change environment mode there is a different flow for the update method
-        if(selectingMap){
+        else if(selectingMap){
             // We are now selecting where we want to move to so we need to activate and show it over our current changing position
             GameObject.Find("SelectionEntity").GetComponent<RectTransform>().localPosition = new Vector3 (changingLocation.x*60, changingLocation.y*60, -10f);
             //Checks to see if our move is out of scope
@@ -230,6 +296,14 @@ public class CombatManager : MonoBehaviour
                 resolveEffects();
                 //resolveStatuses();
                 //Testing HP damage
+                for(int i = 0; i < battle_players.Count; i++){
+                    RectTransform healthBar = UIManager.playerHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
+                    healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_players[i].Current_hp, 50f), 100);
+                }
+                for(int i = 0; i < battle_players.Count; i++){
+                    RectTransform healthBar = UIManager.enemyHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
+                    healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_monsters[i].Current_hp, 50f), 100);
+                }
                 Debug.Log("Adam HP: " + battle_players[protagonistIndex].Current_hp);
                 Debug.Log("TURN END");
                 //New turn beings here
@@ -265,6 +339,10 @@ public class CombatManager : MonoBehaviour
 
         }
         
+    }
+
+    public float getHealthBarLengh(float currentHealth, float maxHealth){
+        return (currentHealth/maxHealth)*100;
     }
 
     //Randomly generates the 2D array that represents the UI Map

@@ -18,6 +18,8 @@ namespace TwistedFeathers
         private p_type type;
         private string name;
         private List<Skill> skills;
+        public GameObject myPrefab;
+        public GameObject me;
 
         protected Participant()
         {

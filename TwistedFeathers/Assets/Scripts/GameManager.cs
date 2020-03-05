@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
     public List<GameObject> environmentPrefabs;
     public static List<Environment> environments;
 
+    public GameObject playerPrefab;
+    public GameObject enemyPrefab;
+
     public bool rotate = true;
 
     // Awake is called before the first frame update and before Starts
@@ -45,13 +48,17 @@ public class GameManager : MonoBehaviour
 
             Participant_db.Add("person A", new Player("Adam"));
             Participant_db["person A"].AddSkill(Skill_db["smarty A"]);
+            Participant_db["person A"].myPrefab = playerPrefab;
             Participant_db.Add("person B", new Player("Ben"));
             Participant_db["person B"].AddSkill(Skill_db["smarty B"]);
+            Participant_db["person B"].myPrefab = playerPrefab;
 
             Participant_db.Add("enemy A", new Monster("Azazel"));
             Participant_db["enemy A"].AddSkill(Skill_db["dummy A"]);
+            Participant_db["enemy A"].myPrefab = enemyPrefab;
             Participant_db.Add("enemy B", new Monster("Beelzebub"));
             Participant_db["enemy B"].AddSkill(Skill_db["dummy B"]);
+            Participant_db["enemy B"].myPrefab = enemyPrefab;
             environments = new List<Environment>();
             
             environments.Add(new Environment("desert",environmentPrefabs[0]));
