@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TwistedFeathers;
 
 public class UpgradeManager : MonoBehaviour
 {
@@ -68,7 +69,7 @@ public class UpgradeManager : MonoBehaviour
         {
             int i = (int)Random.Range(0, skillPool.Count - 1);
             //XXX = ; //Random between 0-size
-            if (pickUs[i].Part_type == p_type.player)
+            if (pickUs[i].User_type == p_type.player)
             {
                 if (!foundPlayerSkills.Contains(pickUs[i]))
                 {
@@ -80,7 +81,7 @@ public class UpgradeManager : MonoBehaviour
         {
             int i = (int)Random.Range(0, skillPool.Count - 1);
             //XXX = ; //Random between 0-size
-            if (pickUs[i].Part_type == p_type.enemy)
+            if (pickUs[i].User_type == p_type.enemy)
             {
                 if (!foundEnemySkills.Contains(pickUs[i]))
                 {
@@ -128,7 +129,7 @@ public class UpgradeManager : MonoBehaviour
                 if(pickUs[i].Name == skillName[0])
                 {
                     Debug.Log(pickUs[i].Name);
-                    upgrader.learnSkill(pickUs[i]);
+                    upgrader.AddSkill(pickUs[i]);
                     break;
                 }
             }

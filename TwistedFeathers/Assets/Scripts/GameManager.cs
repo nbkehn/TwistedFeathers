@@ -47,23 +47,23 @@ public class GameManager : MonoBehaviour
         inCombat = false;
 
         //Dummy values for testing purposes
-        Skill_db.Add("dummy A", new Skill("Acid", "Does nothing", p_type.enemy, new BattleEffect(e_type.nothing, "This is A dummy", 0), false));
-        Skill_db.Add("dummy B", new Skill("Poison", "Does nothing", p_type.enemy, new BattleEffect(e_type.damage, "This is B dummy", 0), false));
-        Skill_db.Add("dummy C", new Skill("Health Inc", "Does nothing", p_type.enemy, new BattleEffect(e_type.nothing, "This is C dummy", 0), false));
-        Skill_db.Add("dummy D", new Skill("Fire Breath", "Does nothing", p_type.enemy, new BattleEffect(e_type.damage, "This is D dummy", 0), false));
-        Skill_db.Add("dummy E", new Skill("Claws", "Does nothing", p_type.enemy, new BattleEffect(e_type.nothing, "This is E dummy", 0), false));
-        Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new BattleEffect(e_type.damage, "This is F dummy", 0), false));
+        Skill_db.Add("dummy A", new Skill("Acid", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+        Skill_db.Add("dummy B", new Skill("Poison", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+        Skill_db.Add("dummy C", new Skill("Health Inc", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+        Skill_db.Add("dummy D", new Skill("Fire Breath", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+        Skill_db.Add("dummy E", new Skill("Claws", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+        Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new List<BattleEffect>()));
         //player skills
-        Skill_db.Add("smarty A", new Skill("Dagger", "Does nothing", p_type.player, new BattleEffect(e_type.nothing, "This is A smarty", 0), false));
-        Skill_db.Add("smarty B", new Skill("Pollen Bombs", "Does nothing", p_type.player, new BattleEffect(e_type.damage, "This is B smarty", 0), false));
-        Skill_db.Add("smarty C", new Skill("Hover", "Does nothing", p_type.player, new BattleEffect(e_type.nothing, "This is C smarty", 0), false));
-        Skill_db.Add("smarty D", new Skill("Flight", "Does nothing", p_type.player, new BattleEffect(e_type.damage, "This is D smarty", 0), false));
-        Skill_db.Add("smarty E", new Skill("Nectar Drunk", "Does nothing", p_type.player, new BattleEffect(e_type.nothing, "This is E smarty", 0), false));
-        Skill_db.Add("smarty F", new Skill("Swift Wings", "Does nothing", p_type.player, new BattleEffect(e_type.damage, "This is F smarty", 0), false));
-        Skill_db.Add("smarty G", new Skill("Distraction", "Does nothing", p_type.player, new BattleEffect(e_type.nothing, "This is G smarty", 0), false));
-        Skill_db.Add("smarty H", new Skill("Poison Rain", "Does nothing", p_type.player, new BattleEffect(e_type.damage, "This is H smarty", 0), false));
-        Skill_db.Add("smarty I", new Skill("Attack2", "Does nothing", p_type.player, new BattleEffect(e_type.nothing, "This is I smarty", 0), false));
-        Skill_db.Add("smarty J", new Skill("Attack3", "Does nothing", p_type.player, new BattleEffect(e_type.damage, "This is J smarty", 0), false));
+        Skill_db.Add("smarty A", new Skill("Dagger", "Does nothing", p_type.player, new List<BattleEffect>()));
+        Skill_db.Add("smarty B", new Skill("Pollen Bombs", "Does nothing", p_type.player, new List<BattleEffect>()));
+        Skill_db.Add("smarty C", new Skill("Hover", "Does nothing", p_type.player, new List<BattleEffect>()));
+        Skill_db.Add("smarty D", new Skill("Flight", "Does nothing", p_type.player, new List<BattleEffect>()));
+        Skill_db.Add("smarty E", new Skill("Nectar Drunk", "Does nothing", p_type.player, new List<BattleEffect>()));
+        Skill_db.Add("smarty F", new Skill("Swift Wings", "Does nothing", p_type.player, new List<BattleEffect>()));
+        Skill_db.Add("smarty G", new Skill("Distraction", "Does nothing", p_type.player, new List<BattleEffect>()));
+        Skill_db.Add("smarty H", new Skill("Poison Rain", "Does nothing", p_type.player, new List<BattleEffect>()));
+        Skill_db.Add("smarty I", new Skill("Attack2", "Does nothing", p_type.player, new List<BattleEffect>()));
+        Skill_db.Add("smarty J", new Skill("Attack3", "Does nothing", p_type.player, new List<BattleEffect>()));
 
         Participant_db.Add("person A", new Player("Adam"));
         Participant_db["person A"].AddSkill(Skill_db["smarty A"]);
@@ -96,20 +96,20 @@ public class GameManager : MonoBehaviour
             inCombat = false;
 
             //Dummy values for testing purposes
-            Skill_db.Add("dummy A", new Skill("Azazel's Skill", "Does nothing", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, 0, "This is A dummy") }));
-            Skill_db.Add("dummy B", new Skill("Beelzebub's Skill", "Deals 10 damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B dummy") }));
-            Skill_db.Add("smarty A", new Skill("Adam's Skill", "Does nothing", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, "This is A smarty") }));
-            Skill_db.Add("smarty B", new Skill("Ben's Skill", "Deals 10 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B smarty") }));
+            Skill_db.Add("Azazel's Skill", new Skill("Azazel's Skill", "Does nothing", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, 0, "This is A dummy") }));
+            Skill_db.Add("Beelzebub's Skill", new Skill("Beelzebub's Skill", "Deals 10 damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B dummy") }));
+            Skill_db.Add("Adam's Skill", new Skill("Adam's Skill", "Does nothing", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, "This is A smarty") }));
+            Skill_db.Add("Ben's Skill", new Skill("Ben's Skill", "Deals 10 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B smarty") }));
 
             Player_db.Add("person A", new Player("Adam"));
-            Player_db["person A"].AddSkill(Skill_db["smarty A"]);
+            Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
             Player_db.Add("person B", new Player("Ben"));
-            Player_db["person B"].AddSkill(Skill_db["smarty B"]);
+            Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
 
             Monster_db.Add("enemy A", new Monster("Azazel"));
-            Monster_db["enemy A"].AddSkill(Skill_db["dummy A"]);
+            Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db.Add("enemy B", new Monster("Beelzebub"));
-            Monster_db["enemy B"].AddSkill(Skill_db["dummy B"]);
+            Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             environments = new List<Environment>();
 
             Skill environment_do_nothing = new Skill("Nothing", "Environment does nothing", p_type.environment, new List<BattleEffect>());
