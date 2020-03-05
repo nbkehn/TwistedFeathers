@@ -2,35 +2,59 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum p_type {none, player, enemy, environment, weather};
-
-public abstract class Participant
+namespace TwistedFeathers
 {
-    private p_type type;
-    private string name;
-    private ArrayList skills;
-
-    public Participant()
+    public enum p_type
     {
-        this.type = p_type.none;
-        this.name = "";
-        this.skills = new ArrayList();
-    }
+        none,
+        player,
+        enemy,
+        environment,
+        weather
+    };
 
-    public Participant(p_type type, string name)
+    public abstract class Participant
     {
-        this.type = type;
-        this.name = name;
-        this.skills = new ArrayList();
-    }
+        private p_type type;
+        private string name;
+        private List<Skill> skills;
 
-    public p_type Type { get => type; set => type = value; }
-    public ArrayList Skills { get => skills; set => skills = value; }
-    public string Name { get => name; set => name = value; }
+        protected Participant()
+        {
+            this.type = p_type.none;
+            this.name = "";
+            this.skills = new List<Skill>();
+        }
 
-    public void AddSkill(Skill new_skill)
-    {
-        this.skills.Add(new_skill);
+        protected Participant(p_type type, string name)
+        {
+            this.type = type;
+            this.name = name;
+            this.skills = new List<Skill>();
+        }
+
+        public p_type Type
+        {
+            get => type;
+            set => type = value;
+        }
+
+        public List<Skill> Skills
+        {
+            get => skills;
+            set => skills = value;
+        }
+
+        public string Name
+        {
+            get => name;
+            set => name = value;
+        }
+
+        public void AddSkill(Skill new_skill)
+        {
+            this.skills.Add(new_skill);
+        }
     }
 }
 

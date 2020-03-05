@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
+using TwistedFeathers;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +20,12 @@ public class GameManager : MonoBehaviour
 
     public GameObject combater;
     bool inCombat;
+    private static GameManager _instance;
+    public static GameManager Instance { get { return _instance; } }
+    public List<GameObject> environmentPrefabs;
+    public static List<Environment> environments;
+
+    public bool rotate = true;
 
     // Awake is called before the first frame update and before Starts
     void Awake()
@@ -62,9 +71,39 @@ public class GameManager : MonoBehaviour
         Participant_db.Add("enemy B", new Monster("Beelzebub"));
         Participant_db["enemy B"].AddSkill(Skill_db["dummy B"]);
 
+
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        } else {
+            _instance = this;
         
 
-       
+            Skill_db = new Dictionary<string, Skill>();
+            Participant_db = new Dictionary<string, Participant>();
+            inCombat = false;
+
+            //Dummy values for testing purposes
+            Skill_db.Add("dummy A", new Skill("Test Skill", "Does nothing", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, "This is A dummy") }));
+            Skill_db.Add("dummy B", new Skill("Test Skill", "Does nothing", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 5f, "This is B dummy") }));
+            Skill_db.Add("smarty A", new Skill("Test Skill", "Does nothing", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, "This is A smarty") }));
+            Skill_db.Add("smarty B", new Skill("Test Skill", "Does nothing", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 5f, "This is B smarty") }));
+
+            Participant_db.Add("person A", new Player("Adam"));
+            Participant_db["person A"].AddSkill(Skill_db["smarty A"]);
+            Participant_db.Add("person B", new Player("Ben"));
+            Participant_db["person B"].AddSkill(Skill_db["smarty B"]);
+
+            Participant_db.Add("enemy A", new Monster("Azazel"));
+            Participant_db["enemy A"].AddSkill(Skill_db["dummy A"]);
+            Participant_db.Add("enemy B", new Monster("Beelzebub"));
+            Participant_db["enemy B"].AddSkill(Skill_db["dummy B"]);
+            environments = new List<Environment>();
+            
+            environments.Add(new Environment("desert",environmentPrefabs[0]));
+            environments.Add(new Environment("swamp",environmentPrefabs[1]));
+            environments.Add(new Environment("empty",environmentPrefabs[2]));
+        }
     }
 
     // Update is called once per frame

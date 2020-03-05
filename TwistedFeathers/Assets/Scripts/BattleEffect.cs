@@ -2,80 +2,166 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum e_type { nothing, damage, status };
-
-public class BattleEffect
+namespace TwistedFeathers
 {
-    private e_type type;
-    private Participant target;
-    private Participant user;
-    private string message;
-    private int turnstamp;
 
-    public BattleEffect()
+    public enum e_type
     {
-        this.type = e_type.nothing;
-        this.target = null;
-        this.user = null;
-        this.message = "This is an effect that works";
-        this.turnstamp = 0;
-    }
+        nothing,
+        damage,
+        status,
+        buff
+    };
 
-    public BattleEffect(string message)
+    public class BattleEffect
     {
-        this.type = e_type.nothing;
-        this.target = null;
-        this.user = null;
-        this.message = message;
-        this.turnstamp = 0;
-    }
+        // These values are defined when stored in a skill
+        private e_type type;
+        private float modifier;
+        private float duration;
+        private string specifier;
 
-    public BattleEffect(e_type type, string message, int turnstamp)
-    {
-        this.type = type;
-        this.target = null;
-        this.user = null;
-        this.message = message;
-        this.turnstamp = turnstamp;
-    }
+        // These values are only defined when it is selected in battle
+        private List<BattleParticipant> target;
+        private BattleParticipant user;
+        private int turnstamp;
 
-    public BattleEffect(e_type type, Participant target, Participant user, string message, int turnstamp)
-    {
-        this.type = type;
-        this.target = target;
-        this.user = user;
-        this.message = message;
-        this.Turnstamp = turnstamp;
-    }
-
-    public e_type Type { get => type; set => type = value; }
-    public Participant Target { get => target; set => target = value; }
-    public Participant User { get => user; set => user = value; }
-    public string Message { get => message; set => message = value; }
-    public int Turnstamp { get => turnstamp; set => turnstamp = value; }
-}
-
-
-public class EffectComparator : IComparer<BattleEffect>
-{
-    public int Compare(BattleEffect x, BattleEffect y)
-    {
-
-        if (x.Turnstamp != y.Turnstamp)
+        public BattleEffect()
         {
-            return x.Turnstamp.CompareTo(y.Turnstamp);
+            this.type = e_type.nothing;
+            this.modifier = 0f;
+            this.Duration = 0f;
+            this.specifier = "This is an effect that works";
+            this.target = null;
+            this.user = null;
+            this.turnstamp = 0;
         }
-        //else if (x.User.Type != y.User.Type)
-        //{
-        //    return x.User.Type < y.User.Type ? 1 : 0;
-        //}
-        else if (x.Type != y.Type)
+
+        public BattleEffect(e_type type, float modifier, string specifier)
         {
-            return x.Type.CompareTo(y.Type);
+            this.type = type;
+            this.modifier = modifier;
+            this.Duration = 0f;
+            this.specifier = specifier;
+            this.target = null;
+            this.user = null;
+            this.turnstamp = 0;
         }
-        else
+
+
+        public e_type Type
         {
-            return 0;
+            get => type;
+            set => type = value;
+        }
+
+        public List<BattleParticipant> Target
+        {
+            get => target;
+            set => target = value;
+        }
+
+        public BattleParticipant User
+        {
+            get => user;
+            set => user = value;
+        }
+
+        public string Specifier
+        {
+            get => specifier;
+            set => specifier = value;
+        }
+
+        public int Turnstamp
+        {
+            get => turnstamp;
+            set => turnstamp = value;
+        }
+
+        public float Modifier
+        {
+            get => modifier;
+            set => modifier = value;
+        }
+        public float Duration { get => duration; set => duration = value; }
+
+        public void select(BattleParticipant user, List<BattleParticipant> target, int turnstamp)
+        {
+            User = user;
+            Target = target;
+            Turnstamp = turnstamp;
+        }
+
+        public void run()
+        {
+            bool check_hit = true;
+            foreach (BattleParticipant tar in target)
+            {
+                //Check to see if effect actually hits target
+                if (user.Type != tar.Type)
+                {
+                    float random_dodge = Random.Range(0.0f, 1.0f);
+                    if ((tar.Dodge-user.Accuracy) >= random_dodge)
+                    {
+                        //Miss!
+                        check_hit = false;
+                    }
+                }
+
+                if (check_hit)
+                {
+                    Debug.Log(Specifier);
+                    switch (Type)
+                    {
+                        case (e_type.damage):
+                            // Missing flat mod additions
+                            float damage = modifier + (modifier * user.Attack) - (modifier * tar.Defense);
+                            tar.Current_hp = (int)(tar.Current_hp - damage);
+                            break;
+                        case (e_type.status):
+                            tar.Statuses.Add(new KeyValuePair<string, BattleEffect>(specifier, this));
+                            break;
+                        default:
+                            //This is where special/unique effects need to be handled
+                            break;
+                    }
+                }
+                else
+                {
+                    //Miss case
+                    Debug.Log(user.Name + " Missed!");
+                }
+            }
+            
+
+            
+        }
+
+    }
+
+
+    public class EffectComparator : IComparer<BattleEffect>
+    {
+        public int Compare(BattleEffect x, BattleEffect y)
+        {
+
+            if (x.Turnstamp != y.Turnstamp)
+            {
+                return x.Turnstamp.CompareTo(y.Turnstamp);
+            }
+            else if (x.User.Type != y.User.Type)
+            {
+                return x.User.Type.CompareTo(y.User.Type);
+            }
+            else if (x.Type != y.Type)
+            {
+                return x.Type.CompareTo(y.Type);
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }
