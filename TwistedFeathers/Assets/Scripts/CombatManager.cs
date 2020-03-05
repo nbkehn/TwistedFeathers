@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using static System.Math;
@@ -17,7 +18,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     SortedSet<BattleEffect> pq;
     List<TwistedFeathers.Player> battle_players;
     private List<Monster> battle_monsters;
-    Environment env;
     //Weather weath;
     int currentTurn;
     bool waitingPlayer;
@@ -74,12 +74,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
 
     //Method for taking a skill and queueing the effect into the PQ
-    void queueSkill(Skill skill, BattleParticipant user, List<BattleParticipant> target)
+    void queueSkill(Skill skill, Participant user, List<BattleParticipant> target)
     {
-        foreach(BattleEffect effect in skill.Effect)
+        foreach(BattleEffect effect in skill.Effect.ToArray())
         {
-            BattleEffect battle_effect = effect;
-            battle_effect.select(user, target, currentTurn);
+            BattleEffect battle_effect = new BattleEffect(effect);
+            battle_effect.select(user, target, currentTurn, skill.Name);
             pq.Add(battle_effect);
         }
     }
@@ -90,7 +90,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         Debug.Log("Effects Resolving!");
         while (pq.Count != 0 && pq.Min.Turnstamp <= currentTurn)
         {
-            pq.Min.run();
+            pq.Min.run(pq);
             pq.Remove(pq.Min);
         }
         Debug.Log("Effects Resolved!");
@@ -125,13 +125,30 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         
     }
 
-    // Start is called before the first frame update
-    void Start()
+    void combatEnd(bool isVictory)
     {
+        if (isVictory)
+        {
+            Debug.Log("Victory!!!");
+        }
+        else
+        {
+            Debug.Log("Defeat...");
+        }
+        SceneManager.LoadScene("TestScene");
+        //SceneManager.SetActiveScene(SceneManager.GetSceneByName("TestScene"));
+    }
+
+    // Start is called before the first frame update
+    void Awake()
+    {
+        //Set up UI
         UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         ForecastText = "";
+        //Set up priority queue
         currentTurn = 0;
         pq = new SortedSet<BattleEffect>(new EffectComparator());
+        //Set up BattleParticipants
         battle_players = new List<TwistedFeathers.Player>();
         battle_monsters = new List<Monster>();
         protagonistIndex = 0; 
@@ -155,7 +172,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         this.turnManager.TurnManagerListener = this;
 
     }
-    
     public void SelectSkill(string skill){
         // we know that this will be the selected skill
         // if one player don't network the move
@@ -180,13 +196,18 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         chooseSkill(0);
         chooseSkill(1);
     }
+    
+    public List<Skill> GetActivePlayerSkills()
+    {
+        return battle_players[protagonistIndex].Skills;
+    }
 
     public void chooseSkill(int index){
         // set this method up to take a parameter index that specifies
         // whether the player or ally is choosing a skill
         // more work will have to be done with target selection
         TwistedFeathers.Player protag = (TwistedFeathers.Player) battle_players[index]; 
-        queueSkill( protag.Skills[Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>(){battle_monsters[index]});
+        queueSkill(skill, protag, new List<BattleParticipant>() { battle_monsters[0] });
         waitingPlayer = false;
     }
 
@@ -280,42 +301,79 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     {
         //Effects are resolved and turn ends
         resolveEffects();
-        Debug.Log("TURN END");
         //resolveStatuses();
-        TurnBegin();
+        Debug.Log("TURN END");
+        //Check for BattleParticipant deaths
+        foreach (Player play in battle_players.ToArray())
+        {
+            if (play.Current_hp <= 0)
+            {
+                battle_players.Remove(play);
+            }
+        }
+        foreach (Monster mon in battle_monsters.ToArray())
+        {
+            if (mon.Current_hp <= 0)
+            {
+                battle_monsters.Remove(mon);
+            }
+        }
+        if (battle_players.Count == 0)
+        {
+            combatEnd(false);
+        }
+        else if (battle_monsters.Count == 0)
+        {
+            combatEnd(true);
+        }
+        else
+        {
+            TurnBegin();
+        }
+        
     }
 
     private void TurnBegin()
     {
         //Testing HP damage
         Debug.Log("Adam HP: " + battle_players[protagonistIndex].Current_hp);
+        Debug.Log("Adam Acc: " + battle_players[protagonistIndex].Accuracy);
         Debug.Log("Ben HP: " + battle_players[protagonistIndex + 1].Current_hp);
-        Debug.Log("Enemy 1 HP: " + battle_monsters[protagonistIndex].Current_hp);
-        Debug.Log("Enemy 2 HP: " + battle_monsters[protagonistIndex + 1].Current_hp);
+        Debug.Log("Azazel 1 HP: " + battle_monsters[protagonistIndex].Current_hp);
+        Debug.Log("Beelzebub HP: " + battle_monsters[protagonistIndex + 1].Current_hp);
+        Debug.Log("Beelzebub Acc: " + battle_monsters[0].Accuracy);
         //New turn beings here
         Debug.Log("TURN BEGIN");
         currentTurn++;
+        queueSkill(CurrentEnvironment.Skills[Random.Range(0, CurrentEnvironment.Skills.Count)], CurrentEnvironment, getBattleParticipants());
         foreach (Monster part in battle_monsters)
         {
-            queueSkill((Skill)part.Skills[Random.Range(0, part.Skills.Count)], part, new List<BattleParticipant>() { battle_players[protagonistIndex] });
+            queueSkill(part.Skills[Random.Range(0, part.Skills.Count)], part, new List<BattleParticipant>() { battle_players[protagonistIndex]});
         }
 
         //Forecast
 
         Debug.Log("Forecast Begins!");
-
+                
         foreach (BattleEffect eff in pq)
         {
-            newText = Instantiate(textPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-            newText.transform.SetParent(forecastContent.transform, false);
-            newText.GetComponent<RectTransform>().localScale = new Vector3(0.6968032f, 1.7355f, 1.7355f);
-            newText.transform.position = new Vector3(forecastContent.transform.position.x + 275, forecastContent.transform.position.y - 40 * numTexts - 30);
-            newText.GetComponent<Text>().text = eff.User.Name;
-            newText.GetComponent<Text>().color = Color.white;
+            if (eff.Visible)
+            {
+                newText = Instantiate(textPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                newText.transform.SetParent(forecastContent.transform, false);
+                newText.GetComponent<RectTransform>().localScale = new Vector3(0.6968032f, 1.7355f, 1.7355f);
+                newText.transform.position = new Vector3(forecastContent.transform.position.x + 275, forecastContent.transform.position.y - 40 * numTexts - 30);
+                string prediction =  eff.Turnstamp - currentTurn + " turns away: " + eff.SkillName + " targeting: --";
+                foreach (BattleParticipant tar in eff.Target)
+                {
+                    prediction += tar.Name + "--";
+                }
+                newText.GetComponent<Text>().text = prediction;
+                newText.GetComponent<Text>().color = Color.cyan;
 
-            numTexts++;
-            Debug.Log(eff.User.Name);
-
+                numTexts++;
+                Debug.Log(prediction);
+            }
         }
         ForecastOpener.GetComponent<ButtonHandler>().newForecast();
         Debug.Log("Forecast Over!");
@@ -385,7 +443,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     {
         //do nothing
     }
-
 
     #endregion
 
