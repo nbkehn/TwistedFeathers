@@ -211,12 +211,18 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
         }
 
-        renderPlayers();
+        
 
         this.turnManager = this.gameObject.AddComponent<PunTurnManager>();
         this.turnManager.TurnManagerListener = this;
 
     }
+
+    void Start()
+    {
+        renderPlayers();
+    }
+
     public void SelectSkill(Skill skill){
         // we know that this will be the selected skill
         // if one player don't network the move

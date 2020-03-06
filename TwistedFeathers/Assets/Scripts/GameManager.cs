@@ -43,46 +43,7 @@ public class GameManager : MonoBehaviour
     // Awake is called before the first frame update and before Starts
     void Awake()
     {
-        Skill_db = new Dictionary<string, Skill>();
-        Participant_db = new Dictionary<string, Participant>();
-        Player_db = new Dictionary<string, Player>();
-        eLearnedSkills = new Dictionary<string, Skill>();
-        inCombat = false;
-
-        //Dummy values for testing purposes
-        Skill_db.Add("dummy A", new Skill("Acid", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-        Skill_db.Add("dummy B", new Skill("Poison", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-        Skill_db.Add("dummy C", new Skill("Health Inc", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-        Skill_db.Add("dummy D", new Skill("Fire Breath", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-        Skill_db.Add("dummy E", new Skill("Claws", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-        Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-        //player skills
-        Skill_db.Add("smarty A", new Skill("Dagger", "Does nothing", p_type.player, new List<BattleEffect>()));
-        Skill_db.Add("smarty B", new Skill("Pollen Bombs", "Does nothing", p_type.player, new List<BattleEffect>()));
-        Skill_db.Add("smarty C", new Skill("Hover", "Does nothing", p_type.player, new List<BattleEffect>()));
-        Skill_db.Add("smarty D", new Skill("Flight", "Does nothing", p_type.player, new List<BattleEffect>()));
-        Skill_db.Add("smarty E", new Skill("Nectar Drunk", "Does nothing", p_type.player, new List<BattleEffect>()));
-        Skill_db.Add("smarty F", new Skill("Swift Wings", "Does nothing", p_type.player, new List<BattleEffect>()));
-        Skill_db.Add("smarty G", new Skill("Distraction", "Does nothing", p_type.player, new List<BattleEffect>()));
-        Skill_db.Add("smarty H", new Skill("Poison Rain", "Does nothing", p_type.player, new List<BattleEffect>()));
-        Skill_db.Add("smarty I", new Skill("Attack2", "Does nothing", p_type.player, new List<BattleEffect>()));
-        Skill_db.Add("smarty J", new Skill("Attack3", "Does nothing", p_type.player, new List<BattleEffect>()));
-
-        Participant_db.Add("person A", new Player("Adam"));
-        Participant_db["person A"].AddSkill(Skill_db["smarty A"]);
-        Participant_db.Add("person B", new Player("Ben"));
-        Participant_db["person B"].AddSkill(Skill_db["smarty B"]);
-
-        Debug.Log(Player_db);
-        Player_db.Add("player1", new Player("Adam"));
-        Player_db["player1"].AddSkill(Skill_db["smarty A"]);
-        Player_db.Add("player2", new Player("Ben"));
-        Player_db["player2"].AddSkill(Skill_db["smarty B"]);
-
-        Participant_db.Add("enemy A", new Monster("Azazel"));
-        Participant_db["enemy A"].AddSkill(Skill_db["dummy A"]);
-        Participant_db.Add("enemy B", new Monster("Beelzebub"));
-        Participant_db["enemy B"].AddSkill(Skill_db["dummy B"]);
+       
 
 
         if (_instance != null && _instance != this)
@@ -90,13 +51,44 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
         } else {
             _instance = this;
-        
 
             Skill_db = new Dictionary<string, Skill>();
             Participant_db = new Dictionary<string, Participant>();
             Player_db = new Dictionary<string, Player>();
-            Monster_db = new Dictionary<string, Monster>();
+            eLearnedSkills = new Dictionary<string, Skill>();
             inCombat = false;
+            Monster_db = new Dictionary<string, Monster>();
+
+            //Dummy values for testing purposes
+            Skill_db.Add("dummy A", new Skill("Acid", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            Skill_db.Add("dummy B", new Skill("Poison", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            Skill_db.Add("dummy C", new Skill("Health Inc", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            Skill_db.Add("dummy D", new Skill("Fire Breath", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            Skill_db.Add("dummy E", new Skill("Claws", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            //player skills
+            Skill_db.Add("smarty A", new Skill("Dagger", "Does nothing", p_type.player, new List<BattleEffect>()));
+            Skill_db.Add("smarty B", new Skill("Pollen Bombs", "Does nothing", p_type.player, new List<BattleEffect>()));
+            Skill_db.Add("smarty C", new Skill("Hover", "Does nothing", p_type.player, new List<BattleEffect>()));
+            Skill_db.Add("smarty D", new Skill("Flight", "Does nothing", p_type.player, new List<BattleEffect>()));
+            Skill_db.Add("smarty E", new Skill("Nectar Drunk", "Does nothing", p_type.player, new List<BattleEffect>()));
+            Skill_db.Add("smarty F", new Skill("Swift Wings", "Does nothing", p_type.player, new List<BattleEffect>()));
+            Skill_db.Add("smarty G", new Skill("Distraction", "Does nothing", p_type.player, new List<BattleEffect>()));
+            Skill_db.Add("smarty H", new Skill("Poison Rain", "Does nothing", p_type.player, new List<BattleEffect>()));
+            Skill_db.Add("smarty I", new Skill("Attack2", "Does nothing", p_type.player, new List<BattleEffect>()));
+            Skill_db.Add("smarty J", new Skill("Attack3", "Does nothing", p_type.player, new List<BattleEffect>()));
+
+            Participant_db.Add("person A", new Player("Adam"));
+            Participant_db["person A"].AddSkill(Skill_db["smarty A"]);
+            Participant_db.Add("person B", new Player("Ben"));
+            Participant_db["person B"].AddSkill(Skill_db["smarty B"]);
+
+            Participant_db.Add("enemy A", new Monster("Azazel"));
+            Participant_db["enemy A"].AddSkill(Skill_db["dummy A"]);
+            Participant_db.Add("enemy B", new Monster("Beelzebub"));
+            Participant_db["enemy B"].AddSkill(Skill_db["dummy B"]);
+
+
 
             //Dummy values for testing purposes
 
