@@ -19,6 +19,10 @@ public class ButtonHandler : MonoBehaviour
             UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         }
     }
+
+    public void goToUpgrade(){
+        SceneManager.LoadScene("TransitionScene");
+    }
     
         // This is called when the change environment button is clicked
     public void SwitchEnvironment()
@@ -85,5 +89,9 @@ public class ButtonHandler : MonoBehaviour
 
     public void toggleRotation(){
         GameObject.Find("GameManager").GetComponent<GameManager>().rotate = !GameObject.Find("GameManager").GetComponent<GameManager>().rotate;
+    }
+
+    public void quitGame() {
+        Application.Quit();
     }
 }

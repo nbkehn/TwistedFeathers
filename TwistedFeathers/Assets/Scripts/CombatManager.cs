@@ -121,12 +121,28 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     void resolveEffects()
     {
         Debug.Log("Effects Resolving!");
-        while (pq.Count != 0 && pq.Min.Turnstamp <= currentTurn)
-        {
+        StartCoroutine(spaceOutEffects());
+    }
+
+    IEnumerator spaceOutEffects() {
+        while (pq.Count != 0 && pq.Min.Turnstamp <= currentTurn) {
             pq.Min.run(pq);
             pq.Remove(pq.Min);
+            UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
+            for(int i = 0; i < battle_players.Count; i++){
+                RectTransform healthBar = UIManager.playerHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
+                healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_players[i].Current_hp, 50f), 100);
+            }
+            for(int i = 0; i < battle_players.Count; i++){
+                RectTransform healthBar = UIManager.enemyHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
+                healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_monsters[i].Current_hp, 50f), 100);
+            }
+            yield return new WaitForSeconds(.5f);
+            UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
+            yield return new WaitForSeconds(.5f);
         }
-        Debug.Log("Effects Resolved!");
+        Debug.Log("Effects Resolved");
+        
     }
 
     void resolveStatuses()
@@ -382,29 +398,33 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         //Effects are resolved and turn ends
         resolveEffects();
         //resolveStatuses();
-        for(int i = 0; i < battle_players.Count; i++){
-            RectTransform healthBar = UIManager.playerHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
-            healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_players[i].Current_hp, 50f), 100);
-        }
-        for(int i = 0; i < battle_players.Count; i++){
-            RectTransform healthBar = UIManager.enemyHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
-            healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_monsters[i].Current_hp, 50f), 100);
+        foreach (Transform child in UIManager.popups[2].transform.GetChild(0).transform.GetChild(0).transform) {
+            GameObject.Destroy(child.gameObject);
         }
         Debug.Log("TURN END");
         //Check for BattleParticipant deaths
+        int playerCount = 0;
         foreach (TwistedFeathers.Player play in battle_players.ToArray())
         {
             if (play.Current_hp <= 0)
             {
+                Debug.Log("HE DED");
+                UIManager.playerHealthBars[playerCount].SetActive(false);
+                GameObject.Find("Participants").transform.GetChild(playerCount+1).gameObject.SetActive(false);
                 battle_players.Remove(play);
             }
+            playerCount++;
         }
+        int enemyCount = 0;
         foreach (Monster mon in battle_monsters.ToArray())
         {
             if (mon.Current_hp <= 0)
             {
+                UIManager.enemyHealthBars[enemyCount].SetActive(false);
+                GameObject.Find("Participants").transform.GetChild(3+enemyCount).gameObject.SetActive(false);
                 battle_monsters.Remove(mon);
             }
+            enemyCount++;
         }
         if (battle_players.Count == 0)
         {
@@ -424,12 +444,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     private void TurnBegin()
     {
         //Testing HP damage
-        Debug.Log("Adam HP: " + battle_players[protagonistIndex].Current_hp);
-        Debug.Log("Adam Acc: " + battle_players[protagonistIndex].Accuracy);
-        Debug.Log("Ben HP: " + battle_players[protagonistIndex + 1].Current_hp);
-        Debug.Log("Azazel 1 HP: " + battle_monsters[protagonistIndex].Current_hp);
-        Debug.Log("Beelzebub HP: " + battle_monsters[protagonistIndex + 1].Current_hp);
-        Debug.Log("Beelzebub Acc: " + battle_monsters[0].Accuracy);
+        // Debug.Log("Adam HP: " + battle_players[protagonistIndex].Current_hp);
+        // Debug.Log("Adam Acc: " + battle_players[protagonistIndex].Accuracy);
+        // Debug.Log("Ben HP: " + battle_players[protagonistIndex + 1].Current_hp);
+        // Debug.Log("Azazel 1 HP: " + battle_monsters[protagonistIndex].Current_hp);
+        // Debug.Log("Beelzebub HP: " + battle_monsters[protagonistIndex + 1].Current_hp);
+        // Debug.Log("Beelzebub Acc: " + battle_monsters[0].Accuracy);
         //New turn beings here
         Debug.Log("TURN BEGIN");
         currentTurn++;
@@ -442,22 +462,26 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         //Forecast
 
         Debug.Log("Forecast Begins!");
-                
+        numTexts = 0;
         foreach (BattleEffect eff in pq)
         {
             if (eff.Visible)
             {
                 newText = Instantiate(textPrefab, new Vector3(0, 0, 0), Quaternion.identity);
                 newText.transform.SetParent(forecastContent.transform, false);
-                newText.GetComponent<RectTransform>().localScale = new Vector3(0.6968032f, 1.7355f, 1.7355f);
-                newText.transform.position = new Vector3(forecastContent.transform.position.x + 275, forecastContent.transform.position.y - 40 * numTexts - 30);
+                newText.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 1);
+                newText.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 1);
+                newText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0 -(40 * numTexts) - 30, 0);
+                newText.GetComponent<RectTransform>().sizeDelta = new Vector2(1000, 45);
                 string prediction =  eff.Turnstamp - currentTurn + " turns away: " + eff.SkillName + " targeting: --";
                 foreach (BattleParticipant tar in eff.Target)
                 {
                     prediction += tar.Name + "--";
                 }
                 newText.GetComponent<Text>().text = prediction;
-                newText.GetComponent<Text>().color = Color.cyan;
+                newText.GetComponent<Text>().color = Color.white;
+                newText.GetComponent<Text>().fontSize = 32;
+
 
                 numTexts++;
                 Debug.Log(prediction);
