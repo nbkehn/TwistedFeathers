@@ -21,7 +21,7 @@ public class ButtonHandler : MonoBehaviour
     }
 
     public void goToUpgrade(){
-        SceneManager.LoadScene("TransitionScene");
+        SceneManager.LoadScene("UpgradeScreen");
     }
     
         // This is called when the change environment button is clicked

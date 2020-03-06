@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace TwistedFeathers
 {
@@ -27,6 +29,7 @@ namespace TwistedFeathers
         /*Whether or not the effect will show up in the forecast*/
         public bool Visible { get; set; }
         public string SkillName { get; set; }
+        public int UID { get; set; }
 
         // Copy Constructor
         public BattleEffect(BattleEffect effect)
@@ -40,6 +43,7 @@ namespace TwistedFeathers
             this.Duration = effect.Duration;
             this.Visible = effect.Visible;
             this.SkillName = effect.SkillName;
+            this.UID = 0;
         }
 
         public BattleEffect()
@@ -53,6 +57,7 @@ namespace TwistedFeathers
             this.User = null;
             this.Turnstamp = 0;
             this.Visible = true;
+            this.UID = 0;
         }
 
         public BattleEffect(e_type type, float modifier, string specifier)
@@ -66,6 +71,7 @@ namespace TwistedFeathers
             this.User = null;
             this.Turnstamp = 0;
             this.Visible = true;
+            this.UID = 0;
         }
 
         public BattleEffect(e_type type, float modifier, int duration, string specifier)
@@ -79,6 +85,7 @@ namespace TwistedFeathers
             this.User = null;
             this.Turnstamp = 0;
             this.Visible = true;
+            this.UID = 0;
         }
 
         public BattleEffect(e_type type, float modifier, int duration, string specifier, int turnstamp)
@@ -92,6 +99,7 @@ namespace TwistedFeathers
             this.User = null;
             this.Turnstamp = turnstamp;
             this.Visible = true;
+            this.UID = 0;
         }
 
         public BattleEffect(string skill_name, e_type type, float modifier, int duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp, bool visible)
@@ -105,6 +113,7 @@ namespace TwistedFeathers
             this.User = user;
             this.Turnstamp = turnstamp;
             this.Visible = visible;
+            this.UID = 0;
         }
 
 
@@ -114,6 +123,7 @@ namespace TwistedFeathers
             Target = target;
             Turnstamp += turnstamp;
             SkillName = skill_name;
+            UID = Random.Range(0, Int32.MaxValue);
         }
 
         public void run(SortedSet<BattleEffect> pq)
@@ -202,6 +212,18 @@ namespace TwistedFeathers
             else if (x.Type != y.Type)
             {
                 return x.Type.CompareTo(y.Type);
+            }
+            else if (x.Modifier != y.Modifier)
+            {
+                return x.Modifier.CompareTo(y.Modifier);
+            }
+            else if (x.Specifier != y.Specifier)
+            {
+                return x.Specifier.CompareTo(y.Specifier);
+            }
+            else if (x.UID != y.UID)
+            {
+                return x.UID.CompareTo(y.UID);
             }
             else
             {
