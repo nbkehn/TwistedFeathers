@@ -27,6 +27,8 @@ public class UIManager : MonoBehaviour
 
     public ButtonHandler buttonHandler;
 
+    public GameObject actionOverlay;
+
     public void Start(){
         foreach(GameObject button in animateableButtons){
             if(button.activeSelf){
@@ -152,19 +154,21 @@ public class UIManager : MonoBehaviour
         GameObject forecastList = popups[2];
         if(!forecastList.activeSelf){
             forecastList.SetActive(true);
-            forecastButton.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 150);
+
             miniMap.SetActive(false);
         } else {
             forecastList.SetActive(false);
-            forecastButton.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 30);
             miniMap.SetActive(true);
+        }
+        if(forecastButton.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("bigForecast")){
+            forecastButton.GetComponent<Animator>().Play("shrinkForecast");
         }
         forecastList.transform.GetChild(0).transform.GetChild(1).GetComponent<Text>().text = CombatManager.ForecastText;
     }
 
     public void addForecast(bool extendedFore){
         if(!extendedFore){
-            forecastButton.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 150);
+            forecastButton.GetComponent<Animator>().Play("growForecast");
         }
     }
 
