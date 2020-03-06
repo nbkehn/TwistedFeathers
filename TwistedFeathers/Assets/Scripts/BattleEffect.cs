@@ -112,7 +112,7 @@ namespace TwistedFeathers
         {
             User = user;
             Target = target;
-            Turnstamp = turnstamp;
+            Turnstamp += turnstamp;
             SkillName = skill_name;
         }
 
