@@ -67,6 +67,9 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("dummy E", new Skill("Claws", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             //player skills
+            Skill_db.Add("FeatherDagger", new Skill("Feather Dagger", "Deals 20 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Feather Dagger") }));
+            Skill_db.Add("Sabotage", new Skill("Sabotage", "Reduce enemy defense by 25% for 1 turn", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.debuff, .25f, 1, "defense") }));
+            Skill_db.Add("DefensiveFeathers", new Skill("Defensive Feathers", "Increase defense by 10%", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, .1f, 1, "defense") }));
             Skill_db.Add("smarty A", new Skill("Dagger", "Does nothing", p_type.player, new List<BattleEffect>()));
             Skill_db.Add("smarty B", new Skill("Pollen Bombs", "Does nothing", p_type.player, new List<BattleEffect>()));
             Skill_db.Add("smarty C", new Skill("Hover", "Does nothing", p_type.player, new List<BattleEffect>()));
@@ -91,6 +94,9 @@ public class GameManager : MonoBehaviour
 
             Player_db.Add("person A", new Player("Adam"));
             Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
+            Player_db["person A"].AddSkill(Skill_db["Sabotage"]);
+            Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
+            Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
             Player_db["person A"].myPrefab = playerPrefab;
             Player_db.Add("person B", new Player("Ben"));
             Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);

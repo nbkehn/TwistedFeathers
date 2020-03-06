@@ -12,7 +12,8 @@ namespace TwistedFeathers
         nothing,
         damage,
         status,
-        buff
+        buff,
+        debuff
     };
 
     public class BattleEffect
@@ -155,7 +156,7 @@ namespace TwistedFeathers
                             switch (Specifier)
                             {
                                 case ("attack"):
-                                    User.Attack += Modifier;
+                                    tar.Attack += Modifier;
                                     break;
                                 case ("defense"):
                                     tar.Defense += Modifier;
@@ -172,6 +173,29 @@ namespace TwistedFeathers
                             if (Duration > 0)
                             {
                                 pq.Add(new BattleEffect("", e_type.buff, -Modifier, 0, Specifier, new List<BattleParticipant>() { tar }, tar, Turnstamp + Duration, false));
+                            }
+                            break;
+                        case (e_type.debuff):
+                            switch (Specifier)
+                            {
+                                case ("attack"):
+                                    tar.Attack -= Modifier;
+                                    break;
+                                case ("defense"):
+                                    tar.Defense -= Modifier;
+                                    break;
+                                case ("accuracy"):
+                                    tar.Accuracy -= Modifier;
+                                    break;
+                                case ("dodge"):
+                                    tar.Dodge -= Modifier;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if (Duration > 0)
+                            {
+                                pq.Add(new BattleEffect("", e_type.debuff, -Modifier, 0, Specifier, new List<BattleParticipant>() { tar }, tar, Turnstamp + Duration, false));
                             }
                             break;
                         case (e_type.status):
