@@ -78,15 +78,7 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("smarty I", new Skill("Attack2", "Does nothing", p_type.player, new List<BattleEffect>()));
             Skill_db.Add("smarty J", new Skill("Attack3", "Does nothing", p_type.player, new List<BattleEffect>()));
 
-            Participant_db.Add("person A", new Player("Adam"));
-            Participant_db["person A"].AddSkill(Skill_db["smarty A"]);
-            Participant_db.Add("person B", new Player("Ben"));
-            Participant_db["person B"].AddSkill(Skill_db["smarty B"]);
 
-            Participant_db.Add("enemy A", new Monster("Azazel"));
-            Participant_db["enemy A"].AddSkill(Skill_db["dummy A"]);
-            Participant_db.Add("enemy B", new Monster("Beelzebub"));
-            Participant_db["enemy B"].AddSkill(Skill_db["dummy B"]);
 
 
 
@@ -99,17 +91,17 @@ public class GameManager : MonoBehaviour
 
             Player_db.Add("person A", new Player("Adam"));
             Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
-            Participant_db["person A"].myPrefab = playerPrefab;
+            Player_db["person A"].myPrefab = playerPrefab;
             Player_db.Add("person B", new Player("Ben"));
             Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
-            Participant_db["person B"].myPrefab = playerPrefab;
+            Player_db["person B"].myPrefab = playerPrefab;
 
             Monster_db.Add("enemy A", new Monster("Azazel"));
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
-            Participant_db["enemy A"].myPrefab = enemyPrefab;
+            Monster_db["enemy A"].myPrefab = enemyPrefab;
             Monster_db.Add("enemy B", new Monster("Beelzebub"));
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
-            Participant_db["enemy B"].myPrefab = enemyPrefab;
+            Monster_db["enemy B"].myPrefab = enemyPrefab;
 
             environments = new List<Environment>();
 

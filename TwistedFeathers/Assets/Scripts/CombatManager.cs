@@ -82,7 +82,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     public void renderPlayers(){
         int playerCount = 0;
         int enemyCount = 0;
-        foreach(Participant player in battle_players){
+        foreach(TwistedFeathers.Player player in battle_players){
             GameObject newPlayer = Instantiate(player.myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             newPlayer.transform.SetParent(GameObject.Find("Participants").transform);
             newPlayer.transform.position = playerSpawnPoints[playerCount].transform.position;
@@ -90,7 +90,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             playerCount++;
         }
 
-        foreach(Participant monster in battle_monsters){
+        foreach(Monster monster in battle_monsters){
             GameObject newEnemy = Instantiate(monster.myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             newEnemy.transform.SetParent(GameObject.Find("Participants").transform);
             newEnemy.transform.position = enemySpawnPoints[enemyCount].transform.position;
@@ -211,16 +211,11 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
         }
 
-        
+        renderPlayers();
 
         this.turnManager = this.gameObject.AddComponent<PunTurnManager>();
         this.turnManager.TurnManagerListener = this;
 
-    }
-
-    void Start()
-    {
-        renderPlayers();
     }
 
     public void SelectSkill(Skill skill){
