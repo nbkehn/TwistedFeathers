@@ -11,7 +11,8 @@ namespace TwistedFeathers
         private int current_hp;
         private float defense;
         private float dodge;
-        private List<KeyValuePair<string, BattleEffect>> statuses;
+        private List<BattleEffect> statuses;
+        private List<BattleEffect> buffs;
 
         protected BattleParticipant() : base()
         {
@@ -19,7 +20,8 @@ namespace TwistedFeathers
             this.current_hp = 50;
             this.defense = 0.0f;
             this.dodge = 0.0f;
-            this.statuses = new List<KeyValuePair<string, BattleEffect>>();
+            this.statuses = new List<BattleEffect>();
+            this.buffs = new List<BattleEffect>();
 
         }
 
@@ -29,7 +31,8 @@ namespace TwistedFeathers
             this.current_hp = 50;
             this.defense = 0.0f;
             this.dodge = 0.0f;
-            this.statuses = new List<KeyValuePair<string, BattleEffect>>();
+            this.statuses = new List<BattleEffect>();
+            this.buffs = new List<BattleEffect>();
         }
 
         public int Max_hp
@@ -56,10 +59,31 @@ namespace TwistedFeathers
             set => dodge = value;
         }
 
-        public List<KeyValuePair<string, BattleEffect>> Statuses
+        public List<BattleEffect> Statuses
         {
             get => statuses;
             set => statuses = value;
+        }
+        public List<BattleEffect> Buffs { get => buffs; set => buffs = value; }
+
+        public string displayStatuses()
+        {
+            string message = "Active Status Effects:";
+            foreach (BattleEffect status in Statuses)
+            {
+                message += "\n\tName: " + status.Specifier + "\n\tDuration: " + status.Duration;
+            }
+            return message;
+        }
+
+        public string displayBuffs()
+        {
+            string message = "Active Buffs and Debuffs";
+            foreach (BattleEffect buff in Buffs)
+            {
+                message += "\n\tStat: " + buff.Specifier + "\n\tModifier: " + (buff.Modifier * -100) + "%\n\tDuration: " + buff.Duration;
+            }
+            return message;
         }
     }
 }

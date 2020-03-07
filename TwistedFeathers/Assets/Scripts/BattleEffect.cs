@@ -12,9 +12,26 @@ namespace TwistedFeathers
         nothing,
         damage,
         status,
-        buff,
-        debuff
-    };
+        buff
+    }
+
+    public enum stat_type
+    {
+        nothing,
+        Attack,
+        Defense,
+        Accuracy,
+        Dodge
+
+    }
+
+    public enum status_type
+    {
+        nothing,
+        Poison,
+        Burn,
+        Stun
+    }
 
     public class BattleEffect
     {
@@ -103,6 +120,20 @@ namespace TwistedFeathers
             this.UID = 0;
         }
 
+        public BattleEffect(string skill_name, e_type type, float modifier, int duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp)
+        {
+            this.SkillName = skill_name;
+            this.Type = type;
+            this.Modifier = modifier;
+            this.Duration = duration;
+            this.Specifier = specifier;
+            this.Target = target;
+            this.User = user;
+            this.Turnstamp = turnstamp;
+            this.Visible = true;
+            this.UID = 0;
+        }
+
         public BattleEffect(string skill_name, e_type type, float modifier, int duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp, bool visible)
         {
             this.SkillName = skill_name;
@@ -127,7 +158,7 @@ namespace TwistedFeathers
             UID = Random.Range(0, Int32.MaxValue);
         }
 
-        public void run(SortedSet<BattleEffect> pq)
+        public void run()
         {
             bool check_hit = true;
             foreach (BattleParticipant tar in Target)
@@ -168,41 +199,38 @@ namespace TwistedFeathers
                                     tar.Dodge += Modifier;
                                     break;
                                 default:
+                                    Debug.LogError("Error: Invalid stat buff specified");
                                     break;
                             }
                             if (Duration > 0)
                             {
-                                pq.Add(new BattleEffect("", e_type.buff, -Modifier, 0, Specifier, new List<BattleParticipant>() { tar }, tar, Turnstamp + Duration, false));
-                            }
-                            break;
-                        case (e_type.debuff):
-                            switch (Specifier)
-                            {
-                                case ("attack"):
-                                    tar.Attack -= Modifier;
-                                    break;
-                                case ("defense"):
-                                    tar.Defense -= Modifier;
-                                    break;
-                                case ("accuracy"):
-                                    tar.Accuracy -= Modifier;
-                                    break;
-                                case ("dodge"):
-                                    tar.Dodge -= Modifier;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            if (Duration > 0)
-                            {
-                                pq.Add(new BattleEffect("", e_type.debuff, -Modifier, 0, Specifier, new List<BattleParticipant>() { tar }, tar, Turnstamp + Duration, false));
+                                tar.Buffs.Add(new BattleEffect("", e_type.buff, -Modifier, 0, Specifier, new List<BattleParticipant>() { tar }, tar, Turnstamp + Duration));
                             }
                             break;
                         case (e_type.status):
-                            tar.Statuses.Add(new KeyValuePair<string, BattleEffect>(Specifier, this));
+                            if (Visible)
+                            {
+                                tar.Statuses.Add(new BattleEffect(this));
+                            }
+                            else
+                            {
+                                switch (Specifier)
+                                {
+                                    case "Poison":
+                                        break;
+                                    case "Burn":
+                                        break;
+                                    case "Stun":
+                                        break;
+                                    default:
+                                        Debug.LogError("Error: Invalid status effect specified");
+                                        break;
+                                }
+                            }
                             break;
                         default:
                             //This is where special/unique effects need to be handled
+                            Debug.LogError("Error: Invalid effect type specified");
                             break;
                     }
                 }
