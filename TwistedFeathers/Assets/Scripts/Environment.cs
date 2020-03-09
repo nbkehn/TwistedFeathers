@@ -8,6 +8,7 @@ namespace TwistedFeathers
     {
         public GameObject miniIcon;
         public int envListIndex;
+        private List<KeyValuePair<int, Skill>> skills;
 
         public Environment() : base(p_type.environment, "")
         {
@@ -16,6 +17,7 @@ namespace TwistedFeathers
 
         public Environment(string name, GameObject Icon) : base(p_type.environment, name)
         {
+            this.skills = new List<KeyValuePair<int, Skill>>();
             miniIcon = Icon;
             Debug.Log(miniIcon);
             if (name == "swamp")
@@ -29,8 +31,9 @@ namespace TwistedFeathers
             }
         }
 
-        public Environment(string name, GameObject Icon, List<Skill> skills) : base(p_type.environment, name, skills)
+        public Environment(string name, GameObject Icon, List<KeyValuePair<int, Skill>> skills) : base(p_type.environment, name)
         {
+            this.skills = skills;
             miniIcon = Icon;
             Debug.Log(miniIcon);
             if (name == "swamp")
@@ -44,5 +47,6 @@ namespace TwistedFeathers
             }
         }
 
+        public new List<KeyValuePair<int, Skill>> Skills { get => skills; set => skills = value; }
     }
 }
