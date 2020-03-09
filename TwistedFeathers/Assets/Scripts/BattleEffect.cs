@@ -7,6 +7,8 @@ using Random = UnityEngine.Random;
 namespace TwistedFeathers
 {
 
+    //TODO Implement BattleEffect as a generic with a non-generic overload to solve specifier enum issue
+
     public enum e_type
     {
         nothing,
