@@ -420,6 +420,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             GameObject.Destroy(child.gameObject);
         }
         Debug.Log("TURN END");
+        Debug.Log(battle_players[protagonistIndex].displayBuffs());
         //Check for BattleParticipant deaths
         int playerCount = 0;
         foreach (TwistedFeathers.Player play in battle_players.ToArray())
