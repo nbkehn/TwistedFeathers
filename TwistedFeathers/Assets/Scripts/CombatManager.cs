@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,8 +13,11 @@ using Photon.Pun;
 using Photon.Realtime;
 using Photon.Pun.UtilityScripts;
 
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks, IPunObservable
 {
+    #region Fields
     SortedSet<BattleEffect> pq;
     List<TwistedFeathers.Player> battle_players;
     private List<Monster> battle_monsters;
@@ -27,14 +31,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
     private GameObject newText;
     public GameObject forecastContent;
-    public Environment[,] map;
+    public TwistedFeathers.Environment[,] map;
     int numTexts = 0;
     public int rows = 3;
     public int cols = 4;
 
     private Vector2 currentLocation;
     private Vector2 changingLocation;
-    public Environment CurrentEnvironment;
+    public TwistedFeathers.Environment CurrentEnvironment;
 
     public bool selectingMap = false;
     public bool validMove = true;
@@ -65,6 +69,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     [SerializeField]
     private Skill remoteSelection;
 
+    #endregion
+
+    #region Battle Methods
     List<BattleParticipant> getBattleParticipants()
     {
         List<BattleParticipant> list = new List<BattleParticipant>();
@@ -196,7 +203,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         SceneManager.LoadScene("TestScene");
         //SceneManager.SetActiveScene(SceneManager.GetSceneByName("TestScene"));
     }
-
+    #endregion
     // Start is called before the first frame update
     void Awake()
     {
@@ -219,8 +226,19 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
-        buildMap(rows, cols);
-        if(!GameObject.Find("GameManager").GetComponent<GameManager>().rotate){
+        if (GameManager.singlePlayer)
+        {
+            buildMap(rows, cols);
+        }
+        else if (PhotonNetwork.PlayerList.Length == 1)
+        {
+            buildMap(rows, cols);
+        } else
+        {
+            Debug.Log("Player has joined existing game so we do not build map normally");
+        }
+
+        if (!GameObject.Find("GameManager").GetComponent<GameManager>().rotate){
             // Checks to see if the player has indicated that they want environmental rotation animations
             Animator animator = GameObject.Find("DesertAnimation").GetComponent<Animator>();
             animator.runtimeAnimatorController = Resources.Load("Animations/Empty") as RuntimeAnimatorController;
@@ -242,7 +260,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         this.turnManager.TurnManagerListener = this;
 
     }
-
+    #region Skill Handling
     public void SelectSkill(Skill skill){
         // we know that this will be the selected skill
         // if one player don't network the move
@@ -307,9 +325,11 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         //attackIndicator.SetActive(false);
         //selectingEnemy = false;
         TwistedFeathers.Player protag = (TwistedFeathers.Player) battle_players[index]; 
-        queueSkill(protag.Skills[Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>() { battle_monsters[Random.Range(0, battle_monsters.Count)] });
+        queueSkill(protag.Skills[UnityEngine.Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>() { battle_monsters[UnityEngine.Random.Range(0, battle_monsters.Count)] });
     }
+    #endregion
 
+    #region Map Selection
     public void StartSelecting(){
         // We want to begin selecting our environment change, so update the flow
         selectingMap = true;
@@ -341,10 +361,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // if cancelled, we just go back to normal
         selectingMap = false;
     }
+    #endregion
+
     // Update is called once per frame
     void Update()
     {
-        if(selectingEnemy){
+        if (selectingEnemy){
             if (Input.GetKeyDown("w")) {
                 //if up is pressed move the changing location over 1 unless at the edge
                 moveIndicator(0);
@@ -415,7 +437,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     public float getHealthBarLengh(float currentHealth, float maxHealth){
         return (currentHealth/maxHealth)*100;
     }
-
+    #region Turn Handling
     private void singlePlayerTurn()
     {
         //resolveStatuses();
@@ -473,11 +495,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // Debug.Log("Beelzebub Acc: " + battle_monsters[0].Accuracy);
         //New turn beings here
         Debug.Log("TURN BEGIN");
+       
         currentTurn++;
-        queueSkill(CurrentEnvironment.Skills[Random.Range(0, CurrentEnvironment.Skills.Count)], CurrentEnvironment, getBattleParticipants());
+        queueSkill(CurrentEnvironment.Skills[UnityEngine.Random.Range(0, CurrentEnvironment.Skills.Count)], CurrentEnvironment, getBattleParticipants());
         foreach (Monster part in battle_monsters)
         {
-            queueSkill(part.Skills[Random.Range(0, part.Skills.Count)], part, new List<BattleParticipant>() { battle_players[Random.Range(0, battle_players.Count)]});
+            queueSkill(part.Skills[UnityEngine.Random.Range(0, part.Skills.Count)], part, new List<BattleParticipant>() { battle_players[UnityEngine.Random.Range(0, battle_players.Count)]});
         }
 
         //Forecast
@@ -603,6 +626,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         Debug.Log("Calling start turn");
         this.StartTurn();
     }
+    #endregion
 
     #region Photon Callbacks
 
@@ -621,7 +645,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         if (PhotonNetwork.PlayerList.Length == 2)
         {
+            
             Debug.Log("Other player arrived");
+            PhotonNetwork.CurrentRoom.SetCustomProperties(mapHash);
             if (this.turnManager.Turn == 0)
             {
                 // when the room has a player, make sure that the player can play without needing to wait
@@ -631,6 +657,20 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         else
         {
             Debug.Log("Waiting for another player");
+        }
+    }
+    
+    // This is where we build the remote client map
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            if (propertiesThatChanged.ContainsKey("map"))
+            {
+                string mapString = (string)propertiesThatChanged["map"];
+                Debug.Log("Received map representation: " + mapString);
+                buildMapRemoteClient(mapString);
+            }
         }
     }
 
@@ -684,6 +724,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 stream.SendNext(battle_monsters[i].Defense);
                 stream.SendNext(battle_monsters[i].Dodge);
             }
+            //stream.SendNext(map);
+            stream.SendNext(CurrentEnvironment);
+            //stream.SendNext(mapHolder);
         }
         else
         {
@@ -702,32 +745,91 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 battle_monsters[i].Defense = (float)stream.ReceiveNext();
                 battle_monsters[i].Dodge = (float)stream.ReceiveNext();
             }
+            //map = (Environment[,])stream.ReceiveNext();
+            CurrentEnvironment = (TwistedFeathers.Environment)stream.ReceiveNext();
+            //mapHolder = (Transform)stream.ReceiveNext();
         }
     }
 
     #endregion
 
+    private Hashtable mapHash;
     //Randomly generates the 2D array that represents the UI Map
     public void buildMap(int rows, int cols){
-        map = new Environment[cols, rows];
+        // hashtable used to synchronize the map
+        mapHash = new Hashtable();
+        // string representation of the map used as a value in the hashtable to network across
+        string mapNetRep = "";
+        map = new TwistedFeathers.Environment[cols, rows];
         map[cols-1,rows-1] = GameManager.environments[0];
-        for(int i = 0; i < cols; i++){
+        for (int i = 0; i < cols; i++){
             for(int j = 0; j < rows; j++){
-                float randomInt = Random.Range(0f, 10.0f);
+                float randomInt = UnityEngine.Random.Range(0f, 10.0f);
                 if(randomInt >=0 && randomInt <=3){
                     map[i,j] = GameManager.environments[0];
+                    mapNetRep += "0";
                 } else if(randomInt >=3 && randomInt <=9){
                     map[i,j] = GameManager.environments[1];
+                    mapNetRep += "1";
                 } else if(randomInt >=9 && randomInt <=10){
                     map[i,j] = GameManager.environments[GameManager.environments.Count-1];
+                    mapNetRep += "" + (GameManager.environments.Count - 1);
                 }
             }
         }
-        for(int i = 0; i < cols; i++){
+
+        // add map array to the hashtable
+        mapHash.Add("map", mapNetRep);
+        Debug.Log("Sent Array dimensions: " + cols + ", " + rows);
+        Debug.Log("Sent Map Array Rep: " + mapNetRep);
+
+        for (int i = 0; i < cols; i++){
             for(int j = 0; j < rows; j++){
-                if(map[i,j] != GameManager.environments[GameManager.environments.Count-1]){
+                
+                if (map[i,j] != GameManager.environments[GameManager.environments.Count-1]){
                     currentLocation = new Vector2(i, j);
                     changingLocation = new Vector2(i,j);
+                    break;
+                }
+            }
+        }
+        MapSetup(rows, cols);
+    }
+
+    //Generates a 2D map based on the map data
+    public void buildMapRemoteClient(string mapData)
+    {
+        // k is a counter used to index into the mapData string
+        // the map data string holds elements like this
+        // Index | Point on the map
+        // ------------------------
+        // 0     | (0,0)
+        // 1     | (0,1)
+        // 2     | (1,0)
+        // 3     | (1,1)
+        // and so on in this fashion up to 10
+        int k = 0;
+        int conversionFactor = 48;
+        map = new TwistedFeathers.Environment[cols, rows];
+        map[cols - 1, rows - 1] = GameManager.environments[0];
+        for (int i = 0; i < cols; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                // could probaly use smaller int
+                // convert converts the string "1" to its html value of 49 thus we minus a conversion factor of 48
+                map[i, j] = GameManager.environments[Convert.ToInt32(mapData[k]) - conversionFactor];
+                k++;
+            }
+        }
+        for (int i = 0; i < cols; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                if (map[i, j] != GameManager.environments[GameManager.environments.Count - 1])
+                {
+                    currentLocation = new Vector2(i, j);
+                    changingLocation = new Vector2(i, j);
                     break;
                 }
             }
