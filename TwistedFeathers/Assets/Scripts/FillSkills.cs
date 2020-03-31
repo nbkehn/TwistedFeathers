@@ -11,6 +11,8 @@ public class FillSkills : MonoBehaviour
     public GameObject buttonPrefab;
     private GameObject newButton;
     public CombatManager manager;
+    private string clickedSkill = "";
+    private string clickedEnemySkill = "";
 
     void Start(){
         skills = new Dictionary<string, Skill>();
@@ -40,6 +42,25 @@ public class FillSkills : MonoBehaviour
             newButton.GetComponent<Button>().onClick.AddListener(() => {
                 Close();
             });
+            newButton.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => {
+                GameObject.Find("PlayerSkillInfo").transform.GetChild(0).GetComponent<Text>().text =sk.Value.Description;
+                string clicked = sk.Value.Name;
+
+                Animator skillInfoAnimator = GameObject.Find("PlayerSkillInfo").GetComponent<Animator>();
+            
+                if(!skillInfoAnimator.GetBool("Open"))
+                {
+                    
+                    skillInfoAnimator.Play("Click");
+                    skillInfoAnimator.SetBool("Open", true);
+                }
+                else if(skillInfoAnimator.GetBool("Open") && clicked == clickedSkill){
+                    
+                    skillInfoAnimator.Play("Pop Out");
+                    skillInfoAnimator.SetBool("Open", false);
+                }
+                clickedSkill = sk.Value.Name;
+            });
         }
     }
 
@@ -55,10 +76,33 @@ public class FillSkills : MonoBehaviour
             newButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(-290, -1 * (40*numButtons + 20) , 0);
             numButtons++;
             newButton.transform.GetChild(0).GetComponent<Text>().text = sk.Value.Name;
+            newButton.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => {
+                GameObject.Find("EnemySkillInfo").transform.GetChild(0).GetComponent<Text>().text =sk.Value.Description;
+                string clicked = sk.Value.Name;
+
+                Animator enemyInfoAnimator = GameObject.Find("EnemySkillInfo").GetComponent<Animator>();
+            
+                if(!enemyInfoAnimator.GetBool("Open"))
+                {
+                    
+                    enemyInfoAnimator.Play("Click");
+                    enemyInfoAnimator.SetBool("Open", true);
+                }
+                else if(enemyInfoAnimator.GetBool("Open") && clicked == clickedEnemySkill){
+                    
+                    enemyInfoAnimator.Play("Pop Out");
+                    enemyInfoAnimator.SetBool("Open", false);
+                }
+                clickedEnemySkill = sk.Value.Name;
+            });
         }
     }
 
     public void Close(){
         Content.transform.parent.parent.gameObject.SetActive(false);
+        if(GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().GetBool("Open")){
+            GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().Play("Pop Out");
+            GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().SetBool("Open", false);
+        }
     }
 }
