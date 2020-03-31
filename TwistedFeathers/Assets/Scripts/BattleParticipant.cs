@@ -66,6 +66,70 @@ namespace TwistedFeathers
         }
         public List<BattleEffect> Buffs { get => buffs; set => buffs = value; }
 
+        public float getStat(stat_type type)
+        {
+            switch (type)
+            {
+                case stat_type.HP:
+                    return this.Current_hp;
+                    break;
+                case stat_type.Attack:
+                    return this.Attack;
+                    break;
+                case stat_type.Defense:
+                    return this.Defense;
+                    break;
+                case stat_type.Accuracy:
+                    return this.Accuracy;
+                    break;
+                case stat_type.Dodge:
+                    return this.Dodge;
+                    break;
+                default:
+                    Debug.LogError("BattleParticipant getStat: invalid stat type");
+                    return 0;
+                    break;
+            }
+        }
+
+        public float getStat(string type)
+        {
+            switch (type)
+            {
+                case "hp":
+                    return this.Current_hp;
+                    break;
+                case "attack":
+                    return this.Attack;
+                    break;
+                case "defense":
+                    return this.Defense;
+                    break;
+                case "accuracy":
+                    return this.Accuracy;
+                    break;
+                case "dodge":
+                    return this.Dodge;
+                    break;
+                default:
+                    Debug.LogError("BattleParticipant getStat: invalid stat type");
+                    return 0;
+                    break;
+            }
+        }
+        /*
+         * Resets stats back to their default values
+         * For use after a battle
+         */
+        public void resetStats()
+        {
+            this.current_hp = this.max_hp;
+            this.Attack = 0;
+            this.defense = 0;
+            this.Accuracy = 0;
+            this.dodge = 0;
+        }
+
         public string displayStatuses()
         {
             string message = "Active Status Effects:";

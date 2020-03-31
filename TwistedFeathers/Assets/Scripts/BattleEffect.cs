@@ -20,6 +20,7 @@ namespace TwistedFeathers
     public enum stat_type
     {
         nothing,
+        HP,
         Attack,
         Defense,
         Accuracy,
@@ -50,6 +51,7 @@ namespace TwistedFeathers
         public bool Visible { get; set; }
         public string SkillName { get; set; }
         public int UID { get; set; }
+        public List<Conditional> Conditions { get; set; }
 
         // Copy Constructor
         public BattleEffect(BattleEffect effect)
@@ -162,91 +164,102 @@ namespace TwistedFeathers
 
         public void run()
         {
-            bool check_hit = true;
-            foreach (BattleParticipant tar in Target)
+            bool cond_met = true;
+            foreach (Conditional condition in Conditions)
             {
-                //Check to see if effect actually hits target
-                if (User.Type != tar.Type)
+                if (!condition.isCond(this))
                 {
-                    float random_dodge = Random.Range(0.0f, 1.0f);
-                    if ((tar.Dodge-User.Accuracy) >= random_dodge)
-                    {
-                        //Miss!
-                        check_hit = false;
-                    }
-                }
-
-                if (check_hit)
-                {
-                    switch (Type)
-                    {
-                        case (e_type.damage):
-                            // Missing flat mod additions
-                            float damage = Modifier + (Modifier * User.Attack) - (Modifier * tar.Defense);
-                            tar.Current_hp = (int)(tar.Current_hp - damage);
-                            break;
-                        case (e_type.buff):
-                            switch (Specifier)
-                            {
-                                case ("attack"):
-                                    tar.Attack += Modifier;
-                                    break;
-                                case ("defense"):
-                                    tar.Defense += Modifier;
-                                    break;
-                                case ("accuracy"):
-                                    tar.Accuracy += Modifier;
-                                    break;
-                                case ("dodge"):
-                                    tar.Dodge += Modifier;
-                                    break;
-                                default:
-                                    Debug.LogError("Error: Invalid stat buff specified");
-                                    break;
-                            }
-                            if (Duration > 0)
-                            {
-                                tar.Buffs.Add(new BattleEffect("", e_type.buff, -Modifier, 0, Specifier, new List<BattleParticipant>() { tar }, tar, Turnstamp + Duration));
-                            }
-                            break;
-                        case (e_type.status):
-                            if (Visible)
-                            {
-                                tar.Statuses.Add(new BattleEffect(this));
-                            }
-                            else
-                            {
-                                switch (Specifier)
-                                {
-                                    case "Poison":
-                                        break;
-                                    case "Burn":
-                                        break;
-                                    case "Stun":
-                                        break;
-                                    default:
-                                        Debug.LogError("Error: Invalid status effect specified");
-                                        break;
-                                }
-                            }
-                            break;
-                        default:
-                            //This is where special/unique effects need to be handled
-                            Debug.LogError("Error: Invalid effect type specified");
-                            break;
-                    }
-                }
-                else
-                {
-                    //Miss case
-                    Debug.Log(User.Name + " Missed!");
+                    cond_met = false;
+                    break;
                 }
             }
-            
 
-            
+            if (cond_met)
+            {
+                
+                bool check_hit = true;
+                foreach (BattleParticipant tar in Target)
+                {
+                    check_hit = true;
+                    //Check to see if effect actually hits target
+                    if (User.Type != tar.Type)
+                    {
+                        float random_dodge = Random.Range(0.0f, 1.0f);
+                        if ((tar.Dodge-User.Accuracy) >= random_dodge)
+                        {
+                            //Miss!
+                            check_hit = false;
+                        }
+                    }
+
+                    if (check_hit)
+                    {
+                        switch (Type)
+                        {
+                            case (e_type.damage):
+                                // Missing flat mod additions
+                                float damage = Modifier + (Modifier * User.Attack) - (Modifier * tar.Defense);
+                                tar.Current_hp = (int)(tar.Current_hp - damage);
+                                break;
+                            case (e_type.buff):
+                                switch (Specifier)
+                                {
+                                    case ("attack"):
+                                        tar.Attack += Modifier;
+                                        break;
+                                    case ("defense"):
+                                        tar.Defense += Modifier;
+                                        break;
+                                    case ("accuracy"):
+                                        tar.Accuracy += Modifier;
+                                        break;
+                                    case ("dodge"):
+                                        tar.Dodge += Modifier;
+                                        break;
+                                    default:
+                                        Debug.LogError("Error: Invalid stat buff specified");
+                                        break;
+                                }
+                                if (Duration > 0)
+                                {
+                                    tar.Buffs.Add(new BattleEffect("", e_type.buff, -Modifier, 0, Specifier, new List<BattleParticipant>() { tar }, tar, Turnstamp + Duration));
+                                }
+                                break;
+                            case (e_type.status):
+                                if (Visible)
+                                {
+                                    tar.Statuses.Add(new BattleEffect(this));
+                                }
+                                else
+                                {
+                                    switch (Specifier)
+                                    {
+                                        case "Poison":
+                                            break;
+                                        case "Burn":
+                                            break;
+                                        case "Stun":
+                                            break;
+                                        default:
+                                            Debug.LogError("Error: Invalid status effect specified");
+                                            break;
+                                    }
+                                }
+                                break;
+                            default:
+                                //This is where special/unique effects need to be handled
+                                Debug.LogError("Error: Invalid effect type specified");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        //Miss case
+                        Debug.Log(User.Name + " Missed!");
+                    }
+                }
+            }
         }
-
     }
 
 
