@@ -40,6 +40,8 @@ public class GameManager : MonoBehaviour
 
     public bool rotate = true;
 
+    public bool tutorial = true;
+
     // Awake is called before the first frame update and before Starts
     void Awake()
     {
@@ -150,6 +152,10 @@ public class GameManager : MonoBehaviour
             inCombat = true;
         }
 
+    }
+
+    public void toggleTutorial(){
+        tutorial = !tutorial;
     }
 }
 

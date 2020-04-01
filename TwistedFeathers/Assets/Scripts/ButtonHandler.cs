@@ -84,6 +84,7 @@ public class ButtonHandler : MonoBehaviour
 
     public void toggleSettings(){
         GameObject.Find("Settings").transform.GetChild(0).gameObject.SetActive(!GameObject.Find("Settings").transform.GetChild(0).gameObject.activeSelf);
+        GameObject.Find("Settings").transform.GetChild(1).gameObject.SetActive(!GameObject.Find("Settings").transform.GetChild(1).gameObject.activeSelf);
     }
 
 

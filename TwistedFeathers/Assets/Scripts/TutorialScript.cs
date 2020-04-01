@@ -8,6 +8,13 @@ public class TutorialScript : MonoBehaviour
     public GameObject tutorialCanvas;
     public Animator animator;
 
+
+    void Start(){
+        if(!GameObject.Find("GameManager").GetComponent<GameManager>().tutorial){
+            tutorialCanvas.SetActive(false);
+        }
+    }
+
     public void StartTutorial(){
         segment = 1;
         animator.Play("HealthBars");
