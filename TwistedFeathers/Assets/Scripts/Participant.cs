@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 namespace TwistedFeathers
 {
@@ -19,6 +20,7 @@ namespace TwistedFeathers
         private string name;
         private float attack;
         private float accuracy;
+        private Skill[] skillTree;
         private List<Skill> skills;
         public GameObject myPrefab;
         public GameObject me;
@@ -72,6 +74,36 @@ namespace TwistedFeathers
         public void AddSkill(Skill new_skill)
         {
             this.skills.Add(new_skill);
+        }
+
+        public void LoadSkillTree(string path)
+        {
+            string dataAsJson;
+            if (File.Exists(path))
+            {
+                // Read the json from the file into a string
+                dataAsJson = File.ReadAllText(path);
+
+                // Pass the json to JsonUtility, and tell it to create a SkillTree object from it
+                SkillTree skillData = JsonUtility.FromJson<SkillTree>(dataAsJson);
+
+                // Store the SkillTree as an array of Skill
+                skillTree = new Skill[skillData.skilltree.Length];
+                skillTree = skillData.skilltree;
+
+                for (int i = 0; i < skillTree.Length; i++)
+                {
+                    if (skillTree[i].Dependency > -1)
+                    {
+                        skillTree[i].Pre_req = skillTree[skillTree[i].Dependency];
+                    }
+                    skillTree[i].User_type = this.type;
+                    if (skillTree[i].Selected)
+                    {
+                        this.skills.Add(skillTree[i]);
+                    }
+                }
+            }
         }
     }
 }
