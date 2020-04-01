@@ -36,17 +36,45 @@ namespace TwistedFeathers
         Stun
     }
 
+    [System.Serializable]
     public class BattleEffect
     {
+
+        // This field is used by the skill editor only
+        private bool show;
+
+        // Other fields
+        [SerializeField]
+        private e_type type;
+
+        [SerializeField]
+        private float modifier;
+
+        [SerializeField]
+        private int duration;
+
+        [SerializeField]
+        private string specifier;
+
+        private int turnstamp;
+
+        public bool Show { get => show; set => show = value; }
+        public e_type Type { get => type; set => type = value; }
+        public float Modifier { get => modifier; set => modifier = value; }
+        public int Duration { get => duration; set => duration = value; }
+        public string Specifier { get => specifier; set => specifier = value; }
+        public int Turnstamp { get => turnstamp; set => turnstamp = value; }
+
+
         // These values are only defined when it is selected in battle
-        public e_type Type { get; set; }
+        //public e_type Type { get; set; }
         public List<BattleParticipant> Target { get; set; }
         public Participant User { get; set; }
         // These values are defined when stored in a skill
-        public string Specifier { get; set; }
-        public int Turnstamp { get; set; }
-        public float Modifier { get; set; }
-        public int Duration { get; set; }
+        //public string Specifier { get; set; }
+        //public int Turnstamp { get; set; }
+        //public float Modifier { get; set; }
+        //public int Duration { get; set; }
         /*Whether or not the effect will show up in the forecast*/
         public bool Visible { get; set; }
         public string SkillName { get; set; }
