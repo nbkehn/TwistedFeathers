@@ -64,10 +64,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     private PunTurnManager turnManager;
 
     [SerializeField]
-    private Skill localSelection;
+    private string localSelection;
 
     [SerializeField]
-    private Skill remoteSelection;
+    private string remoteSelection;
 
     #endregion
 
@@ -290,7 +290,19 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         else
         {
-            MakeTurn(skill);
+            if (battle_monsters.Count > 1)
+            {
+                selectingEnemy = true;
+                attackIndicator.SetActive(true);
+                moveIndicator(0);
+                chosenSkill = skill;
+            }
+            else
+            {
+                // we want to select the skill and then send the skill name over the network
+                // we can then search for the skill like in FillSkills class for the matching name
+                MakeTurn(skill); // sends skill over network
+            }
         }
     }
 
@@ -308,6 +320,17 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         return battle_players[protagonistIndex].Skills;
     }
 
+    public List<Skill> GetRemotePlayerSkills()
+    {
+        return battle_players[protagonistIndex + 1].Skills;
+    }
+
+    // used in FillSkills to determine which player to fill skills for
+    public int getPhotonPlayerListLength()
+    {
+        return PhotonNetwork.PlayerList.Length;
+    }
+
     public void chooseSkill(int index, Skill skill){
         // set this method up to take a parameter index that specifies
         // whether the player or ally is choosing a skill
@@ -316,6 +339,49 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         selectingEnemy = false;
         TwistedFeathers.Player protag = (TwistedFeathers.Player) battle_players[index]; 
         queueSkill(skill, protag, new List<BattleParticipant>() { battle_monsters[chosenEnemy] });
+        waitingPlayer = false;
+        waiting_effects = true;
+    }
+
+    // chooses a skill from the provided skill information
+    // so far skill information is of the format name,chosenEnemyIndex
+    // by accessing the list of skills 
+    // and finding the skill with the matching name
+    public void networkChooseSkill(string skillInfo)
+    {
+        attackIndicator.SetActive(false);
+        selectingEnemy = false;
+        Debug.Log(skillInfo);
+        // first index of splitinfo should be the skill name
+        // second index should be the chosen enemy index
+        string[] splitInfo = skillInfo.Split(',');
+        // need to find skill
+        TwistedFeathers.Skill skill = null;
+        TwistedFeathers.Player userP = null;
+        if (skill == null)
+        {
+            foreach (Skill sk in GetActivePlayerSkills())
+            {
+                if (splitInfo[0].Equals(sk.Name))
+                {
+                    skill = sk;
+                }
+            }
+            userP = (TwistedFeathers.Player)battle_players[0];
+        } 
+        if(skill == null)
+        {
+            foreach (Skill sk in GetRemotePlayerSkills())
+            {
+                if (splitInfo[0].Equals(sk.Name))
+                {
+                    skill = sk;
+                }
+            }
+            userP = (TwistedFeathers.Player)battle_players[1];
+        }
+        //Debug.Log("Chosen Enemy: " + (Convert.ToInt32(splitInfo[1]) - 48));
+        queueSkill(skill, userP, new List<BattleParticipant>() { battle_monsters[Convert.ToInt32(splitInfo[1])] });
         waitingPlayer = false;
         waiting_effects = true;
     }
@@ -376,7 +442,16 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 moveIndicator(1);
             }
             if(Input.GetKeyDown("return")){
-                singlePlayerChooseSkill(chosenSkill);
+                if(GameManager.singlePlayer)
+                {
+                    singlePlayerChooseSkill(chosenSkill);
+                } else if(getPhotonPlayerListLength() == 1)
+                {
+                    singlePlayerChooseSkill(chosenSkill);
+                } else if (getPhotonPlayerListLength() == 2)
+                {
+                    MakeTurn(chosenSkill);
+                }
             }
         }
         // if the UI is in the change environment mode there is a different flow for the update method
@@ -556,12 +631,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         {
             // once we get an actual functioning choose skill
             // we can pass in the selection
-            chooseSkill(0, localSelection);
+            networkChooseSkill(localSelection);
         }
         if (this.remoteSelection != null)
         {
             //attacks.Enqueue(this.remoteSelection);
-            chooseSkill(1, remoteSelection);
+            networkChooseSkill(remoteSelection);
         }
         Debug.Log("Calling execute skills");
 
@@ -585,11 +660,11 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         if (photonPlayer.IsLocal)
         {
-            this.localSelection = (Skill)move;
+            this.localSelection = (string)move;
         }
         else
         {
-            this.remoteSelection = (Skill)move;
+            this.remoteSelection = (string)move;
         }
     }
 
@@ -612,7 +687,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
     public void MakeTurn(Skill selection)
     {
-        this.turnManager.SendMove((Skill)selection, true);
+        this.turnManager.SendMove((string)(selection.Name + "," + chosenEnemy), true);
     }
 
     public void OnEndTurn()
@@ -648,6 +723,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             
             Debug.Log("Other player arrived");
             PhotonNetwork.CurrentRoom.SetCustomProperties(mapHash);
+            // clear the queue when player joins to avoid duplicate enemy skill selection
+            pq.Clear();
             if (this.turnManager.Turn == 0)
             {
                 // when the room has a player, make sure that the player can play without needing to wait
@@ -661,6 +738,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     }
     
     // This is where we build the remote client map
+    // Room properties are updated when the player enters the room
+    // in OnPlayerEnteredRoom method
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -780,8 +859,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         // add map array to the hashtable
         mapHash.Add("map", mapNetRep);
-        Debug.Log("Sent Array dimensions: " + cols + ", " + rows);
-        Debug.Log("Sent Map Array Rep: " + mapNetRep);
+        //Debug.Log("Sent Array dimensions: " + cols + ", " + rows);
+        //Debug.Log("Sent Map Array Rep: " + mapNetRep);
 
         for (int i = 0; i < cols; i++){
             for(int j = 0; j < rows; j++){
@@ -796,7 +875,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         MapSetup(rows, cols);
     }
 
-    //Generates a 2D map based on the map data
+    //Generates a 2D map based on the map data received remotely
     public void buildMapRemoteClient(string mapData)
     {
         // k is a counter used to index into the mapData string
