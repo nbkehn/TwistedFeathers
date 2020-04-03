@@ -306,6 +306,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
     }
 
+    /// <summary>
+    /// Called during single player when they choose a skill.
+    /// </summary>
+    /// <param name="skill"></param>
     private void singlePlayerChooseSkill(Skill skill)
     {
         Debug.Log("Single Player choose skill");
@@ -314,23 +318,86 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         
     }
     
-
+    /// <summary>
+    /// Used to get the master client or protagonist's skills.
+    /// </summary>
+    /// <returns></returns>
     public List<Skill> GetActivePlayerSkills()
     {
         return battle_players[protagonistIndex].Skills;
     }
 
+    /// <summary>
+    /// Useed to get the allies or remote player's skill list.
+    /// </summary>
+    /// <returns></returns>
     public List<Skill> GetRemotePlayerSkills()
     {
         return battle_players[protagonistIndex + 1].Skills;
     }
 
-    // used in FillSkills to determine which player to fill skills for
+    /// <summary>
+    /// Called throughout the program to determine how many players are in a room.
+    /// </summary>
+    /// <returns></returns>
     public int getPhotonPlayerListLength()
     {
         return PhotonNetwork.PlayerList.Length;
     }
 
+    
+    /// <summary>
+    /// Called when the master client updates the room properties with
+    /// the chosen environment skill so that the remote client can
+    /// choose the same skill.
+    /// </summary>
+    /// <param name="envSkill">name of the skill to be queued</param>
+    public void processNetEnvSkill(string envSkill)
+    {
+        foreach (Skill sk in CurrentEnvironment.Skills)
+        {
+            if (envSkill.Equals(sk.Name))
+            {
+                queueSkill(sk, CurrentEnvironment, getBattleParticipants());
+            }
+        }
+        
+    }
+
+    /// <summary>
+    /// Called when the master client pdates the room properties with the
+    /// enemy skill information of the current turn for the remote client
+    /// to process and queue the same information.
+    /// </summary>
+    /// <param name="enemySkills"></param>
+    public void processNetEnemySkills(string enemySkills)
+    {
+        // relies on the fact that the enemies are already in the same order within battle_monsters
+        int i = 0;
+        string[] enemySkillArray = enemySkills.Split(':');
+        foreach(Monster mon in battle_monsters)
+        {
+            // index 0 is the name and index 1 is the target, user is the current monster in the loop
+            string[] enemySkillInfo = enemySkillArray[i].Split(',');
+            if (enemySkillInfo[0] != "") // if the skill info is not empty
+            {
+                foreach (Skill sk in mon.Skills)
+                {
+                    if (enemySkillInfo[0].Equals(sk.Name))
+                    {
+                        queueSkill(sk, mon, new List<BattleParticipant>() { battle_players[Convert.ToInt32(enemySkillInfo[1])] });
+                    }
+                }
+            }
+            i++;
+        }
+    }
+
+    /// <summary>
+    /// Called when the player chooses a skill in single player
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="skill"></param>
     public void chooseSkill(int index, Skill skill){
         // set this method up to take a parameter index that specifies
         // whether the player or ally is choosing a skill
@@ -343,10 +410,16 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         waiting_effects = true;
     }
 
-    // chooses a skill from the provided skill information
-    // so far skill information is of the format name,chosenEnemyIndex
-    // by accessing the list of skills 
-    // and finding the skill with the matching name
+
+    /// <summary>
+    /// Called when a player chooses a skill in multiplayer.
+    /// 
+    /// Chooses a skill from the provided skill information
+    /// so far skill information is of the format name,chosenEnemyIndex
+    /// by accessing the list of skills 
+    /// and finding the skill with the matching name
+    /// </summary>
+    /// <param name="skillInfo"></param>
     public void networkChooseSkill(string skillInfo)
     {
         attackIndicator.SetActive(false);
@@ -380,7 +453,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             }
             userP = (TwistedFeathers.Player)battle_players[1];
         }
-        //Debug.Log("Chosen Enemy: " + (Convert.ToInt32(splitInfo[1]) - 48));
+        //Debug.Log("Chosen Enemy: " + (Convert.ToInt32(splitInfo[1])));
         queueSkill(skill, userP, new List<BattleParticipant>() { battle_monsters[Convert.ToInt32(splitInfo[1])] });
         waitingPlayer = false;
         waiting_effects = true;
@@ -450,6 +523,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                     singlePlayerChooseSkill(chosenSkill);
                 } else if (getPhotonPlayerListLength() == 2)
                 {
+                    //must have this here to turn off the indicators for networking
+                    attackIndicator.SetActive(false);
+                    selectingEnemy = false;
                     MakeTurn(chosenSkill);
                 }
             }
@@ -513,6 +589,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         return (currentHealth/maxHealth)*100;
     }
     #region Turn Handling
+    // turn method used for single player mode and networked single player
     private void singlePlayerTurn()
     {
         //resolveStatuses();
@@ -570,14 +647,42 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // Debug.Log("Beelzebub Acc: " + battle_monsters[0].Accuracy);
         //New turn beings here
         Debug.Log("TURN BEGIN");
-       
+
+        // used to network the enemy and environment skills
+        Hashtable skillHash = new Hashtable(); 
+        //mapHash.Add("map", mapNetRep);
         currentTurn++;
-        queueSkill(CurrentEnvironment.Skills[UnityEngine.Random.Range(0, CurrentEnvironment.Skills.Count)], CurrentEnvironment, getBattleParticipants());
+        Skill chosenEnvSkill = CurrentEnvironment.Skills[UnityEngine.Random.Range(0, CurrentEnvironment.Skills.Count)];
+
+        skillHash.Add("envSkill", chosenEnvSkill.Name); //only need the name of the environment skill
+
+        string enemySkillInfos = "";
+
+        // this string will hold all enemy skill information in  the format
+        // "enemy1SkillName,enemy1Target:enemy2SkillName,enemy2Target"
+        // we know which monster is using the skill based on the fact that they are added in
+        // linear order
+        if(GameManager.singlePlayer || PhotonNetwork.IsMasterClient)
+        {
+            queueSkill(chosenEnvSkill, CurrentEnvironment, getBattleParticipants());
+        }
         foreach (Monster part in battle_monsters)
         {
-            queueSkill(part.Skills[UnityEngine.Random.Range(0, part.Skills.Count)], part, new List<BattleParticipant>() { battle_players[UnityEngine.Random.Range(0, battle_players.Count)]});
+            Skill chosenEnemySkill = part.Skills[UnityEngine.Random.Range(0, part.Skills.Count)];
+            int targetIndex = UnityEngine.Random.Range(0, battle_players.Count);
+            if (GameManager.singlePlayer || PhotonNetwork.IsMasterClient)
+            {
+                queueSkill(chosenEnemySkill, part, new List<BattleParticipant>() { battle_players[targetIndex] });
+            }
+            enemySkillInfos += (chosenEnemySkill.Name + "," + targetIndex + ":");
+            
         }
 
+        skillHash.Add("enemySkills", enemySkillInfos);
+        if (!GameManager.singlePlayer)
+        {
+            PhotonNetwork.CurrentRoom.SetCustomProperties(skillHash);
+        }
         //Forecast
 
         Debug.Log("Forecast Begins!");
@@ -623,6 +728,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         TurnBegin();
     }
 
+    /// <summary>
+    /// Once all players make a selection then the selections are processed.
+    /// Effects are resolved and the turn is ended.
+    /// </summary>
     public void OnTurnCompleted(int obj)
     {
         Debug.Log("OnTurnCompleted: " + obj);
@@ -646,14 +755,18 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         this.OnEndTurn();
     }
 
-    // when a player moved (but did not finish the turn)
+    /// <summary>
+    /// Called when a when a player moved (but did not finish the turn).
+    /// </summary>
     public void OnPlayerMove(Photon.Realtime.Player photonPlayer, int turn, object move)
     {
         Debug.Log("OnPlayerMove: " + photonPlayer + " turn: " + turn + " action: " + move);
     }
 
 
-    // when a player made the last/final move in a turn
+    /// <summary>
+    /// Called when a player made the last/final move in a turn
+    /// </summary>
     public void OnPlayerFinished(Photon.Realtime.Player photonPlayer, int turn, object move)
     {
         Debug.Log("OnTurnFinished: " + photonPlayer + " turn: " + turn + " action: " + move);
@@ -669,32 +782,42 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     }
 
 
-
+    // Interface method Not Implemented
     public void OnTurnTimeEnds(int obj)
     {
         //do nothing
     }
 
     #endregion
-
+    /// <summary>
+    /// Starts a turn.
+    /// </summary>
     public void StartTurn()
     {
+        // The master client determines all of the enemy and environment skills chosen
+        // these are networked to the other player using room properties
         if (PhotonNetwork.IsMasterClient)
         {
             this.turnManager.BeginTurn();
         }
     }
-
+    /// <summary>
+    /// Called when a Photon Player makes a turn selection.
+    /// </summary>
     public void MakeTurn(Skill selection)
     {
         this.turnManager.SendMove((string)(selection.Name + "," + chosenEnemy), true);
     }
-
+    /// <summary>
+    /// Begins the next turn once all turns are finished.
+    /// </summary>
     public void OnEndTurn()
     {
         this.StartCoroutine("BeginNextTurnCoroutine");
     }
-
+    /// <summary>
+    /// Starts the next turn.
+    /// </summary>
     public IEnumerator BeginNextTurnCoroutine()
     {
         yield return new WaitForSeconds(2.0f);
@@ -736,10 +859,15 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             Debug.Log("Waiting for another player");
         }
     }
+
     
-    // This is where we build the remote client map
-    // Room properties are updated when the player enters the room
-    // in OnPlayerEnteredRoom method
+    /// <summary>
+    /// Called when room properties are updated.
+    /// Room properties are currently updated to synchronize skills
+    /// and the map for the remote client.
+    /// </summary>
+    /// <param name="propertiesThatChanged">This parameter is a hashtable of the 
+    /// room properties that were updated.</param>
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -749,6 +877,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 string mapString = (string)propertiesThatChanged["map"];
                 Debug.Log("Received map representation: " + mapString);
                 buildMapRemoteClient(mapString);
+            }
+            if (propertiesThatChanged.ContainsKey("envSkill"))
+            {
+                processNetEnvSkill((string)propertiesThatChanged["envSkill"]);
+            }
+            if (propertiesThatChanged.ContainsKey("enemySkills"))
+            {
+                processNetEnemySkills((string)propertiesThatChanged["enemySkills"]);
             }
         }
     }
@@ -781,8 +917,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
     #region IPunObservable implementation
 
-    // This is how we send and receive data
-    // JACOB WAS HERE
+    /// <summary>
+    /// Used to synchronize values across network.
+    /// Although it looks like it doesn't actually do anything.
+    /// </summary>
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -831,8 +969,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     }
 
     #endregion
-
-    private Hashtable mapHash;
+    
+    private Hashtable mapHash; // used to update the room properties in OnPlayerEnteredRoom
     //Randomly generates the 2D array that represents the UI Map
     public void buildMap(int rows, int cols){
         // hashtable used to synchronize the map
