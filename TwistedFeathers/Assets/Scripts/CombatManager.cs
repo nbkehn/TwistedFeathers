@@ -130,6 +130,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
     }
 
+    
+
     //Method for resolving all effects set to happen this turn in PQ
     void resolveEffects()
     {
@@ -159,6 +161,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         Debug.Log("Effects Resolved");
         resolving_effects = false;
         waiting_effects = false;
+        if (!GameManager.singlePlayer)
+        {
+            this.OnEndTurn();
+        }
     }
 
     void resolveStatuses()
@@ -358,6 +364,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         {
             if (envSkill.Equals(sk.Name))
             {
+                Debug.Log("Queueing environment skill: " + sk.Name);
                 queueSkill(sk, CurrentEnvironment, getBattleParticipants());
             }
         }
@@ -385,6 +392,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 {
                     if (enemySkillInfo[0].Equals(sk.Name))
                     {
+                        Debug.Log("Queueing enemy skill: " + mon.Name + " - "+ sk.Name);
                         queueSkill(sk, mon, new List<BattleParticipant>() { battle_players[Convert.ToInt32(enemySkillInfo[1])] });
                     }
                 }
@@ -404,7 +412,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // more work will have to be done with target selection
         attackIndicator.SetActive(false);
         selectingEnemy = false;
-        TwistedFeathers.Player protag = (TwistedFeathers.Player) battle_players[index]; 
+        TwistedFeathers.Player protag = (TwistedFeathers.Player) battle_players[index];
+        Debug.Log("Queueing player skill: " + protag.Name + " - " + skill.Name);
         queueSkill(skill, protag, new List<BattleParticipant>() { battle_monsters[chosenEnemy] });
         waitingPlayer = false;
         waiting_effects = true;
@@ -431,7 +440,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // need to find skill
         TwistedFeathers.Skill skill = null;
         TwistedFeathers.Player userP = null;
-        if (skill == null)
+        if (skill == null && protagAlive)
         {
             foreach (Skill sk in GetActivePlayerSkills())
             {
@@ -442,7 +451,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             }
             userP = (TwistedFeathers.Player)battle_players[0];
         } 
-        if(skill == null)
+        if(skill == null && allyAlive)
         {
             foreach (Skill sk in GetRemotePlayerSkills())
             {
@@ -454,7 +463,11 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             userP = (TwistedFeathers.Player)battle_players[1];
         }
         //Debug.Log("Chosen Enemy: " + (Convert.ToInt32(splitInfo[1])));
-        queueSkill(skill, userP, new List<BattleParticipant>() { battle_monsters[Convert.ToInt32(splitInfo[1])] });
+        if (skill != null)
+        {
+            Debug.Log("Queueing player skill: " + userP.Name + " - " + skill.Name);
+            queueSkill(skill, userP, new List<BattleParticipant>() { battle_monsters[Convert.ToInt32(splitInfo[1])] });
+        }
         waitingPlayer = false;
         waiting_effects = true;
     }
@@ -598,6 +611,15 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         Debug.Log("TURN END");
         //Check for BattleParticipant deaths
+        CheckBattleParticipantDeaths();
+        
+    }
+
+    private bool allyAlive = true;
+    private bool protagAlive = true;
+
+    private void CheckBattleParticipantDeaths()
+    {
         int playerCount = 0;
         foreach (TwistedFeathers.Player play in battle_players.ToArray())
         {
@@ -605,7 +627,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             {
                 Debug.Log("HE DED");
                 UIManager.playerHealthBars[playerCount].SetActive(false);
-                GameObject.Find("Participants").transform.GetChild(playerCount+1).gameObject.SetActive(false);
+                GameObject.Find("Participants").transform.GetChild(playerCount + 1).gameObject.SetActive(false);
+                if(playerCount == 0)
+                {
+                    protagAlive = false;
+                } else
+                {
+                    allyAlive = false;
+                }
                 battle_players.Remove(play);
             }
             playerCount++;
@@ -616,7 +645,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             if (mon.Current_hp <= 0)
             {
                 UIManager.enemyHealthBars[enemyCount].SetActive(false);
-                GameObject.Find("Participants").transform.GetChild(3+enemyCount).gameObject.SetActive(false);
+                GameObject.Find("Participants").transform.GetChild(3 + enemyCount).gameObject.SetActive(false);
                 battle_monsters.Remove(mon);
             }
             enemyCount++;
@@ -629,11 +658,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         {
             combatEnd(true);
         }
-        else
+        else if(GameManager.singlePlayer || getPhotonPlayerListLength() == 1)
         {
             TurnBegin();
         }
-        
     }
 
     private void TurnBegin()
@@ -662,24 +690,18 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // "enemy1SkillName,enemy1Target:enemy2SkillName,enemy2Target"
         // we know which monster is using the skill based on the fact that they are added in
         // linear order
-        if(GameManager.singlePlayer || PhotonNetwork.IsMasterClient)
-        {
-            queueSkill(chosenEnvSkill, CurrentEnvironment, getBattleParticipants());
-        }
+        queueSkill(chosenEnvSkill, CurrentEnvironment, getBattleParticipants());
         foreach (Monster part in battle_monsters)
         {
             Skill chosenEnemySkill = part.Skills[UnityEngine.Random.Range(0, part.Skills.Count)];
             int targetIndex = UnityEngine.Random.Range(0, battle_players.Count);
-            if (GameManager.singlePlayer || PhotonNetwork.IsMasterClient)
-            {
-                queueSkill(chosenEnemySkill, part, new List<BattleParticipant>() { battle_players[targetIndex] });
-            }
+            queueSkill(chosenEnemySkill, part, new List<BattleParticipant>() { battle_players[targetIndex] });
             enemySkillInfos += (chosenEnemySkill.Name + "," + targetIndex + ":");
             
         }
 
         skillHash.Add("enemySkills", enemySkillInfos);
-        if (!GameManager.singlePlayer)
+        if (!GameManager.singlePlayer && getPhotonPlayerListLength() == 2)
         {
             PhotonNetwork.CurrentRoom.SetCustomProperties(skillHash);
         }
@@ -724,8 +746,21 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         Debug.Log("OnTurnBegins() turn: " + turn);
         this.localSelection = null;
         this.remoteSelection = null;
-
-        TurnBegin();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            TurnBegin();
+            if (!protagAlive)
+            {
+                this.turnManager.SendMove((string)(""), true);
+            }
+        }
+        else //not the master client
+        {
+            if (!allyAlive)
+            {
+                this.turnManager.SendMove((string)(""), true);
+            }
+        }
     }
 
     /// <summary>
@@ -750,9 +785,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         Debug.Log("Calling execute skills");
 
         this.resolveEffects();
-        Debug.Log("TURN END");
-        Debug.Log("Calling on end turn");
-        this.OnEndTurn();
     }
 
     /// <summary>
@@ -813,8 +845,17 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     /// </summary>
     public void OnEndTurn()
     {
+        foreach (Transform child in UIManager.popups[2].transform.GetChild(0).transform.GetChild(0).transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        CheckBattleParticipantDeaths();
+        Debug.Log("TURN END");
+        //Debug.Log("Calling start turn");
+        //this.StartTurn();
         this.StartCoroutine("BeginNextTurnCoroutine");
     }
+
     /// <summary>
     /// Starts the next turn.
     /// </summary>
