@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using TwistedFeathers;
 
 namespace TwistedFeathers
 {
@@ -12,12 +13,28 @@ namespace TwistedFeathers
         enemy,
         environment,
         weather
-    };
+    }
+
+    // Specific Type
+    public enum s_type
+    {
+        None,
+        Hummingbird,
+        Eagle,
+        Owl,
+        Crow,
+        Goose,
+        Chicken,
+        Glacier,
+        Swamp,
+        Desert
+    }
 
     public abstract class Participant
     {
         private p_type type;
-        private string name;
+        //private string name;
+        private s_type name;
         private float attack;
         private float accuracy;
         private Skill[] skillTree;
@@ -28,27 +45,30 @@ namespace TwistedFeathers
         protected Participant()
         {
             this.type = p_type.none;
-            this.name = "";
+            this.name = s_type.None;
             this.attack = 0f;
             this.accuracy = 0f;
             this.skills = new List<Skill>();
+            LoadSkillTree();
         }
 
-        protected Participant(p_type type, string name)
+        protected Participant(p_type type, s_type name)
         {
             this.type = type;
             this.name = name;
             this.attack = 0f;
             this.accuracy = 0f;
             this.skills = new List<Skill>();
+            LoadSkillTree();
         }
-        protected Participant(p_type type, string name, List<Skill> skills)
+        protected Participant(p_type type, s_type name, List<Skill> skills)
         {
             this.type = type;
             this.name = name;
             this.attack = 0f;
             this.accuracy = 0f;
             this.skills = skills;
+            LoadSkillTree();
         }
 
         public p_type Type
@@ -63,7 +83,7 @@ namespace TwistedFeathers
             set => skills = value;
         }
 
-        public string Name
+        public s_type Name
         {
             get => name;
             set => name = value;
@@ -76,8 +96,10 @@ namespace TwistedFeathers
             this.skills.Add(new_skill);
         }
 
-        public void LoadSkillTree(string path)
+        public void LoadSkillTree()
         {
+            string path = "Assets/Scripts/SkillEditor/Data/" + name.ToString() + ".json";
+
             string dataAsJson;
             if (File.Exists(path))
             {
@@ -103,6 +125,10 @@ namespace TwistedFeathers
                         this.skills.Add(skillTree[i]);
                     }
                 }
+            }
+            else
+            {
+                Debug.Log("A skill tree does not exist for: " + name.ToString());
             }
         }
     }

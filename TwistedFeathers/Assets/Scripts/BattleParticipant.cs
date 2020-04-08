@@ -25,7 +25,7 @@ namespace TwistedFeathers
 
         }
 
-        protected BattleParticipant(p_type type, string name) : base(type, name)
+        protected BattleParticipant(p_type type, s_type name) : base(type, name)
         {
             this.max_hp = 50;
             this.current_hp = 50;
