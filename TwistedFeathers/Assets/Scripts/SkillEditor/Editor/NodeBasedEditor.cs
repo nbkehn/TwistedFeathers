@@ -21,6 +21,7 @@ public class NodeBasedEditor : EditorWindow
     // File locations
     string skillPath = null;
     string nodePath = null;
+    private s_type treeName;
 
     // Textures
     private Texture2D panelTexture;
@@ -149,36 +150,32 @@ public class NodeBasedEditor : EditorWindow
             ClearNodes();
 
         GUILayout.Space(5);
-        if (GUILayout.Button(new GUIContent("Save"), EditorStyles.toolbarButton)) {
-            string skillDir = "Assets/Scripts/SkillEditor/Data/";
-            string skillFile = "";
-            if (skillPath.Length != 0)
-            {
-                skillDir = System.IO.Path.GetDirectoryName(skillPath);
-                skillFile = System.IO.Path.GetFileNameWithoutExtension(skillPath);
-            }
-            string temp = EditorUtility.SaveFilePanel("Save Skills", skillDir, skillFile, "json");
-            if (temp.Length != 0)
-            {
-                skillPath = temp;
-                string nodeDir = System.IO.Path.GetDirectoryName(skillPath);
-                string nodeFile = "NodeData_" + System.IO.Path.GetFileNameWithoutExtension(skillPath) + ".json";
-                nodePath = System.IO.Path.Combine(nodeDir, nodeFile);
-                SaveSkillTree();
-            }
-        }
-
-        GUILayout.Space(5);
-        if (GUILayout.Button(new GUIContent("Load"), EditorStyles.toolbarButton))
+        s_type newTree = (s_type)EditorGUILayout.EnumPopup(treeName, EditorStyles.toolbarButton);
+        if (!newTree.Equals(treeName))
         {
-            skillPath = EditorUtility.OpenFilePanel("Load Skills", "Assets/Scripts/SkillEditor/Data/", "json");
-            if (skillPath.Length != 0)
+            treeName = newTree;
+            skillPath = "Assets/Scripts/SkillEditor/Data/" + treeName.ToString() + ".json";
+            if (File.Exists(skillPath))
             {
                 string nodeDirectory = System.IO.Path.GetDirectoryName(skillPath);
                 string nodeFile = "NodeData_" + System.IO.Path.GetFileNameWithoutExtension(skillPath) + ".json";
                 nodePath = System.IO.Path.Combine(nodeDirectory, nodeFile);
                 LoadNodes();
             }
+            else
+            {
+                ClearNodes();
+            }
+        }
+
+        GUILayout.Space(5);
+        if (GUILayout.Button(new GUIContent("Save"), EditorStyles.toolbarButton))
+        {
+            string nodeDir = System.IO.Path.GetDirectoryName(skillPath);
+            string nodeFile = "NodeData_" + System.IO.Path.GetFileNameWithoutExtension(skillPath) + ".json";
+            nodePath = System.IO.Path.Combine(nodeDir, nodeFile);
+            SaveSkillTree();
+            EditorUtility.DisplayDialog("Skill Tree Editor", "File saved successfully!", "Ok");
         }
 
         GUILayout.EndHorizontal();
