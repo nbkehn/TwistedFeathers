@@ -504,9 +504,36 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         GameObject.Find("Main Camera").GetComponent<SceneShift>().scene = CurrentEnvironment.envListIndex;
         //update the currentLocation UI indicator
         GameObject.Find("CurrentLocation").GetComponent<RectTransform>().localPosition = new Vector3(currentLocation.x*60, currentLocation.y*60, 0f);
-        // a turn ahas been taken
-        //waitingPlayer = false;
+        
+        // a turn has been taken
+        if (!GameManager.singlePlayer && getPhotonPlayerListLength() == 2) // here we determine if we need to network this change
+        {
+            Hashtable mapSelectHash = new Hashtable();
+            mapSelectHash.Add("mapPosX", (int)currentLocation.x);
+            mapSelectHash.Add("mapPosY", (int)currentLocation.y);
+            PhotonNetwork.CurrentRoom.SetCustomProperties(mapSelectHash);//update the room properties
+            this.turnManager.SendMove((string)(""), true); // send an empty move to end their turn
+        } else
+        {
+            chooseRandomSkill(1); // choose a random skill for the ally
+        }
+        // this is the usual two lines that end a turn
+        waitingPlayer = false;
+        waiting_effects = true;
+
         // TODO at some point a method will be called here to play some animations
+    }
+
+    public void changeNetEnvironment(int xPos, int yPos)
+    {
+        Debug.Log("A player changed the environment");
+        currentLocation = new Vector2(xPos, yPos);
+        CurrentEnvironment = map[(int)currentLocation.x, (int)currentLocation.y];
+        //update the scene to represent the current environment
+        GameObject.Find("Main Camera").GetComponent<SceneShift>().scene = CurrentEnvironment.envListIndex;
+        //update the currentLocation UI indicator
+        GameObject.Find("CurrentLocation").GetComponent<RectTransform>().localPosition = new Vector3(currentLocation.x * 60, currentLocation.y * 60, 0f);
+
     }
 
     public void CancelSelecting(){
@@ -911,6 +938,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     /// room properties that were updated.</param>
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
+        // Master client logic
         if (!PhotonNetwork.IsMasterClient)
         {
             if (propertiesThatChanged.ContainsKey("map"))
@@ -927,6 +955,11 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             {
                 processNetEnemySkills((string)propertiesThatChanged["enemySkills"]);
             }
+        }
+        // Both clients logic
+        if (propertiesThatChanged.ContainsKey("mapPosX") && propertiesThatChanged.ContainsKey("mapPosY"))
+        {
+            changeNetEnvironment((int)propertiesThatChanged["mapPosX"], (int)propertiesThatChanged["mapPosY"]);
         }
     }
 
