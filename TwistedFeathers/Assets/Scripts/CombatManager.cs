@@ -16,7 +16,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 {
     SortedSet<BattleEffect> pq;
     List<TwistedFeathers.Player> battle_players;
-    private List<Monster> battle_monsters;
+    private List<Monster> battle_enemy;
     //Weather weath;
     int currentTurn;
     bool waitingPlayer;
@@ -68,7 +68,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     List<BattleParticipant> getBattleParticipants()
     {
         List<BattleParticipant> list = new List<BattleParticipant>();
-        foreach (Monster mon in battle_monsters)
+        foreach (Monster mon in battle_enemy)
         {
             list.Add(mon);
         }
@@ -93,7 +93,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             playerCount++;
         }
 
-        foreach(Monster monster in battle_monsters){
+        foreach(Monster monster in battle_enemy)
+        {
             GameObject newEnemy = Instantiate(monster.myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             newEnemy.transform.SetParent(GameObject.Find("Participants").transform);
             newEnemy.transform.position = enemySpawnPoints[enemyCount].transform.position;

@@ -12,6 +12,11 @@ namespace TwistedFeathers
         private float defense;
         private float dodge;
         private List<KeyValuePair<string, BattleEffect>> statuses;
+        private Dictionary<string, Skill> passiveSkills;
+        private Dictionary<string, Skill> utilitySkills;
+        private Dictionary<string, Skill> attackSkills;
+
+
 
         protected BattleParticipant() : base()
         {
@@ -60,6 +65,22 @@ namespace TwistedFeathers
         {
             get => statuses;
             set => statuses = value;
+        }
+        public Dictionary<string, Skill> PassiveSkills { get => passiveSkills; set => passiveSkills = value; }
+        public Dictionary<string, Skill> UtilitySkills { get => utilitySkills; set => utilitySkills = value; }
+        public Dictionary<string, Skill> AttackSkills { get => attackSkills; set => attackSkills = value; }
+
+        public void addPassive(Skill passive)
+        {
+            this.passiveSkills.Add(passive.Name, passive);
+        }
+        public void addUtility(Skill util)
+        {
+            this.utilitySkills.Add(util.Name, util);
+        }
+        public void addAttack(Skill attack)
+        {
+            this.attackSkills.Add(attack.Name, attack);
         }
     }
 }

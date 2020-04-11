@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     static Dictionary<string, Monster> monster_db;
     static Dictionary<string, Player> player_db;
 
+    static Dictionary<string, Monster> enemy_types;
+
+
     static public Dictionary<string, Skill> Skill_db { get => skill_db; set => skill_db = value; }
     static public Dictionary<string, Participant> Participant_db { get => participant_db; set => participant_db = value; }
     public static Dictionary<string, Monster> Monster_db { get => monster_db; set => monster_db = value; }
@@ -31,7 +34,6 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get { return _instance; } }
 
     
-
     public List<GameObject> environmentPrefabs;
     public static List<Environment> environments;
 
@@ -82,7 +84,17 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("smarty J", new Skill("Attack3", "Does nothing", p_type.player, new List<BattleEffect>()));
 
 
-
+            //Enemy Type initialization
+            Monster goose = new Monster("Goose Thief", 1);
+            //goose.addPassive();//Evasive
+            //goose.addAttack();//Knife attack
+            //goose.addUtility();//Hiss
+            enemy_types.Add("Goose", goose);
+            Monster crow = new Monster("Necromancer Crow", 2);
+            //crow.addAttack();//Dark Magick
+            //crow.addUtility();//Healing
+            //crow.addUtility();Fear Curse
+            enemy_types.Add("Crow", crow);
 
 
             //Dummy values for testing purposes
