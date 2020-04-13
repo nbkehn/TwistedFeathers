@@ -4,11 +4,14 @@ using UnityEngine;
 
 namespace TwistedFeathers
 {
+    public enum SkillType { None, Passive, Utility, Attack}
+
     public class Skill
     {
         private string name;
         private string description;
         private p_type user_type;
+        private SkillType skill_type;
         bool unlocked;
         int level_req;
         Skill pre_req;
@@ -81,6 +84,7 @@ namespace TwistedFeathers
             set => pre_req = value;
         }
         public List<BattleEffect> Passive { get => passive; set => passive = value; }
+        public SkillType Skill_type { get => skill_type; set => skill_type = value; }
 
         // This method gets called when the skill is gained, it applies all the passives
         void onGain()

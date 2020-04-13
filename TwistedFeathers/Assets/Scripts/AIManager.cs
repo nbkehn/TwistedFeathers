@@ -112,9 +112,10 @@ public class AIManager : MonoBehaviour
         return selected;
     }
 
-    public Player selectTarget(Monster enemy, List<TwistedFeathers.Player> battle_players, List<Monster> battle_enemy)
+    public List<BattleParticipant> selectTarget(Monster enemy, List<TwistedFeathers.Player> battle_players, List<Monster> battle_enemy)
     {
         int type = enemy.getEnemyType();
+        List<BattleParticipant> targets = new List<BattleParticipant>();
         Player target = null;
         if (type == 1)//thief goose
         {
@@ -171,12 +172,14 @@ public class AIManager : MonoBehaviour
 
         if(target != null)
         {
-            return target;
+            targets.Add(target);
+            return targets;
         }
         else
         {
+            targets.Add(target);
             target = battle_players[0];
-            return target;
+            return targets;
         }
 
     }

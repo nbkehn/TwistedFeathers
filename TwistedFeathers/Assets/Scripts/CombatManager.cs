@@ -59,6 +59,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
     private PunTurnManager turnManager;
 
+    //Ai manager (new)
+    private AIManager aiManager;
+
     [SerializeField]
     private Skill localSelection;
 
@@ -142,9 +145,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 RectTransform healthBar = UIManager.playerHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
                 healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_players[i].Current_hp, 50f), 100);
             }
-            for(int i = 0; i < battle_monsters.Count; i++){
+            for(int i = 0; i < battle_enemy.Count; i++){
                 RectTransform healthBar = UIManager.enemyHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
-                healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_monsters[i].Current_hp, 50f), 100);
+                healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_enemy[i].Current_hp, 50f), 100);
             }
             yield return new WaitForSeconds(.5f);
             UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
@@ -209,14 +212,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         pq = new SortedSet<BattleEffect>(new EffectComparator());
         //Set up BattleParticipants
         battle_players = new List<TwistedFeathers.Player>();
-        battle_monsters = new List<Monster>();
+        battle_enemy = new List<Monster>();
         protagonistIndex = 0; 
         //Dummy values for testing purposes
 
         battle_players.Add((TwistedFeathers.Player)GameManager.Player_db["person A"]);
         battle_players.Add((TwistedFeathers.Player)GameManager.Player_db["person B"]);
-        battle_monsters.Add((Monster)GameManager.Monster_db["enemy B"]);
-        battle_monsters.Add((Monster)GameManager.Monster_db["enemy A"]);
+        battle_enemy.Add((Monster)GameManager.Monster_db["enemy B"]);
+        battle_enemy.Add((Monster)GameManager.Monster_db["enemy A"]);
 
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
@@ -228,7 +231,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             animator = GameObject.Find("SwampAnimation").GetComponent<Animator>();
             animator.runtimeAnimatorController = Resources.Load("Animations/Empty") as RuntimeAnimatorController;
         }
-        for(int i = 0; i < battle_monsters.Count; i++){
+        for(int i = 0; i < battle_enemy.Count; i++){
             UIManager.enemyHealthBars[i].SetActive(true);
             UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
         }
@@ -249,7 +252,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // if one player don't network the move
         if (GameManager.singlePlayer)
         {
-           if(battle_monsters.Count > 1){
+           if(battle_enemy.Count > 1){
             selectingEnemy = true;
             attackIndicator.SetActive(true);
             moveIndicator(0);
@@ -261,7 +264,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         else if(PhotonNetwork.PlayerList.Length == 1)
         {
-            if(battle_monsters.Count > 1){
+            if(battle_enemy.Count > 1){
             selectingEnemy = true;
             attackIndicator.SetActive(true);
             moveIndicator(0);
@@ -298,7 +301,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         attackIndicator.SetActive(false);
         selectingEnemy = false;
         TwistedFeathers.Player protag = (TwistedFeathers.Player) battle_players[index]; 
-        queueSkill(skill, protag, new List<BattleParticipant>() { battle_monsters[chosenEnemy] });
+        queueSkill(skill, protag, new List<BattleParticipant>() { battle_enemy[chosenEnemy] });
         waitingPlayer = false;
         waiting_effects = true;
     }
@@ -308,7 +311,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         //attackIndicator.SetActive(false);
         //selectingEnemy = false;
         TwistedFeathers.Player protag = (TwistedFeathers.Player) battle_players[index]; 
-        queueSkill(protag.Skills[Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>() { battle_monsters[Random.Range(0, battle_monsters.Count)] });
+        queueSkill(protag.Skills[Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>() { battle_enemy[Random.Range(0, battle_enemy.Count)] });
     }
 
     public void StartSelecting(){
@@ -438,13 +441,13 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             playerCount++;
         }
         int enemyCount = 0;
-        foreach (Monster mon in battle_monsters.ToArray())
+        foreach (Monster mon in battle_enemy.ToArray())
         {
             if (mon.Current_hp <= 0)
             {
                 UIManager.enemyHealthBars[enemyCount].SetActive(false);
                 GameObject.Find("Participants").transform.GetChild(3+enemyCount).gameObject.SetActive(false);
-                battle_monsters.Remove(mon);
+                battle_enemy.Remove(mon);
             }
             enemyCount++;
         }
@@ -452,7 +455,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         {
             combatEnd(false);
         }
-        else if (battle_monsters.Count == 0)
+        else if (battle_enemy.Count == 0)
         {
             combatEnd(true);
         }
@@ -469,17 +472,25 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // Debug.Log("Adam HP: " + battle_players[protagonistIndex].Current_hp);
         // Debug.Log("Adam Acc: " + battle_players[protagonistIndex].Accuracy);
         // Debug.Log("Ben HP: " + battle_players[protagonistIndex + 1].Current_hp);
-        // Debug.Log("Azazel 1 HP: " + battle_monsters[protagonistIndex].Current_hp);
-        // Debug.Log("Beelzebub HP: " + battle_monsters[protagonistIndex + 1].Current_hp);
-        // Debug.Log("Beelzebub Acc: " + battle_monsters[0].Accuracy);
+        // Debug.Log("Azazel 1 HP: " + battle_enemy[protagonistIndex].Current_hp);
+        // Debug.Log("Beelzebub HP: " + battle_enemy[protagonistIndex + 1].Current_hp);
+        // Debug.Log("Beelzebub Acc: " + battle_enemy[0].Accuracy);
         //New turn beings here
         Debug.Log("TURN BEGIN");
         currentTurn++;
         queueSkill(CurrentEnvironment.Skills[Random.Range(0, CurrentEnvironment.Skills.Count)], CurrentEnvironment, getBattleParticipants());
-        foreach (Monster part in battle_monsters)
+        foreach (Monster part in battle_enemy)
         {
-            queueSkill(part.Skills[Random.Range(0, part.Skills.Count)], part, new List<BattleParticipant>() { battle_players[Random.Range(0, battle_players.Count)]});
-        }
+            queueSkill(aiManager.chooseAttack(part, battle_players, battle_enemy),//enemy attack skill decision
+                part,
+                aiManager.selectTarget(part, battle_players, battle_enemy));
+            queueSkill(aiManager.chooseUtil(part, battle_players, battle_enemy),//enemy util decision
+                part,
+                aiManager.selectTarget(part, battle_players, battle_enemy));
+            //queueSkill(part.Skills[Random.Range(0, part.Skills.Count)],
+            //    part,
+            //    new List<BattleParticipant>() { battle_players[Random.Range(0, battle_players.Count)]});
+        }//enemy behavior decision
 
         //Forecast
 
@@ -677,13 +688,13 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 stream.SendNext(battle_players[i].Defense);
                 stream.SendNext(battle_players[i].Dodge);
             }
-            for (int i = 0; i < battle_monsters.Count; i++)
+            for (int i = 0; i < battle_enemy.Count; i++)
             {
                 // We own this player: send the others our data
-                stream.SendNext(battle_monsters[i].Current_hp);
-                stream.SendNext(battle_monsters[i].Attack);
-                stream.SendNext(battle_monsters[i].Defense);
-                stream.SendNext(battle_monsters[i].Dodge);
+                stream.SendNext(battle_enemy[i].Current_hp);
+                stream.SendNext(battle_enemy[i].Attack);
+                stream.SendNext(battle_enemy[i].Defense);
+                stream.SendNext(battle_enemy[i].Dodge);
             }
         }
         else
@@ -696,12 +707,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 battle_players[i].Defense = (float)stream.ReceiveNext();
                 battle_players[i].Dodge = (float)stream.ReceiveNext();
             }
-            for (int i = 0; i < battle_monsters.Count; i++)
+            for (int i = 0; i < battle_enemy.Count; i++)
             {
-                battle_monsters[i].Current_hp = (int)stream.ReceiveNext();
-                battle_monsters[i].Attack = (float)stream.ReceiveNext();
-                battle_monsters[i].Defense = (float)stream.ReceiveNext();
-                battle_monsters[i].Dodge = (float)stream.ReceiveNext();
+                battle_enemy[i].Current_hp = (int)stream.ReceiveNext();
+                battle_enemy[i].Attack = (float)stream.ReceiveNext();
+                battle_enemy[i].Defense = (float)stream.ReceiveNext();
+                battle_enemy[i].Dodge = (float)stream.ReceiveNext();
             }
         }
     }
