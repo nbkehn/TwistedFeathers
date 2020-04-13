@@ -29,6 +29,8 @@ public class UIManager : MonoBehaviour
 
     public GameObject actionOverlay;
 
+    public GameObject SkillInfos;
+
     public void Start(){
         foreach(GameObject button in animateableButtons){
             if(button.activeSelf){
@@ -144,6 +146,11 @@ public class UIManager : MonoBehaviour
 
     public void togglePlayerSkills(){
         popups[0].SetActive(!popups[0].gameObject.activeSelf);
+
+        if(GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().GetBool("Open")){
+            GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().Play("Pop Out");
+            GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().SetBool("Open", false);
+        } 
     }
 
     public void toggleEnemySkills(){
