@@ -20,6 +20,7 @@ namespace TwistedFeathers
     public enum stat_type
     {
         nothing,
+        HP,
         Attack,
         Defense,
         Accuracy,
@@ -50,6 +51,7 @@ namespace TwistedFeathers
         public bool Visible { get; set; }
         public string SkillName { get; set; }
         public int UID { get; set; }
+        public List<Conditional> Conditions { get; set; }
 
         // Copy Constructor
         public BattleEffect(BattleEffect effect)
@@ -64,6 +66,7 @@ namespace TwistedFeathers
             this.Visible = effect.Visible;
             this.SkillName = effect.SkillName;
             this.UID = 0;
+            this.Conditions = effect.Conditions;
         }
 
         public BattleEffect()
@@ -78,6 +81,7 @@ namespace TwistedFeathers
             this.Turnstamp = 0;
             this.Visible = true;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
         }
 
         public BattleEffect(e_type type, float modifier, string specifier)
@@ -92,6 +96,7 @@ namespace TwistedFeathers
             this.Turnstamp = 0;
             this.Visible = true;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
         }
 
         public BattleEffect(e_type type, float modifier, int duration, string specifier)
@@ -106,6 +111,7 @@ namespace TwistedFeathers
             this.Turnstamp = 0;
             this.Visible = true;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
         }
 
         public BattleEffect(e_type type, float modifier, int duration, string specifier, int turnstamp)
@@ -120,6 +126,7 @@ namespace TwistedFeathers
             this.Turnstamp = turnstamp;
             this.Visible = true;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
         }
 
         public BattleEffect(string skill_name, e_type type, float modifier, int duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp)
@@ -134,6 +141,7 @@ namespace TwistedFeathers
             this.Turnstamp = turnstamp;
             this.Visible = true;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
         }
 
         public BattleEffect(string skill_name, e_type type, float modifier, int duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp, bool visible)
@@ -148,23 +156,43 @@ namespace TwistedFeathers
             this.Turnstamp = turnstamp;
             this.Visible = visible;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
+        }
+
+        private bool areCondMet()
+        {
+            foreach (Conditional condition in Conditions)
+            {
+                if (!condition.isCond(this))
+                {
+                    return false;
+                    break;
+                }
+            }
+
+            return true;
+
         }
 
 
-        public void select(Participant user, List<BattleParticipant> target, int turnstamp, string skill_name)
+        public bool select(Participant user, List<BattleParticipant> target, int turnstamp, string skill_name)
         {
             User = user;
             Target = target;
             Turnstamp += turnstamp;
             SkillName = skill_name;
             UID = Random.Range(0, Int32.MaxValue);
+            return areCondMet();
         }
 
         public void run()
         {
+
+
             bool check_hit = true;
             foreach (BattleParticipant tar in Target)
             {
+                check_hit = true;
                 //Check to see if effect actually hits target
                 if (User.Type != tar.Type)
                 {
@@ -243,10 +271,7 @@ namespace TwistedFeathers
                 }
             }
             
-
-            
         }
-
     }
 
 
