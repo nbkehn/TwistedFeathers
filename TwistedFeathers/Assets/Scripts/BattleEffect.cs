@@ -66,6 +66,7 @@ namespace TwistedFeathers
             this.Visible = effect.Visible;
             this.SkillName = effect.SkillName;
             this.UID = 0;
+            this.Conditions = effect.Conditions;
         }
 
         public BattleEffect()
@@ -80,6 +81,7 @@ namespace TwistedFeathers
             this.Turnstamp = 0;
             this.Visible = true;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
         }
 
         public BattleEffect(e_type type, float modifier, string specifier)
@@ -94,6 +96,7 @@ namespace TwistedFeathers
             this.Turnstamp = 0;
             this.Visible = true;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
         }
 
         public BattleEffect(e_type type, float modifier, int duration, string specifier)
@@ -108,6 +111,7 @@ namespace TwistedFeathers
             this.Turnstamp = 0;
             this.Visible = true;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
         }
 
         public BattleEffect(e_type type, float modifier, int duration, string specifier, int turnstamp)
@@ -122,6 +126,7 @@ namespace TwistedFeathers
             this.Turnstamp = turnstamp;
             this.Visible = true;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
         }
 
         public BattleEffect(string skill_name, e_type type, float modifier, int duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp)
@@ -136,6 +141,7 @@ namespace TwistedFeathers
             this.Turnstamp = turnstamp;
             this.Visible = true;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
         }
 
         public BattleEffect(string skill_name, e_type type, float modifier, int duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp, bool visible)
@@ -150,115 +156,121 @@ namespace TwistedFeathers
             this.Turnstamp = turnstamp;
             this.Visible = visible;
             this.UID = 0;
+            this.Conditions = new List<Conditional>();
+        }
+
+        private bool areCondMet()
+        {
+            foreach (Conditional condition in Conditions)
+            {
+                if (!condition.isCond(this))
+                {
+                    return false;
+                    break;
+                }
+            }
+
+            return true;
+
         }
 
 
-        public void select(Participant user, List<BattleParticipant> target, int turnstamp, string skill_name)
+        public bool select(Participant user, List<BattleParticipant> target, int turnstamp, string skill_name)
         {
             User = user;
             Target = target;
             Turnstamp += turnstamp;
             SkillName = skill_name;
             UID = Random.Range(0, Int32.MaxValue);
+            return areCondMet();
         }
 
         public void run()
         {
-            bool cond_met = true;
-            foreach (Conditional condition in Conditions)
-            {
-                if (!condition.isCond(this))
-                {
-                    cond_met = false;
-                    break;
-                }
-            }
 
-            if (cond_met)
+
+            bool check_hit = true;
+            foreach (BattleParticipant tar in Target)
             {
-                
-                bool check_hit = true;
-                foreach (BattleParticipant tar in Target)
+                check_hit = true;
+                //Check to see if effect actually hits target
+                if (User.Type != tar.Type)
                 {
-                    check_hit = true;
-                    //Check to see if effect actually hits target
-                    if (User.Type != tar.Type)
+                    float random_dodge = Random.Range(0.0f, 1.0f);
+                    if ((tar.Dodge-User.Accuracy) >= random_dodge)
                     {
-                        float random_dodge = Random.Range(0.0f, 1.0f);
-                        if ((tar.Dodge-User.Accuracy) >= random_dodge)
-                        {
-                            //Miss!
-                            check_hit = false;
-                        }
+                        //Miss!
+                        check_hit = false;
                     }
+                }
 
-                    if (check_hit)
+                if (check_hit)
+                {
+                    switch (Type)
                     {
-                        switch (Type)
-                        {
-                            case (e_type.damage):
-                                // Missing flat mod additions
-                                float damage = Modifier + (Modifier * User.Attack) - (Modifier * tar.Defense);
-                                tar.Current_hp = (int)(tar.Current_hp - damage);
-                                break;
-                            case (e_type.buff):
+                        case (e_type.damage):
+                            // Missing flat mod additions
+                            float damage = Modifier + (Modifier * User.Attack) - (Modifier * tar.Defense);
+                            tar.Current_hp = (int)(tar.Current_hp - damage);
+                            break;
+                        case (e_type.buff):
+                            switch (Specifier)
+                            {
+                                case ("attack"):
+                                    tar.Attack += Modifier;
+                                    break;
+                                case ("defense"):
+                                    tar.Defense += Modifier;
+                                    break;
+                                case ("accuracy"):
+                                    tar.Accuracy += Modifier;
+                                    break;
+                                case ("dodge"):
+                                    tar.Dodge += Modifier;
+                                    break;
+                                default:
+                                    Debug.LogError("Error: Invalid stat buff specified");
+                                    break;
+                            }
+                            if (Duration > 0)
+                            {
+                                tar.Buffs.Add(new BattleEffect("", e_type.buff, -Modifier, 0, Specifier, new List<BattleParticipant>() { tar }, tar, Turnstamp + Duration));
+                            }
+                            break;
+                        case (e_type.status):
+                            if (Visible)
+                            {
+                                tar.Statuses.Add(new BattleEffect(this));
+                            }
+                            else
+                            {
                                 switch (Specifier)
                                 {
-                                    case ("attack"):
-                                        tar.Attack += Modifier;
+                                    case "Poison":
                                         break;
-                                    case ("defense"):
-                                        tar.Defense += Modifier;
+                                    case "Burn":
                                         break;
-                                    case ("accuracy"):
-                                        tar.Accuracy += Modifier;
-                                        break;
-                                    case ("dodge"):
-                                        tar.Dodge += Modifier;
+                                    case "Stun":
                                         break;
                                     default:
-                                        Debug.LogError("Error: Invalid stat buff specified");
+                                        Debug.LogError("Error: Invalid status effect specified");
                                         break;
                                 }
-                                if (Duration > 0)
-                                {
-                                    tar.Buffs.Add(new BattleEffect("", e_type.buff, -Modifier, 0, Specifier, new List<BattleParticipant>() { tar }, tar, Turnstamp + Duration));
-                                }
-                                break;
-                            case (e_type.status):
-                                if (Visible)
-                                {
-                                    tar.Statuses.Add(new BattleEffect(this));
-                                }
-                                else
-                                {
-                                    switch (Specifier)
-                                    {
-                                        case "Poison":
-                                            break;
-                                        case "Burn":
-                                            break;
-                                        case "Stun":
-                                            break;
-                                        default:
-                                            Debug.LogError("Error: Invalid status effect specified");
-                                            break;
-                                    }
-                                }
-                                break;
-                            default:
-                                //This is where special/unique effects need to be handled
-                                Debug.LogError("Error: Invalid effect type specified");
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        //Miss case
-                        Debug.Log(User.Name + " Missed!");
+                            }
+                            break;
+                        default:
+                            //This is where special/unique effects need to be handled
+                            Debug.LogError("Error: Invalid effect type specified");
+                            break;
                     }
                 }
+                else
+                {
+                    //Miss case
+                    Debug.Log(User.Name + " Missed!");
+                }
             }
+            
         }
     }
 

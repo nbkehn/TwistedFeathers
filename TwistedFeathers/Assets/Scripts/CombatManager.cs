@@ -115,10 +115,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         foreach(BattleEffect effect in skill.Effect.ToArray())
         {
             BattleEffect battle_effect = new BattleEffect(effect);
-            battle_effect.select(user, target, currentTurn, skill.Name);
-            if (!pq.Add(battle_effect))
+            if(battle_effect.select(user, target, currentTurn, skill.Name))
             {
-                Debug.LogError("Error! " + battle_effect.SkillName + " <- Effect not queued!");
+                if (!pq.Add(battle_effect))
+                {
+                    Debug.LogError("Error! " + battle_effect.SkillName + " <- Effect not queued!");
+                }
             }
         }
     }
