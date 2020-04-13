@@ -122,10 +122,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         foreach(BattleEffect effect in skill.Effect.ToArray())
         {
             BattleEffect battle_effect = new BattleEffect(effect);
-            battle_effect.select(user, target, currentTurn, skill.Name);
-            if (!pq.Add(battle_effect))
+            if(battle_effect.select(user, target, currentTurn, skill.Name))
             {
-                Debug.LogError("Error! " + battle_effect.SkillName + " <- Effect not queued!");
+                if (!pq.Add(battle_effect))
+                {
+                    Debug.LogError("Error! " + battle_effect.SkillName + " <- Effect not queued!");
+                }
             }
         }
     }
@@ -143,7 +145,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     IEnumerator spaceOutEffects() {
         while (pq.Count != 0 && pq.Min.Turnstamp <= currentTurn) {
             Debug.Log("Resolving: " + pq.Min.SkillName);
-            pq.Min.run(pq);
+            pq.Min.run();
             pq.Remove(pq.Min);
             UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
             for(int i = 0; i < battle_players.Count; i++){
@@ -172,26 +174,23 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         
         foreach (BattleParticipant bat_part in getBattleParticipants())
         {
-            foreach (KeyValuePair<string, BattleEffect> status in bat_part.Statuses.ToArray())
+            foreach (BattleEffect status in bat_part.Statuses)
             {
-                // This is where we code in what each status effect actually does
-                switch (status.Key)
+                status.run();
+                status.Duration -= 1;
+            }
+
+            bat_part.Statuses.RemoveAll(status => status.Duration <= 0);
+
+            foreach (BattleEffect buff in bat_part.Buffs.ToArray())
+            {
+                if (buff.Turnstamp <= currentTurn)
                 {
-                    case "Poison":
-
-                        break;
-                    case "Burn":
-
-                        break;
-                    default:
-                        status.Value.Duration -= 1;
-                        if (status.Value.Duration <= 0)
-                        {
-                            bat_part.Statuses.Remove(status);
-                        }
-                        break;
+                    buff.run();
                 }
             }
+
+            bat_part.Buffs.RemoveAll(buff => buff.Turnstamp <= currentTurn);
         }
         
     }
@@ -277,6 +276,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             attackIndicator.SetActive(true);
             moveIndicator(0);
             chosenSkill = skill;
+            UIManager.SkillInfos.transform.GetChild(0).GetComponent<Animator>().Play("Pop Out");
+            GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().SetBool("Open", false);
+            // TODO Need some way of seeing if thisd skill needs to be picked between enemies or not.  
             }
             else  {
               singlePlayerChooseSkill(skill);
@@ -614,6 +616,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             {
                 if (waiting_effects)
                 {
+                    resolveStatuses();
                     resolveEffects();
                 }
                 else
@@ -632,11 +635,11 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     // turn method used for single player mode and networked single player
     private void singlePlayerTurn()
     {
-        //resolveStatuses();
         foreach (Transform child in UIManager.popups[2].transform.GetChild(0).transform.GetChild(0).transform) {
             GameObject.Destroy(child.gameObject);
         }
         Debug.Log("TURN END");
+        Debug.Log(battle_players[protagonistIndex].displayBuffs());
         //Check for BattleParticipant deaths
         CheckBattleParticipantDeaths();
         
@@ -707,9 +710,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         Hashtable skillHash = new Hashtable(); 
         //mapHash.Add("map", mapNetRep);
         currentTurn++;
-        Skill chosenEnvSkill = CurrentEnvironment.Skills[UnityEngine.Random.Range(0, CurrentEnvironment.Skills.Count)];
-
-        skillHash.Add("envSkill", chosenEnvSkill.Name); //only need the name of the environment skill
 
         string enemySkillInfos = "";
 
@@ -717,7 +717,32 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // "enemy1SkillName,enemy1Target:enemy2SkillName,enemy2Target"
         // we know which monster is using the skill based on the fact that they are added in
         // linear order
+        
+        //Choose environment skill
+        List<int> partial_sums = new List<int>();
+        int current_sum = 0;
+        foreach (KeyValuePair<int, Skill> env_skill in CurrentEnvironment.Skills)
+        {
+            current_sum += env_skill.Key;
+            partial_sums.Add(current_sum);
+        }
+
+        int random_draw = Random.Range(0, partial_sums[partial_sums.Count - 1]);
+        int random_index = 0;
+        for (int i = 0; i < partial_sums.Count; i++)
+        {
+            if (random_draw < partial_sums[i])
+            {
+                random_index = i;
+                break;
+            }
+        }
+        
+        Skill chosenEnvSkill = CurrentEnvironment.Skills[random_index].Value;
         queueSkill(chosenEnvSkill, CurrentEnvironment, getBattleParticipants());
+        skillHash.Add("envSkill", chosenEnvSkill.Name); //only need the name of the environment skill
+        // Choose enemy skills
+
         foreach (Monster part in battle_monsters)
         {
             Skill chosenEnemySkill = part.Skills[UnityEngine.Random.Range(0, part.Skills.Count)];
