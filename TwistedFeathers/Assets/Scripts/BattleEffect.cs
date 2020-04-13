@@ -36,6 +36,17 @@ namespace TwistedFeathers
         Stun
     }
 
+    public enum target_type
+    {
+        None,
+        Self,
+        Ally,
+        Enemy,
+        AllAllies,
+        AllEnemies,
+        All
+    }
+
     [System.Serializable]
     public class BattleEffect
     {
@@ -58,12 +69,15 @@ namespace TwistedFeathers
 
         private int turnstamp;
 
+        private target_type targetType;
+
         public bool Show { get => show; set => show = value; }
         public e_type Type { get => type; set => type = value; }
         public float Modifier { get => modifier; set => modifier = value; }
         public int Duration { get => duration; set => duration = value; }
         public string Specifier { get => specifier; set => specifier = value; }
         public int Turnstamp { get => turnstamp; set => turnstamp = value; }
+        public target_type TargetType { get => targetType; set => targetType = value; }
 
 
         // These values are only defined when it is selected in battle
@@ -90,6 +104,7 @@ namespace TwistedFeathers
             this.SkillName = effect.SkillName;
             this.UID = 0;
             this.Conditions = effect.Conditions;
+            this.targetType = effect.targetType;
         }
 
         public BattleEffect()
@@ -105,6 +120,7 @@ namespace TwistedFeathers
             this.Visible = true;
             this.UID = 0;
             this.Conditions = new List<Conditional>();
+            this.targetType = target_type.None;
         }
 
         public BattleEffect(e_type type, float modifier, string specifier)
@@ -120,6 +136,7 @@ namespace TwistedFeathers
             this.Visible = true;
             this.UID = 0;
             this.Conditions = new List<Conditional>();
+            this.targetType = target_type.None;
         }
 
         public BattleEffect(e_type type, float modifier, int duration, string specifier)
@@ -135,6 +152,7 @@ namespace TwistedFeathers
             this.Visible = true;
             this.UID = 0;
             this.Conditions = new List<Conditional>();
+            this.targetType = target_type.None;
         }
 
         public BattleEffect(e_type type, float modifier, int duration, string specifier, int turnstamp)
@@ -150,6 +168,7 @@ namespace TwistedFeathers
             this.Visible = true;
             this.UID = 0;
             this.Conditions = new List<Conditional>();
+            this.targetType = target_type.None;
         }
 
         public BattleEffect(string skill_name, e_type type, float modifier, int duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp)
@@ -165,6 +184,7 @@ namespace TwistedFeathers
             this.Visible = true;
             this.UID = 0;
             this.Conditions = new List<Conditional>();
+            this.targetType = target_type.None;
         }
 
         public BattleEffect(string skill_name, e_type type, float modifier, int duration, string specifier, List<BattleParticipant> target, Participant user, int turnstamp, bool visible)
@@ -180,6 +200,7 @@ namespace TwistedFeathers
             this.Visible = visible;
             this.UID = 0;
             this.Conditions = new List<Conditional>();
+            this.targetType = target_type.None;
         }
 
         private bool areCondMet()
@@ -235,16 +256,18 @@ namespace TwistedFeathers
                             // Missing flat mod additions
                             float damage = Modifier + (Modifier * User.Attack) - (Modifier * tar.Defense);
                             tar.Current_hp = (int)(tar.Current_hp - damage);
-                            BattleParticipant bp = (BattleParticipant)User;
+                            BattleParticipant bp = null;
                             switch (Specifier)
                             {
                                 case ("lifesteal"):
+                                    bp = (BattleParticipant)User;
                                     bp.Current_hp = Math.Max(bp.Max_hp, bp.Current_hp + (int)(damage*.2));
                                     break;
                                 case ("recoil"):
                                     System.Random rand = new System.Random();
                                     if (rand.Next(10) < 2)
                                     {
+                                        bp = (BattleParticipant)User;
                                         bp.Current_hp = Math.Max(bp.Max_hp, bp.Current_hp + (int)(damage * .2));
                                     }
                                     break;
