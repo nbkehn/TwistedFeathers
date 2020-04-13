@@ -134,7 +134,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     IEnumerator spaceOutEffects() {
         while (pq.Count != 0 && pq.Min.Turnstamp <= currentTurn) {
             Debug.Log("Resolving: " + pq.Min.SkillName);
-            pq.Min.run(pq);
+            pq.Min.run();
             pq.Remove(pq.Min);
             UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
             for(int i = 0; i < battle_players.Count; i++){
@@ -159,26 +159,23 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         
         foreach (BattleParticipant bat_part in getBattleParticipants())
         {
-            foreach (KeyValuePair<string, BattleEffect> status in bat_part.Statuses.ToArray())
+            foreach (BattleEffect status in bat_part.Statuses)
             {
-                // This is where we code in what each status effect actually does
-                switch (status.Key)
+                status.run();
+                status.Duration -= 1;
+            }
+
+            bat_part.Statuses.RemoveAll(status => status.Duration <= 0);
+
+            foreach (BattleEffect buff in bat_part.Buffs.ToArray())
+            {
+                if (buff.Turnstamp <= currentTurn)
                 {
-                    case "Poison":
-
-                        break;
-                    case "Burn":
-
-                        break;
-                    default:
-                        status.Value.Duration -= 1;
-                        if (status.Value.Duration <= 0)
-                        {
-                            bat_part.Statuses.Remove(status);
-                        }
-                        break;
+                    buff.run();
                 }
             }
+
+            bat_part.Buffs.RemoveAll(buff => buff.Turnstamp <= currentTurn);
         }
         
     }
@@ -404,6 +401,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             {
                 if (waiting_effects)
                 {
+                    resolveStatuses();
                     resolveEffects();
                 }
                 else
@@ -421,7 +419,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
     private void singlePlayerTurn()
     {
-        //resolveStatuses();
         foreach (Transform child in UIManager.popups[2].transform.GetChild(0).transform.GetChild(0).transform) {
             GameObject.Destroy(child.gameObject);
         }
