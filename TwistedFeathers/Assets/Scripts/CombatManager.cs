@@ -362,12 +362,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     /// <param name="envSkill">name of the skill to be queued</param>
     public void processNetEnvSkill(string envSkill)
     {
-        foreach (Skill sk in CurrentEnvironment.Skills)
+        foreach (KeyValuePair<int, Skill> sk in CurrentEnvironment.Skills)
         {
-            if (envSkill.Equals(sk.Name))
+            if (envSkill.Equals(sk.Value.Name))
             {
-                Debug.Log("Queueing environment skill: " + sk.Name);
-                queueSkill(sk, CurrentEnvironment, getBattleParticipants());
+                Debug.Log("Queueing environment skill: " + sk.Value.Name);
+                queueSkill(sk.Value, CurrentEnvironment, getBattleParticipants());
             }
         }
         
@@ -727,7 +727,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             partial_sums.Add(current_sum);
         }
 
-        int random_draw = Random.Range(0, partial_sums[partial_sums.Count - 1]);
+        int random_draw = UnityEngine.Random.Range(0, partial_sums[partial_sums.Count - 1]);
         int random_index = 0;
         for (int i = 0; i < partial_sums.Count; i++)
         {
