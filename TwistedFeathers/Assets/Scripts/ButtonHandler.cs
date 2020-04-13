@@ -4,6 +4,7 @@ using UnityEngine;
 using Completed;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
 public class ButtonHandler : MonoBehaviour
 {
@@ -93,5 +94,10 @@ public class ButtonHandler : MonoBehaviour
 
     public void quitGame() {
         Application.Quit();
+    }
+
+    public void LeaveRoom()
+    {
+        PhotonNetwork.LeaveRoom();
     }
 }
