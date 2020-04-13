@@ -244,6 +244,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         this.turnManager = this.gameObject.AddComponent<PunTurnManager>();
         this.turnManager.TurnManagerListener = this;
+        this.aiManager = this.gameObject.AddComponent<AIManager>();
 
     }
 
@@ -481,12 +482,22 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         queueSkill(CurrentEnvironment.Skills[Random.Range(0, CurrentEnvironment.Skills.Count)], CurrentEnvironment, getBattleParticipants());
         foreach (Monster part in battle_enemy)
         {
+            Skill test = aiManager.chooseAttack(part, battle_players, battle_enemy);
+            //test.Name;
+            //if (aiManager.chooseAttack(part, battle_players, battle_enemy) != null)
+            //{
+            //    queueSkill(aiManager.chooseAttack(part, battle_players, battle_enemy),//enemy attack skill decision
+            //    part,
+            //    aiManager.selectTarget(part, battle_players, battle_enemy));
+            //}
             queueSkill(aiManager.chooseAttack(part, battle_players, battle_enemy),//enemy attack skill decision
                 part,
                 aiManager.selectTarget(part, battle_players, battle_enemy));
+            Debug.Log("Skill queued: " +test.Name);
             queueSkill(aiManager.chooseUtil(part, battle_players, battle_enemy),//enemy util decision
                 part,
                 aiManager.selectTarget(part, battle_players, battle_enemy));
+            //Debug.Log("Skill queued: "+ )
             //queueSkill(part.Skills[Random.Range(0, part.Skills.Count)],
             //    part,
             //    new List<BattleParticipant>() { battle_players[Random.Range(0, battle_players.Count)]});

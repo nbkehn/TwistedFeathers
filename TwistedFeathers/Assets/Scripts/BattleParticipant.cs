@@ -25,6 +25,9 @@ namespace TwistedFeathers
             this.defense = 0.0f;
             this.dodge = 0.0f;
             this.statuses = new List<KeyValuePair<string, BattleEffect>>();
+            this.passiveSkills = new Dictionary<string, Skill>();
+            this.utilitySkills = new Dictionary<string, Skill>();
+            this.attackSkills = new Dictionary<string, Skill>();
 
         }
 
@@ -35,6 +38,9 @@ namespace TwistedFeathers
             this.defense = 0.0f;
             this.dodge = 0.0f;
             this.statuses = new List<KeyValuePair<string, BattleEffect>>();
+            this.passiveSkills = new Dictionary<string, Skill>();
+            this.utilitySkills = new Dictionary<string, Skill>();
+            this.attackSkills = new Dictionary<string, Skill>();
         }
 
         public int Max_hp

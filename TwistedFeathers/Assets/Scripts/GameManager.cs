@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour
             Participant_db = new Dictionary<string, Participant>();
             Player_db = new Dictionary<string, Player>();
             eLearnedSkills = new Dictionary<string, Skill>();
+            enemy_types = new Dictionary<string, Monster>();
             inCombat = false;
             Monster_db = new Dictionary<string, Monster>();
 
@@ -86,9 +87,9 @@ public class GameManager : MonoBehaviour
 
             //Enemy Type initialization
             Monster goose = new Monster("Goose Thief", 1);
-            //goose.addPassive();//Evasive
-            //goose.addAttack();//Knife attack
-            //goose.addUtility();//Hiss
+            goose.addPassive(new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));//Evasive
+            goose.addAttack(new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>()));//Knife attack
+            goose.addUtility(new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>()));//Hiss
             enemy_types.Add("Goose", goose);
             Monster crow = new Monster("Necromancer Crow", 2);
             //crow.addAttack();//Dark Magick
@@ -114,10 +115,12 @@ public class GameManager : MonoBehaviour
             Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
             Player_db["person B"].myPrefab = playerPrefab;
 
-            Monster_db.Add("enemy A", new Monster("Azazel"));
+            //Monster_db.Add("enemy A", new Monster("Azazel", 1));
+            Monster_db.Add("enemy A", goose);
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
-            Monster_db.Add("enemy B", new Monster("Beelzebub"));
+            //Monster_db.Add("enemy B", new Monster("Beelzebub", 1));
+            Monster_db.Add("enemy B", goose);
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 

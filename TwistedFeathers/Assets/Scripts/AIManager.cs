@@ -8,15 +8,21 @@ public class AIManager : MonoBehaviour
 
     public Skill chooseAttack(Monster enemy, List<TwistedFeathers.Player> battle_players, List<Monster> battle_enemy)
     {
+        Debug.Log("Choosing Attack for enemy type: " + enemy.getEnemyType());
+        
         int type = enemy.getEnemyType();
         Skill selected = null;
         if(type == 1)//thief goose
         {
             //choose primary attack (knife)
+            Debug.Log("Choosing knife for thief");
             selected = enemy.AttackSkills["Knife Attack"];
+            Debug.Log("retrieved skill success");
+            
             
         } else if(type == 2)//necro crow
         {
+            Debug.Log("Shouldn't be here");
             //choose attack
             //  if Paralysis Spell
             //      "flip coin"
@@ -47,6 +53,7 @@ public class AIManager : MonoBehaviour
         {
             throw new System.Exception("Invalid Enemy Type");
         }
+        Debug.Log("Here is the selected skill: " + selected.Name);
 
         return selected;
     }
