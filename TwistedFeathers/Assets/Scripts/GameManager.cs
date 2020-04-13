@@ -41,10 +41,18 @@ public class GameManager : MonoBehaviour
     public bool rotate = true;
 
     public bool tutorial = true;
+    public List<Sprite> playerPics;
 
     // Awake is called before the first frame update and before Starts
     void Awake()
     {
+        if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == p_class.rogue){
+            GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[0];
+            GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[1];
+       } else {
+            GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[1];
+            GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[0];
+       } 
 
         if (_instance != null && _instance != this)
         {

@@ -70,9 +70,9 @@ public class ButtonHandler : MonoBehaviour
     }
 
     public void SwitchScene(){
-        GameObject animation = GameObject.Find("Canvas").transform.GetChild(3).gameObject;
+        GameObject animation = GameObject.Find("Canvas").transform.GetChild(7).gameObject;
         animation.SetActive(true);
-        animation.gameObject.GetComponent<Animator>().Play("TransitionAnimation");
+        animation.gameObject.GetComponent<Animator>().Play("TransitionAnimation2");
         StartCoroutine(StartBattle());
     }
 
