@@ -250,6 +250,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             attackIndicator.SetActive(true);
             moveIndicator(0);
             chosenSkill = skill;
+            UIManager.SkillInfos.transform.GetChild(0).GetComponent<Animator>().Play("Pop Out");
+            GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().SetBool("Open", false);
+            // TODO Need some way of seeing if thisd skill needs to be picked between enemies or not.  
             }
             else  {
               singlePlayerChooseSkill(skill);

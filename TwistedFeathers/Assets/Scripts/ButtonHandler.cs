@@ -84,6 +84,7 @@ public class ButtonHandler : MonoBehaviour
 
     public void toggleSettings(){
         GameObject.Find("Settings").transform.GetChild(0).gameObject.SetActive(!GameObject.Find("Settings").transform.GetChild(0).gameObject.activeSelf);
+        GameObject.Find("Settings").transform.GetChild(1).gameObject.SetActive(!GameObject.Find("Settings").transform.GetChild(1).gameObject.activeSelf);
     }
 
 
@@ -91,7 +92,21 @@ public class ButtonHandler : MonoBehaviour
         GameObject.Find("GameManager").GetComponent<GameManager>().rotate = !GameObject.Find("GameManager").GetComponent<GameManager>().rotate;
     }
 
-    public void quitGame() {
+    public void quitGame() 
+    {
         Application.Quit();
+    }
+
+    public void startFromSplash(){
+        GameObject animation = GameObject.Find("Canvas").transform.GetChild(4).gameObject;
+        animation.SetActive(true);
+        animation.gameObject.GetComponent<Animator>().Play("TransitionAnimation");
+        StartCoroutine(newGame());
+    }
+
+    IEnumerator newGame(){
+        yield return new WaitForSeconds(.7f);
+        SceneManager.LoadScene("StartGame");
+
     }
 }
