@@ -67,8 +67,8 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("dummy E", new Skill("Claws", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             //player skills
-            Skill_db.Add("FeatherDagger", new Skill("Feather Dagger", "Deals 20 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Feather Dagger") }));
-            Skill_db.Add("Sabotage", new Skill("Sabotage", "Reduce enemy defense by 25% for 1 turn", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.25f, 3, "defense") }));
+            //Skill_db.Add("FeatherDagger", new Skill("Feather Dagger", "Deals 20 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Feather Dagger") }));
+            //Skill_db.Add("Sabotage", new Skill("Sabotage", "Reduce enemy defense by 25% for 1 turn", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.25f, 3, "defense") }));
             Skill_db.Add("DefensiveFeathers", new Skill("Defensive Feathers", "Increase defense by 10%", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, .1f, 3, "defense") }));
             Skill_db.Add("smarty A", new Skill("Dagger", "Does nothing", p_type.player, new List<BattleEffect>()));
             Skill_db.Add("smarty B", new Skill("Pollen Bombs", "Does nothing", p_type.player, new List<BattleEffect>()));
@@ -92,20 +92,21 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("Adam's Skill", new Skill("Adam's Skill", "Does 15 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 15f, "This is A smarty") }));
             Skill_db.Add("Ben's Skill", new Skill("Ben's Skill", "Deals 10 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B smarty") }));
 
-            Player_db.Add("person A", new Player("Adam"));
-            Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
-            Player_db["person A"].AddSkill(Skill_db["Sabotage"]);
-            Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
-            Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
+            Player_db.Add("person A", new Player(s_type.Rogue));
+            //Player_db["person A"].LoadSkillTree();
+            //Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
+            //Player_db["person A"].AddSkill(Skill_db["Sabotage"]);
+            //Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
+            //Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
             Player_db["person A"].myPrefab = playerPrefab;
-            Player_db.Add("person B", new Player("Ben"));
+            Player_db.Add("person B", new Player(s_type.Rogue));
             Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
             Player_db["person B"].myPrefab = playerPrefab;
 
-            Monster_db.Add("enemy A", new Monster("Azazel"));
+            Monster_db.Add("enemy A", new Monster(s_type.Necromancer));
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
-            Monster_db.Add("enemy B", new Monster("Beelzebub"));
+            Monster_db.Add("enemy B", new Monster(s_type.Thief));
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 
@@ -138,9 +139,9 @@ public class GameManager : MonoBehaviour
                 new KeyValuePair<int, Skill>(1, environment_do_nothing)
             };
 
-            environments.Add(new Environment("desert",environmentPrefabs[0], desert_skills));
-            environments.Add(new Environment("swamp",environmentPrefabs[1], swamp_skills));
-            environments.Add(new Environment("empty",environmentPrefabs[2]));
+            environments.Add(new Environment(s_type.Desert,environmentPrefabs[0], desert_skills));
+            environments.Add(new Environment(s_type.Swamp,environmentPrefabs[1], swamp_skills));
+            environments.Add(new Environment(s_type.None,environmentPrefabs[2]));
         }
     }
 

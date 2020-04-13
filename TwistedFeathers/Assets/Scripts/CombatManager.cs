@@ -119,7 +119,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     //Method for taking a skill and queueing the effect into the PQ
     void queueSkill(Skill skill, Participant user, List<BattleParticipant> target)
     {
-        foreach(BattleEffect effect in skill.Effect.ToArray())
+        foreach(BattleEffect effect in skill.Effects.ToArray())
         {
             BattleEffect battle_effect = new BattleEffect(effect);
             if(battle_effect.select(user, target, currentTurn, skill.Name))

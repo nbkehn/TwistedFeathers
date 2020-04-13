@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TwistedFeathers;
 
 namespace TwistedFeathers
 {
@@ -10,38 +11,38 @@ namespace TwistedFeathers
         public int envListIndex;
         private List<KeyValuePair<int, Skill>> skills;
 
-        public Environment() : base(p_type.environment, "")
+        public Environment() : base(p_type.environment, s_type.None)
         {
 
         }
 
-        public Environment(string name, GameObject Icon) : base(p_type.environment, name)
+        public Environment(s_type name, GameObject Icon) : base(p_type.environment, name)
         {
             this.skills = new List<KeyValuePair<int, Skill>>();
             miniIcon = Icon;
             Debug.Log(miniIcon);
-            if (name == "swamp")
+            if (name == s_type.Swamp)
             {
                 envListIndex = 1;
             }
 
-            if (name == "desert")
+            if (name == s_type.Desert)
             {
                 envListIndex = 0;
             }
         }
 
-        public Environment(string name, GameObject Icon, List<KeyValuePair<int, Skill>> skills) : base(p_type.environment, name)
+        public Environment(s_type name, GameObject Icon, List<KeyValuePair<int, Skill>> skills) : base(p_type.environment, name)
         {
             this.skills = skills;
             miniIcon = Icon;
             Debug.Log(miniIcon);
-            if (name == "swamp")
+            if (name == s_type.Swamp)
             {
                 envListIndex = 1;
             }
 
-            if (name == "desert")
+            if (name == s_type.Desert)
             {
                 envListIndex = 0;
             }

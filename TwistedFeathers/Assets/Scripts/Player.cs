@@ -12,7 +12,7 @@ namespace TwistedFeathers
 
         }
 
-        public Player(string name) : base(p_type.player, name)
+        public Player(s_type name) : base(p_type.player, name)
         {
 
         }
