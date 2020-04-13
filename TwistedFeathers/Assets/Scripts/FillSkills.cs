@@ -16,9 +16,24 @@ public class FillSkills : MonoBehaviour
 
     void Start(){
         skills = new Dictionary<string, Skill>();
-        foreach (Skill sk in manager.GetComponent<CombatManager>().GetActivePlayerSkills())
+        if (GameManager.singlePlayer)
         {
-            skills.Add(sk.Name, sk);
+            foreach (Skill sk in manager.GetComponent<CombatManager>().GetActivePlayerSkills())
+            {
+                skills.Add(sk.Name, sk);
+            }
+        } else if(manager.GetComponent<CombatManager>().getPhotonPlayerListLength() == 1)
+        {
+            foreach (Skill sk in manager.GetComponent<CombatManager>().GetActivePlayerSkills())
+            {
+                skills.Add(sk.Name, sk);
+            }
+        } else if(manager.GetComponent<CombatManager>().getPhotonPlayerListLength() == 2)
+        {
+            foreach (Skill sk in manager.GetComponent<CombatManager>().GetRemotePlayerSkills())
+            {
+                skills.Add(sk.Name, sk);
+            }
         }
     }
     
