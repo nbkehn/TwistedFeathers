@@ -40,11 +40,11 @@ public class GameManager : MonoBehaviour
 
     public bool rotate = true;
 
+    public bool tutorial = true;
+
     // Awake is called before the first frame update and before Starts
     void Awake()
     {
-       
-
 
         if (_instance != null && _instance != this)
         {
@@ -68,8 +68,8 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             //player skills
             Skill_db.Add("FeatherDagger", new Skill("Feather Dagger", "Deals 20 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Feather Dagger") }));
-            Skill_db.Add("Sabotage", new Skill("Sabotage", "Reduce enemy defense by 25% for 1 turn", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.debuff, .25f, 1, "defense") }));
-            Skill_db.Add("DefensiveFeathers", new Skill("Defensive Feathers", "Increase defense by 10%", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, .1f, 1, "defense") }));
+            Skill_db.Add("Sabotage", new Skill("Sabotage", "Reduce enemy defense by 25% for 1 turn", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.25f, 3, "defense") }));
+            Skill_db.Add("DefensiveFeathers", new Skill("Defensive Feathers", "Increase defense by 10%", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, .1f, 3, "defense") }));
             Skill_db.Add("smarty A", new Skill("Dagger", "Does nothing", p_type.player, new List<BattleEffect>()));
             Skill_db.Add("smarty B", new Skill("Pollen Bombs", "Does nothing", p_type.player, new List<BattleEffect>()));
             Skill_db.Add("smarty C", new Skill("Hover", "Does nothing", p_type.player, new List<BattleEffect>()));
@@ -113,21 +113,29 @@ public class GameManager : MonoBehaviour
 
             Skill environment_do_nothing = new Skill("Nothing", "Environment does nothing", p_type.environment, new List<BattleEffect>());
 
-            List<Skill> desert_skills = new List<Skill>() 
-            { new Skill("Mirage", "Decreases Accuracy for all Battle Participants", p_type.environment, new List<BattleEffect>()
-                {
-                    new BattleEffect(e_type.buff, -0.25f, 2, "accuracy")
-                }),
-                environment_do_nothing
+            List<KeyValuePair<int, Skill>> desert_skills = new List<KeyValuePair<int, Skill>>() 
+            { 
+                new KeyValuePair<int, Skill>
+                (2,
+                    new Skill("Mirage", "Decreases Accuracy for all Battle Participants", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.buff, -0.25f, 3, "accuracy")
+                    })
+                ),
+                new KeyValuePair<int, Skill>(1, environment_do_nothing)
             };
-            List<Skill> swamp_skills = new List<Skill>() 
-            { new Skill("Leeches", "Leeches latch onto you and deal minor damage for 3 turns", p_type.environment, new List<BattleEffect>()
-                {
-                    new BattleEffect(e_type.damage, 1, 0, "", 0), 
-                    new BattleEffect(e_type.damage, 1, 0, "", 1),
-                    new BattleEffect(e_type.damage, 1, 0, "", 2)
-                }),
-                environment_do_nothing
+            List<KeyValuePair<int, Skill>> swamp_skills = new List<KeyValuePair<int, Skill>>() 
+            {
+                new KeyValuePair<int, Skill>
+                (2,
+                    new Skill("Leeches", "Leeches latch onto you and deal minor damage for 3 turns", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.damage, 1, 0, "", 0),
+                        new BattleEffect(e_type.damage, 1, 0, "", 1),
+                        new BattleEffect(e_type.damage, 1, 0, "", 2)
+                    })
+                ),
+                new KeyValuePair<int, Skill>(1, environment_do_nothing)
             };
 
             environments.Add(new Environment("desert",environmentPrefabs[0], desert_skills));
@@ -142,7 +150,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         if (Input.GetButtonDown("Battle Start") && !inCombat)
         {
@@ -150,6 +158,10 @@ public class GameManager : MonoBehaviour
             inCombat = true;
         }
 
+    }
+
+    public void toggleTutorial(){
+        tutorial = !tutorial;
     }
 }
 

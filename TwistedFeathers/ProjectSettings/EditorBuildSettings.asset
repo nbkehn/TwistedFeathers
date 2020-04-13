@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/EnvironmentSwitching.unity
     guid: 96450e896b8c045199fa7534eaf3817d
+  - enabled: 1
+    path: Assets/Scenes/Splash.unity
+    guid: dcd2aabdffb2f4f39bb6c7f819954d43
+  - enabled: 1
+    path: Assets/Scenes/StartGame.unity
+    guid: 38949ccdcd23c43eb94b44c814c0aed0
   m_configObjects: {}
