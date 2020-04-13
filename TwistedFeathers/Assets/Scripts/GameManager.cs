@@ -43,8 +43,6 @@ public class GameManager : MonoBehaviour
     // Awake is called before the first frame update and before Starts
     void Awake()
     {
-       
-
 
         if (_instance != null && _instance != this)
         {
