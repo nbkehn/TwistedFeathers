@@ -4,6 +4,14 @@ using UnityEngine;
 
 namespace TwistedFeathers
 {
+    public enum Skill_Type
+    {
+        None,
+        Attack,
+        Utility,
+        Passive
+    }
+
     [System.Serializable]
     public class Skill
     {
@@ -15,6 +23,8 @@ namespace TwistedFeathers
         private int dependency;
         [SerializeField]
         private string description;
+        [SerializeField]
+        private Skill_Type skillType;
         private p_type user_type;
         [SerializeField]
         private bool unlocked;
@@ -82,6 +92,12 @@ namespace TwistedFeathers
         {
             get => description;
             set => description = value;
+        }
+
+        public Skill_Type SkillType
+        {
+            get => skillType;
+            set => skillType = value;
         }
 
         public p_type User_type

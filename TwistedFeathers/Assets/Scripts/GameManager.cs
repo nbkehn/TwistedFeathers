@@ -92,21 +92,21 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("Adam's Skill", new Skill("Adam's Skill", "Does 15 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 15f, "This is A smarty") }));
             Skill_db.Add("Ben's Skill", new Skill("Ben's Skill", "Deals 10 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B smarty") }));
 
-            Player_db.Add("person A", new Player(s_type.Hummingbird));
+            Player_db.Add("person A", new Player(s_type.Rogue));
             //Player_db["person A"].LoadSkillTree();
             //Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
             //Player_db["person A"].AddSkill(Skill_db["Sabotage"]);
             //Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
             //Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
             Player_db["person A"].myPrefab = playerPrefab;
-            Player_db.Add("person B", new Player(s_type.Hummingbird));
+            Player_db.Add("person B", new Player(s_type.Rogue));
             Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
             Player_db["person B"].myPrefab = playerPrefab;
 
-            Monster_db.Add("enemy A", new Monster(s_type.Chicken));
+            Monster_db.Add("enemy A", new Monster(s_type.Necromancer));
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
-            Monster_db.Add("enemy B", new Monster(s_type.Crow));
+            Monster_db.Add("enemy B", new Monster(s_type.Thief));
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 

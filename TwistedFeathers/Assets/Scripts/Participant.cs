@@ -19,13 +19,11 @@ namespace TwistedFeathers
     public enum s_type
     {
         None,
-        Hummingbird,
-        Eagle,
-        Owl,
-        Crow,
-        Goose,
-        Chicken,
-        Glacier,
+        Rogue,
+        Fighter,
+        Mage,
+        Necromancer,
+        Thief,
         Swamp,
         Desert
     }

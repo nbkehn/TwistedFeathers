@@ -220,6 +220,12 @@ public class NodeBasedEditor : EditorWindow
         selected.Name = EditorGUILayout.TextField(selected.Name, GUILayout.Width(108));
         GUILayout.EndHorizontal();
 
+        // Type Field
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel(new GUIContent("Type: ", "Type of skill"));
+        selected.SkillType = (Skill_Type)EditorGUILayout.EnumPopup(selected.SkillType, GUILayout.Width(108));
+        GUILayout.EndHorizontal();
+
         // Level Field
         GUILayout.BeginHorizontal();
         EditorGUILayout.PrefixLabel(new GUIContent("Level: ", "Participant level at which this skill becomes available."));

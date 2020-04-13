@@ -67,14 +67,9 @@ namespace TwistedFeathers
 
 
         // These values are only defined when it is selected in battle
-        //public e_type Type { get; set; }
         public List<BattleParticipant> Target { get; set; }
         public Participant User { get; set; }
         // These values are defined when stored in a skill
-        //public string Specifier { get; set; }
-        //public int Turnstamp { get; set; }
-        //public float Modifier { get; set; }
-        //public int Duration { get; set; }
         /*Whether or not the effect will show up in the forecast*/
         public bool Visible { get; set; }
         public string SkillName { get; set; }
@@ -226,7 +221,23 @@ namespace TwistedFeathers
                         {
                             case (e_type.damage):
                                 // Missing flat mod additions
+                                BattleParticipant bp = (BattleParticipant)User;
                                 float damage = Modifier + (Modifier * User.Attack) - (Modifier * tar.Defense);
+                                switch (Specifier)
+                                {
+                                    case ("lifesteal"):
+                                        bp.Current_hp = Math.Max(bp.Max_hp, bp.Current_hp + (int)(damage*.2));
+                                        break;
+                                    case ("recoil"):
+                                        System.Random rand = new System.Random();
+                                        if (rand.Next(10) < 2)
+                                        {
+                                            bp.Current_hp = Math.Max(bp.Max_hp, bp.Current_hp + (int)(damage * .2));
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                                 tar.Current_hp = (int)(tar.Current_hp - damage);
                                 break;
                             case (e_type.buff):
