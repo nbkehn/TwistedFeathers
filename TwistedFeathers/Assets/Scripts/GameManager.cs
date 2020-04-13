@@ -113,21 +113,29 @@ public class GameManager : MonoBehaviour
 
             Skill environment_do_nothing = new Skill("Nothing", "Environment does nothing", p_type.environment, new List<BattleEffect>());
 
-            List<Skill> desert_skills = new List<Skill>() 
-            { new Skill("Mirage", "Decreases Accuracy for all Battle Participants", p_type.environment, new List<BattleEffect>()
-                {
-                    new BattleEffect(e_type.buff, -0.25f, 2, "accuracy")
-                }),
-                environment_do_nothing
+            List<KeyValuePair<int, Skill>> desert_skills = new List<KeyValuePair<int, Skill>>() 
+            { 
+                new KeyValuePair<int, Skill>
+                (2,
+                    new Skill("Mirage", "Decreases Accuracy for all Battle Participants", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.buff, -0.25f, 2, "accuracy")
+                    })
+                ),
+                new KeyValuePair<int, Skill>(1, environment_do_nothing)
             };
-            List<Skill> swamp_skills = new List<Skill>() 
-            { new Skill("Leeches", "Leeches latch onto you and deal minor damage for 3 turns", p_type.environment, new List<BattleEffect>()
-                {
-                    new BattleEffect(e_type.damage, 1, 0, "", 0), 
-                    new BattleEffect(e_type.damage, 1, 0, "", 1),
-                    new BattleEffect(e_type.damage, 1, 0, "", 2)
-                }),
-                environment_do_nothing
+            List<KeyValuePair<int, Skill>> swamp_skills = new List<KeyValuePair<int, Skill>>() 
+            {
+                new KeyValuePair<int, Skill>
+                (2,
+                    new Skill("Leeches", "Leeches latch onto you and deal minor damage for 3 turns", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.damage, 1, 0, "", 0),
+                        new BattleEffect(e_type.damage, 1, 0, "", 1),
+                        new BattleEffect(e_type.damage, 1, 0, "", 2)
+                    })
+                ),
+                new KeyValuePair<int, Skill>(1, environment_do_nothing)
             };
 
             environments.Add(new Environment("desert",environmentPrefabs[0], desert_skills));
@@ -142,7 +150,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         if (Input.GetButtonDown("Battle Start") && !inCombat)
         {

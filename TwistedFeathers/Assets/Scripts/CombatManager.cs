@@ -477,7 +477,27 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         //New turn beings here
         Debug.Log("TURN BEGIN");
         currentTurn++;
-        queueSkill(CurrentEnvironment.Skills[Random.Range(0, CurrentEnvironment.Skills.Count)], CurrentEnvironment, getBattleParticipants());
+        //Choose environment skill
+        List<int> partial_sums = new List<int>();
+        int current_sum = 0;
+        foreach (KeyValuePair<int, Skill> env_skill in CurrentEnvironment.Skills)
+        {
+            current_sum += env_skill.Key;
+            partial_sums.Add(current_sum);
+        }
+
+        int random_draw = Random.Range(0, partial_sums[partial_sums.Count - 1]);
+        int random_index = 0;
+        for (int i = 0; i < partial_sums.Count; i++)
+        {
+            if (random_draw < partial_sums[i])
+            {
+                random_index = i;
+                break;
+            }
+        } 
+        queueSkill(CurrentEnvironment.Skills[random_index].Value, CurrentEnvironment, getBattleParticipants());
+        // Choose enemy skills
         foreach (Monster part in battle_monsters)
         {
             queueSkill(part.Skills[Random.Range(0, part.Skills.Count)], part, new List<BattleParticipant>() { battle_players[Random.Range(0, battle_players.Count)]});
