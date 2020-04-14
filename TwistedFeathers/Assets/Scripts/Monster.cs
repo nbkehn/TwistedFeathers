@@ -20,7 +20,7 @@ namespace TwistedFeathers
         //add & set utility list (primary set to 0, and so on)
         //set these skills on enemy creation
 
-        public Monster(string name, int EnemyType) : base(p_type.enemy, name)
+        public Monster(s_type name, int EnemyType) : base(p_type.enemy, name)
         {
             this.EnemyType = EnemyType;
         }

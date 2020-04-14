@@ -85,10 +85,12 @@ namespace TwistedFeathers
         {
             this.utilitySkills.Add(util.Name, util);
         }
+
         public void addAttack(Skill attack)
         {
             this.attackSkills.Add(attack.Name, attack);
-            
+        }
+
         public List<BattleEffect> Buffs { get => buffs; set => buffs = value; }
 
         public float getStat(stat_type type)

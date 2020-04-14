@@ -94,12 +94,12 @@ public class GameManager : MonoBehaviour
 
 
             //Enemy Type initialization
-            Monster goose = new Monster("Goose Thief", 1);
+            Monster goose = new Monster(s_type.Thief, 1);
             goose.addPassive(new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));//Evasive
             goose.addAttack(new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Knife Attack") }));//Knife attack
-            goose.addUtility(new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.debuff, .20f, 1, "defense") }));//Hiss
+            goose.addUtility(new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.20f, 1, "defense") }));//Hiss
             enemy_types.Add("Goose", goose);
-            Monster crow = new Monster("Necromancer Crow", 2);
+            Monster crow = new Monster(s_type.Necromancer, 2);
             //crow.addAttack();//Dark Magick
             //crow.addUtility();//Healing
             //crow.addUtility();Fear Curse
@@ -124,10 +124,10 @@ public class GameManager : MonoBehaviour
             Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
             Player_db["person B"].myPrefab = playerPrefab;
 
-            Monster_db.Add("enemy A", new Monster(s_type.Necromancer));
+            Monster_db.Add("enemy A", goose);
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
-            Monster_db.Add("enemy B", new Monster(s_type.Thief));
+            Monster_db.Add("enemy B", goose);
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 

@@ -835,19 +835,23 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             //    part,
             //    aiManager.selectTarget(part, battle_players, battle_monsters));
             //}
-            queueSkill(aiManager.chooseAttack(part, battle_players, battle_monsters),//enemy attack skill decision
+            Skill chosenEnemySkill = aiManager.chooseAttack(part, battle_players, battle_monsters);
+            Skill chosenEnemyUtil = aiManager.chooseUtil(part, battle_players, battle_monsters);
+            List<BattleParticipant> targets = aiManager.selectTarget(part, battle_players, battle_monsters);
+            queueSkill(chosenEnemySkill,//enemy attack skill decision
                 part,
-                aiManager.selectTarget(part, battle_players, battle_monsters));
+                targets);
             Debug.Log("Skill queued: " +test.Name);
-            queueSkill(aiManager.chooseUtil(part, battle_players, battle_monsters),//enemy util decision
+            queueSkill(chosenEnemyUtil,//enemy util decision
                 part,
-                aiManager.selectTarget(part, battle_players, battle_monsters));
+                targets);
             //Debug.Log("Skill queued: "+ )
             //queueSkill(part.Skills[Random.Range(0, part.Skills.Count)],
             //    part,
             //    new List<BattleParticipant>() { battle_players[Random.Range(0, battle_players.Count)]});
             
-            enemySkillInfos += (chosenEnemySkill.Name + "," + targetIndex + ":");
+            // TODO Fix enemy skill network synchronization
+            //enemySkillInfos += (chosenEnemySkill.Name + "," + targetIndex + ":");
             
         }
 
