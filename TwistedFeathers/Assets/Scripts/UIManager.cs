@@ -29,6 +29,8 @@ public class UIManager : MonoBehaviour
 
     public GameObject actionOverlay;
 
+    public GameObject SkillInfos;
+
     public void Start(){
         foreach(GameObject button in animateableButtons){
             if(button.activeSelf){
@@ -36,7 +38,7 @@ public class UIManager : MonoBehaviour
             }    
         }
         transitionAnimation.SetActive(true);
-        transitionAnimation.GetComponent<Animator>().Play("TransitionAnimation",0,0.7f);
+        transitionAnimation.GetComponent<Animator>().Play("TransitionAnimation2",0,0.7f);
         StartCoroutine(finishStart());
 
         turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(togglePlayerSkills);
@@ -62,7 +64,7 @@ public class UIManager : MonoBehaviour
     public void Update(){
         if(!starting){
             if(transitionAnimation.activeSelf){
-                if(!(transitionAnimation.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("TransitionAnimation"))){
+                if(!(transitionAnimation.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("TransitionAnimation2"))){
                     transitionAnimation.SetActive(false);
                 }
             }
@@ -122,7 +124,7 @@ public class UIManager : MonoBehaviour
     public void playTransition() {
         transitionAnimation.SetActive(true);
         starting = true;
-        transitionAnimation.GetComponent<Animator>().Play("TransitionAnimation");
+        transitionAnimation.GetComponent<Animator>().Play("TransitionAnimation2");
         StartCoroutine(finishStart());
 
     }
@@ -144,6 +146,11 @@ public class UIManager : MonoBehaviour
 
     public void togglePlayerSkills(){
         popups[0].SetActive(!popups[0].gameObject.activeSelf);
+
+        if(GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().GetBool("Open")){
+            GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().Play("Pop Out");
+            GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().SetBool("Open", false);
+        } 
     }
 
     public void toggleEnemySkills(){

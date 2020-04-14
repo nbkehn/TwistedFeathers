@@ -12,7 +12,7 @@ namespace TwistedFeathers
 
         }
 
-        public Monster(string name) : base(p_type.enemy, name)
+        public Monster(s_type name) : base(p_type.enemy, name)
         {
             
         }

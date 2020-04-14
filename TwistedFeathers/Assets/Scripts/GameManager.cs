@@ -42,11 +42,19 @@ public class GameManager : MonoBehaviour
 
     public bool rotate = true;
 
+    public bool tutorial = true;
+    public List<Sprite> playerPics;
+
     // Awake is called before the first frame update and before Starts
     void Awake()
     {
-       
-
+        if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == p_class.rogue){
+            GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[0];
+            GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[1];
+       } else {
+            GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[1];
+            GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[0];
+       } 
 
         if (_instance != null && _instance != this)
         {
@@ -70,9 +78,9 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("dummy E", new Skill("Claws", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             //player skills
-            Skill_db.Add("FeatherDagger", new Skill("Feather Dagger", "Deals 20 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Feather Dagger") }));
-            Skill_db.Add("Sabotage", new Skill("Sabotage", "Reduce enemy defense by 25% for 1 turn", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.debuff, .25f, 1, "defense") }));
-            Skill_db.Add("DefensiveFeathers", new Skill("Defensive Feathers", "Increase defense by 10%", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, .1f, 1, "defense") }));
+            //Skill_db.Add("FeatherDagger", new Skill("Feather Dagger", "Deals 20 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Feather Dagger") }));
+            //Skill_db.Add("Sabotage", new Skill("Sabotage", "Reduce enemy defense by 25% for 1 turn", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.25f, 3, "defense") }));
+            Skill_db.Add("DefensiveFeathers", new Skill("Defensive Feathers", "Increase defense by 10%", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, .1f, 3, "defense") }));
             Skill_db.Add("smarty A", new Skill("Dagger", "Does nothing", p_type.player, new List<BattleEffect>()));
             Skill_db.Add("smarty B", new Skill("Pollen Bombs", "Does nothing", p_type.player, new List<BattleEffect>()));
             Skill_db.Add("smarty C", new Skill("Hover", "Does nothing", p_type.player, new List<BattleEffect>()));
@@ -105,49 +113,84 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("Adam's Skill", new Skill("Adam's Skill", "Does 15 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 15f, "This is A smarty") }));
             Skill_db.Add("Ben's Skill", new Skill("Ben's Skill", "Deals 10 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B smarty") }));
 
-            Player_db.Add("person A", new Player("Adam"));
-            Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
-            Player_db["person A"].AddSkill(Skill_db["Sabotage"]);
-            Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
-            Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
+            Player_db.Add("person A", new Player(s_type.Rogue));
+            //Player_db["person A"].LoadSkillTree();
+            //Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
+            //Player_db["person A"].AddSkill(Skill_db["Sabotage"]);
+            //Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
+            //Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
             Player_db["person A"].myPrefab = playerPrefab;
-            Player_db.Add("person B", new Player("Ben"));
+            Player_db.Add("person B", new Player(s_type.Rogue));
             Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
             Player_db["person B"].myPrefab = playerPrefab;
 
-            //Monster_db.Add("enemy A", new Monster("Azazel", 1));
-            Monster_db.Add("enemy A", goose);
+            Monster_db.Add("enemy A", new Monster(s_type.Necromancer));
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
-            //Monster_db.Add("enemy B", new Monster("Beelzebub", 1));
-            Monster_db.Add("enemy B", goose);
+            Monster_db.Add("enemy B", new Monster(s_type.Thief));
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
+
+            // ADD SKILLS //
+            Participant p = new Player(s_type.Rogue);
+            addSkills(p);
+            p = new Player(s_type.Fighter);
+            addSkills(p);
+            p = new Player(s_type.Mage);
+            addSkills(p);
+            p = new Monster(s_type.Necromancer);
+            addSkills(p);
+            p = new Monster(s_type.Thief);
+            addSkills(p);
+            p = new Environment(s_type.Swamp, environmentPrefabs[2]);
+            addSkills(p);
+            p = new Environment(s_type.Desert, environmentPrefabs[2]);
+            addSkills(p);
 
             environments = new List<Environment>();
 
             Skill environment_do_nothing = new Skill("Nothing", "Environment does nothing", p_type.environment, new List<BattleEffect>());
 
-            List<Skill> desert_skills = new List<Skill>() 
-            { new Skill("Mirage", "Decreases Accuracy for all Battle Participants", p_type.environment, new List<BattleEffect>()
-                {
-                    new BattleEffect(e_type.buff, -0.25f, 2, "accuracy")
-                }),
-                environment_do_nothing
+            List<KeyValuePair<int, Skill>> desert_skills = new List<KeyValuePair<int, Skill>>() 
+            { 
+                new KeyValuePair<int, Skill>
+                (2,
+                    new Skill("Mirage", "Decreases Accuracy for all Battle Participants", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.buff, -0.25f, 3, "accuracy")
+                    })
+                ),
+                new KeyValuePair<int, Skill>(1, environment_do_nothing)
             };
-            List<Skill> swamp_skills = new List<Skill>() 
-            { new Skill("Leeches", "Leeches latch onto you and deal minor damage for 3 turns", p_type.environment, new List<BattleEffect>()
-                {
-                    new BattleEffect(e_type.damage, 1, 0, "", 0), 
-                    new BattleEffect(e_type.damage, 1, 0, "", 1),
-                    new BattleEffect(e_type.damage, 1, 0, "", 2)
-                }),
-                environment_do_nothing
+            List<KeyValuePair<int, Skill>> swamp_skills = new List<KeyValuePair<int, Skill>>() 
+            {
+                new KeyValuePair<int, Skill>
+                (2,
+                    new Skill("Leeches", "Leeches latch onto you and deal minor damage for 3 turns", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.damage, 1, 0, "", 0),
+                        new BattleEffect(e_type.damage, 1, 0, "", 1),
+                        new BattleEffect(e_type.damage, 1, 0, "", 2)
+                    })
+                ),
+                new KeyValuePair<int, Skill>(1, environment_do_nothing)
             };
 
-            environments.Add(new Environment("desert",environmentPrefabs[0], desert_skills));
-            environments.Add(new Environment("swamp",environmentPrefabs[1], swamp_skills));
-            environments.Add(new Environment("empty",environmentPrefabs[2]));
+            environments.Add(new Environment(s_type.Desert,environmentPrefabs[0], desert_skills));
+            environments.Add(new Environment(s_type.Swamp,environmentPrefabs[1], swamp_skills));
+            environments.Add(new Environment(s_type.None,environmentPrefabs[2]));
+        }
+    }
+
+    public void addSkills(Participant p)
+    {
+        if (p.SkillTree == null)
+        {
+            return;
+        }
+        foreach (Skill skill in p.SkillTree)
+        {
+            Skill_db.Add(skill.Name, skill);
         }
     }
 
@@ -157,7 +200,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         if (Input.GetButtonDown("Battle Start") && !inCombat)
         {
@@ -165,6 +208,10 @@ public class GameManager : MonoBehaviour
             inCombat = true;
         }
 
+    }
+
+    public void toggleTutorial(){
+        tutorial = !tutorial;
     }
 }
 

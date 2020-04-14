@@ -4,19 +4,47 @@ using UnityEngine;
 
 namespace TwistedFeathers
 {
-    public enum SkillType { None, Passive, Utility, Attack}
+    public enum Skill_Type
+    {
+        None,
+        Attack,
+        Utility,
+        Passive
+    }
 
+    [System.Serializable]
     public class Skill
     {
+        [SerializeField]
         private string name;
+        [SerializeField]
+        private int id;
+        [SerializeField]
+        private int dependency;
+        [SerializeField]
         private string description;
+        [SerializeField]
+        private Skill_Type skillType;
         private p_type user_type;
-        private SkillType skill_type;
-        bool unlocked;
-        int level_req;
-        Skill pre_req;
-        private List<BattleEffect> effect;
-        private List<BattleEffect> passive;
+        [SerializeField]
+        private bool unlocked;
+        [SerializeField]
+        private bool selected;
+        [SerializeField]
+        private int level_req;
+        private Skill pre_req;
+        [SerializeField]
+        private List<BattleEffect> effects;
+        [SerializeField]
+        private List<BattleEffect> passives;
+
+        // For use by skill editor only
+        public Skill(int id)
+        {
+            this.ID = id;
+            this.effects = new List<BattleEffect>();
+            this.passives = new List<BattleEffect>();
+        }
 
         public Skill()
         {
@@ -26,11 +54,11 @@ namespace TwistedFeathers
             this.unlocked = false;
             this.level_req = 0;
             this.pre_req = null;
-            this.effect = new List<BattleEffect>();
-            this.passive = new List<BattleEffect>();
+            this.effects = new List<BattleEffect>();
+            this.passives = new List<BattleEffect>();
         }
 
-        public Skill(string name, string description, p_type user_type, List<BattleEffect> effect)
+        public Skill(string name, string description, p_type user_type, List<BattleEffect> effects)
         {
             this.name = name;
             this.description = description;
@@ -38,8 +66,8 @@ namespace TwistedFeathers
             this.unlocked = false;
             this.level_req = 0;
             this.pre_req = null;
-            this.effect = effect;
-            this.passive = new List<BattleEffect>();
+            this.effects = effects;
+            this.passives = new List<BattleEffect>();
         }
 
         public string Name
@@ -48,10 +76,28 @@ namespace TwistedFeathers
             set => name = value;
         }
 
+        public int ID
+        {
+            get => id;
+            set => id = value;
+        }
+
+        public int Dependency
+        {
+            get => dependency;
+            set => dependency = value;
+        }
+
         public string Description
         {
             get => description;
             set => description = value;
+        }
+
+        public Skill_Type SkillType
+        {
+            get => skillType;
+            set => skillType = value;
         }
 
         public p_type User_type
@@ -60,16 +106,22 @@ namespace TwistedFeathers
             set => user_type = value;
         }
 
-        public List<BattleEffect> Effect
+        public List<BattleEffect> Effects
         {
-            get => effect;
-            set => effect = value;
+            get => effects;
+            set => effects = value;
         }
 
         public bool Unlocked
         {
             get => unlocked;
             set => unlocked = value;
+        }
+
+        public bool Selected
+        {
+            get => selected;
+            set => selected = value;
         }
 
         public int Level_req
@@ -83,8 +135,8 @@ namespace TwistedFeathers
             get => pre_req;
             set => pre_req = value;
         }
-        public List<BattleEffect> Passive { get => passive; set => passive = value; }
-        public SkillType Skill_type { get => skill_type; set => skill_type = value; }
+      
+        public List<BattleEffect> Passives { get => passives; set => passives = value; }
 
         // This method gets called when the skill is gained, it applies all the passives
         void onGain()
