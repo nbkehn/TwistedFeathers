@@ -275,6 +275,12 @@ public class NodeBasedEditor : EditorWindow
                 effect.Type = (e_type)EditorGUILayout.EnumPopup(effect.Type, GUILayout.Width(108));
                 GUILayout.EndHorizontal();
 
+                // Target Field
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(new GUIContent("Target: ", "The target of the skill"));
+                effect.TargetType = (target_type)EditorGUILayout.EnumPopup(effect.TargetType, GUILayout.Width(108));
+                GUILayout.EndHorizontal();
+
                 // Modifier Field
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(new GUIContent("Modifier: ", "Specifies how strong the effect should be."));

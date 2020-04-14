@@ -69,6 +69,7 @@ namespace TwistedFeathers
 
         private int turnstamp;
 
+        [SerializeField]
         private target_type targetType;
 
         public bool Show { get => show; set => show = value; }
