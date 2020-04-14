@@ -118,6 +118,22 @@ public class GameManager : MonoBehaviour
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 
+            // ADD SKILLS //
+            Participant p = new Player(s_type.Rogue);
+            addSkills(p);
+            p = new Player(s_type.Fighter);
+            addSkills(p);
+            p = new Player(s_type.Mage);
+            addSkills(p);
+            p = new Monster(s_type.Necromancer);
+            addSkills(p);
+            p = new Monster(s_type.Thief);
+            addSkills(p);
+            p = new Environment(s_type.Swamp, environmentPrefabs[2]);
+            addSkills(p);
+            p = new Environment(s_type.Desert, environmentPrefabs[2]);
+            addSkills(p);
+
             environments = new List<Environment>();
 
             Skill environment_do_nothing = new Skill("Nothing", "Environment does nothing", p_type.environment, new List<BattleEffect>());
@@ -150,6 +166,18 @@ public class GameManager : MonoBehaviour
             environments.Add(new Environment(s_type.Desert,environmentPrefabs[0], desert_skills));
             environments.Add(new Environment(s_type.Swamp,environmentPrefabs[1], swamp_skills));
             environments.Add(new Environment(s_type.None,environmentPrefabs[2]));
+        }
+    }
+
+    public void addSkills(Participant p)
+    {
+        if (p.SkillTree == null)
+        {
+            return;
+        }
+        foreach (Skill skill in p.SkillTree)
+        {
+            Skill_db.Add(skill.Name, skill);
         }
     }
 
