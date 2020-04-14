@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour
             //Enemy Type initialization
             Monster goose = new Monster("Goose Thief", 1);
             goose.addPassive(new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));//Evasive
-            goose.addAttack(new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>()));//Knife attack
+            goose.addAttack(new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Knife Attack") }));//Knife attack
             goose.addUtility(new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>()));//Hiss
             enemy_types.Add("Goose", goose);
             Monster crow = new Monster("Necromancer Crow", 2);
