@@ -53,5 +53,10 @@ namespace TwistedFeathers
                 SceneManager.LoadScene("TestScene");
             }
         }
+
+        public void awardEXP(int exp){
+            player1.totalEXP += exp;
+            player2.totalEXP += exp;
+        }
     }
 }

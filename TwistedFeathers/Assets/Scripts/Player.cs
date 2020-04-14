@@ -11,9 +11,14 @@ namespace TwistedFeathers
         notAssigned
     };    
 
+
+
     public class Player : BattleParticipant
     {
         private static p_class playerClass;
+        public int totalEXP;
+
+        public bool isDead;
         
         public p_class getPlayerClass(){
             return playerClass;
@@ -25,11 +30,15 @@ namespace TwistedFeathers
         public Player() : base()
         {
             playerClass = p_class.notAssigned;
+            totalEXP = 0;
+            isDead = false;
         }
 
         public Player(s_type name) : base(p_type.player, name)
         {
             playerClass = p_class.notAssigned;
+            totalEXP = 0;
+            isDead = false;
         }
 
 

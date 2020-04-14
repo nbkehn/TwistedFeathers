@@ -43,6 +43,12 @@ public class GameManager : MonoBehaviour
     public bool tutorial = true;
     public List<Sprite> playerPics;
 
+    public static int numWaves;
+
+    public static int numBattles;
+
+    public static int wavesRequired = 3;
+
     // Awake is called before the first frame update and before Starts
     void Awake()
     {
@@ -171,6 +177,10 @@ public class GameManager : MonoBehaviour
 
     public void toggleTutorial(){
         tutorial = !tutorial;
+    }
+
+    public static void awardEXP(int exp){
+       GameObject.Find("PlayerManager").GetComponent<PlayerManager>().awardEXP(exp);
     }
 }
 
