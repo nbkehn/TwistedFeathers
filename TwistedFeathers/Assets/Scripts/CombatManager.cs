@@ -119,10 +119,50 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     //Method for taking a skill and queueing the effect into the PQ
     void queueSkill(Skill skill, Participant user, List<BattleParticipant> target)
     {
+        List<BattleParticipant> real_target = new List<BattleParticipant>();
         foreach(BattleEffect effect in skill.Effects.ToArray())
         {
+            real_target = new List<BattleParticipant>();
+            switch(effect.TargetType)
+            {
+                case target_type.Self:
+                    real_target.Add((BattleParticipant) user);
+                    break;
+                case target_type.AllEnemies:
+                    foreach (TwistedFeathers.Monster monster in battle_monsters)
+                    {
+                        real_target.Add(monster);
+                    }
+
+                    break;
+                case target_type.All:
+                    foreach (TwistedFeathers.Monster monster in battle_monsters)
+                    {
+                        real_target.Add(monster);
+                    }
+                    foreach (TwistedFeathers.Player player in battle_players)
+                    {
+                        real_target.Add(player);
+                    }
+                    break;
+                case target_type.AllAllies:
+                    foreach (TwistedFeathers.Player player in battle_players)
+                    {
+                        real_target.Add(player);
+                    }
+                    break;
+                case target_type.Ally:
+                    Debug.LogError("Error: Ally targeting not supported");
+                    break;
+                case target_type.None: //TODO Remove this line
+                case target_type.Enemy:
+                    real_target = target;
+                    break;
+                default:
+                    break;
+            }
             BattleEffect battle_effect = new BattleEffect(effect);
-            if(battle_effect.select(user, target, currentTurn, skill.Name))
+            if(battle_effect.select(user, real_target, currentTurn, skill.Name))
             {
                 if (!pq.Add(battle_effect))
                 {
@@ -266,31 +306,70 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
     }
     #region Skill Handling
+
+    public void SkillTargetUI(Skill skill)
+    {
+        bool needUI = false;
+        foreach (BattleEffect be in skill.Effects)
+        {
+            List<BattleParticipant> target = new List<BattleParticipant>();
+            switch(be.TargetType)
+            {
+                case target_type.Self:
+                case target_type.AllEnemies:
+                case target_type.All:
+                case target_type.AllAllies:
+                    needUI = false;
+                    break;
+                case target_type.Ally:
+                    Debug.LogError("Error: Don't support ally targeting at this time");
+                    break;
+                case target_type.Enemy:
+                case target_type.None: //TODO Remove this line later
+                    needUI = true;
+                    break;
+                default:
+                    Debug.LogError("Error: Invalid Target Type");
+                    break;
+            }
+            if (needUI)
+            {
+                break;
+            }
+        }
+
+        if (needUI)
+        {
+            //TODO Change to support ally targeting as well
+            selectingEnemy = true;
+            attackIndicator.SetActive(true);
+            moveIndicator(0);
+            chosenSkill = skill;
+        }
+
+    }
+
     public void SelectSkill(Skill skill){
         // we know that this will be the selected skill
         // if one player don't network the move
         if (GameManager.singlePlayer)
         {
-           if(battle_monsters.Count > 1){
-            selectingEnemy = true;
-            attackIndicator.SetActive(true);
-            moveIndicator(0);
-            chosenSkill = skill;
-            UIManager.SkillInfos.transform.GetChild(0).GetComponent<Animator>().Play("Pop Out");
-            GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().SetBool("Open", false);
-            // TODO Need some way of seeing if thisd skill needs to be picked between enemies or not.  
-            }
-            else  {
+           if(battle_monsters.Count > 1)
+           {
+                SkillTargetUI(skill);
+                UIManager.SkillInfos.transform.GetChild(0).GetComponent<Animator>().Play("Pop Out");
+                GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().SetBool("Open", false);
+                // TODO Need some way of seeing if thisd skill needs to be picked between enemies or not.  
+           }
+           else  
+           {
               singlePlayerChooseSkill(skill);
-            }
+           }
         }
         else if(PhotonNetwork.PlayerList.Length == 1)
         {
             if(battle_monsters.Count > 1){
-            selectingEnemy = true;
-            attackIndicator.SetActive(true);
-            moveIndicator(0);
-            chosenSkill = skill;
+                SkillTargetUI(skill);
             }
             else  {
               singlePlayerChooseSkill(skill);
@@ -300,10 +379,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         {
             if (battle_monsters.Count > 1)
             {
-                selectingEnemy = true;
-                attackIndicator.SetActive(true);
-                moveIndicator(0);
-                chosenSkill = skill;
+                SkillTargetUI(skill);
             }
             else
             {
@@ -560,10 +636,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 if(GameManager.singlePlayer)
                 {
                     singlePlayerChooseSkill(chosenSkill);
-                } else if(getPhotonPlayerListLength() == 1)
+                } 
+                else if(getPhotonPlayerListLength() == 1)
                 {
                     singlePlayerChooseSkill(chosenSkill);
-                } else if (getPhotonPlayerListLength() == 2)
+                } 
+                else if (getPhotonPlayerListLength() == 2)
                 {
                     //must have this here to turn off the indicators for networking
                     attackIndicator.SetActive(false);
