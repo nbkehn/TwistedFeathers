@@ -227,16 +227,16 @@ public class NodeBasedEditor : EditorWindow
         GUILayout.EndHorizontal();
 
         // Level Field
-        GUILayout.BeginHorizontal();
-        EditorGUILayout.PrefixLabel(new GUIContent("Level: ", "Participant level at which this skill becomes available."));
-        selected.Level_req = EditorGUILayout.IntField(selected.Level_req, GUILayout.Width(108));
-        GUILayout.EndHorizontal();
+        //GUILayout.BeginHorizontal();
+        //EditorGUILayout.PrefixLabel(new GUIContent("Level: ", "Participant level at which this skill becomes available."));
+        //selected.Level_req = EditorGUILayout.IntField(selected.Level_req, GUILayout.Width(108));
+        //GUILayout.EndHorizontal();
 
         // Unlocked Field
-        GUILayout.BeginHorizontal();
-        EditorGUILayout.PrefixLabel(new GUIContent("Unlocked: ", "Specifies whether the particpant has unlocked this skill."));
-        selected.Unlocked = EditorGUILayout.Toggle(selected.Unlocked, GUILayout.Width(108));
-        GUILayout.EndHorizontal();
+        //GUILayout.BeginHorizontal();
+        //EditorGUILayout.PrefixLabel(new GUIContent("Unlocked: ", "Specifies whether the particpant has unlocked this skill."));
+        //selected.Unlocked = EditorGUILayout.Toggle(selected.Unlocked, GUILayout.Width(108));
+        //GUILayout.EndHorizontal();
 
         // Selected Field
         GUILayout.BeginHorizontal();
@@ -291,6 +291,12 @@ public class NodeBasedEditor : EditorWindow
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(new GUIContent("Duration: ", "How many turns this effect lasts."));
                 effect.Duration = EditorGUILayout.IntField(effect.Duration, GUILayout.Width(108));
+                GUILayout.EndHorizontal();
+
+                // Delay field
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(new GUIContent("Delay: ", "Delays this effect by the amount set."));
+                effect.Turnstamp = EditorGUILayout.IntField(effect.Turnstamp, GUILayout.Width(108));
                 GUILayout.EndHorizontal();
 
                 // Message Field
