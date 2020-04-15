@@ -28,18 +28,22 @@ public class FillSkills : MonoBehaviour
             {
                 skills.Add(sk.Name, sk);
             }
-        } else if(manager.GetComponent<CombatManager>().getPhotonPlayerListLength() == 2)
-        {
-            foreach (Skill sk in manager.GetComponent<CombatManager>().GetRemotePlayerSkills())
-            {
-                skills.Add(sk.Name, sk);
-            }
         }
     }
     
     // Update is called once per frame
     public void FillSkillList()
     {
+        // this only needs to run when a remote player chooses select skill
+        // A remote player is not a master client and the photon player list would be two
+        // should not mess with single player as photonplayerlistlength returns 0 on single player
+        if (!manager.GetComponent<CombatManager>().isMasterClient() && manager.GetComponent<CombatManager>().getPhotonPlayerListLength() == 2)
+        {
+            foreach (Skill sk in manager.GetComponent<CombatManager>().GetRemotePlayerSkills())
+            {
+                skills.Add(sk.Name, sk);
+            }
+        }
         int numButtons = 0;
         foreach(System.Collections.Generic.KeyValuePair<string, Skill> sk in skills){
             newButton = Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
