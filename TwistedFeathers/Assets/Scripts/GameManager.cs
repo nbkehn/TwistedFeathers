@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
             Monster_db = new Dictionary<string, Monster>();
 
             //Dummy values for testing purposes
-            Skill_db.Add("dummy A", new Skill("Acid", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            Skill_db.Add("dummy A", new Skill("Poison Weapons", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             Skill_db.Add("dummy B", new Skill("Poison", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             Skill_db.Add("dummy C", new Skill("Health Inc", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             Skill_db.Add("dummy D", new Skill("Fire Breath", "Does nothing", p_type.enemy, new List<BattleEffect>()));
