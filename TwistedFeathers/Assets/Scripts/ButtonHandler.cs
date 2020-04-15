@@ -4,6 +4,7 @@ using UnityEngine;
 using Completed;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
 public class ButtonHandler : MonoBehaviour
 {
@@ -79,7 +80,6 @@ public class ButtonHandler : MonoBehaviour
     IEnumerator StartBattle(){
         yield return new WaitForSeconds(.7f);
         SceneManager.LoadScene("EnvironmentSwitching");
-
     }
 
     public void toggleSettings(){
@@ -108,5 +108,17 @@ public class ButtonHandler : MonoBehaviour
         yield return new WaitForSeconds(.7f);
         SceneManager.LoadScene("StartGame");
 
+    }
+
+    public void leaveRoom()
+    {
+        if (GameManager.singlePlayer)
+        {
+            SceneManager.LoadScene("TestScene");
+        }
+        else
+        {
+            PhotonNetwork.LeaveRoom();
+        }
     }
 }

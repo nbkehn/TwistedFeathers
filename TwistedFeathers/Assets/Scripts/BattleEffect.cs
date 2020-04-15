@@ -157,6 +157,22 @@ namespace TwistedFeathers
             this.targetType = target_type.None;
         }
 
+        public BattleEffect(e_type type, float modifier, int duration, string specifier, target_type target)
+        {
+            this.SkillName = "";
+            this.Type = type;
+            this.Modifier = modifier;
+            this.Duration = duration;
+            this.Specifier = specifier;
+            this.Target = null;
+            this.User = null;
+            this.Turnstamp = 0;
+            this.Visible = true;
+            this.UID = 0;
+            this.Conditions = new List<Conditional>();
+            this.targetType = target;
+        }
+
         public BattleEffect(e_type type, float modifier, int duration, string specifier, int turnstamp)
         {
             this.SkillName = "";
@@ -292,6 +308,9 @@ namespace TwistedFeathers
                                 case ("dodge"):
                                     tar.Dodge += Modifier;
                                     break;
+                                case ("vulnerable"):
+                                    tar.Defense += -1;
+                                    break;
                                 default:
                                     Debug.LogError("Error: Invalid stat buff specified");
                                     break;
@@ -321,6 +340,9 @@ namespace TwistedFeathers
                                         break;
                                 }
                             }
+                            break;
+                        case (e_type.nothing):
+                            // do nothing
                             break;
                         default:
                             //This is where special/unique effects need to be handled
