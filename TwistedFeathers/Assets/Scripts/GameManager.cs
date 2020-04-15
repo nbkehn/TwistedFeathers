@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour
     static Dictionary<string, Monster> monster_db;
     static Dictionary<string, Player> player_db;
 
+    static Dictionary<string, Monster> enemy_types;
+
+
     static public Dictionary<string, Skill> Skill_db { get => skill_db; set => skill_db = value; }
     static public Dictionary<string, Participant> Participant_db { get => participant_db; set => participant_db = value; }
     public static Dictionary<string, Monster> Monster_db { get => monster_db; set => monster_db = value; }
@@ -32,7 +35,6 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get { return _instance; } }
 
     
-
     public List<GameObject> environmentPrefabs;
     public static List<Environment> environments;
 
@@ -71,6 +73,7 @@ public class GameManager : MonoBehaviour
             Participant_db = new Dictionary<string, Participant>();
             Player_db = new Dictionary<string, Player>();
             eLearnedSkills = new Dictionary<string, Skill>();
+            enemy_types = new Dictionary<string, Monster>();
             inCombat = false;
             Monster_db = new Dictionary<string, Monster>();
 
@@ -97,7 +100,17 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("smarty J", new Skill("Attack3", "Does nothing", p_type.player, new List<BattleEffect>()));
 
 
-
+            //Enemy Type initialization
+            Monster goose = new Monster(s_type.Thief, 1);
+            goose.addPassive(new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));//Evasive
+            goose.addAttack(new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Knife Attack") }));//Knife attack
+            goose.addUtility(new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.20f, 1, "defense") }));//Hiss
+            enemy_types.Add("Goose", goose);
+            Monster crow = new Monster(s_type.Necromancer, 2);
+            //crow.addAttack();//Dark Magick
+            //crow.addUtility();//Healing
+            //crow.addUtility();Fear Curse
+            enemy_types.Add("Crow", crow);
 
 
             //Dummy values for testing purposes
@@ -119,12 +132,28 @@ public class GameManager : MonoBehaviour
             Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
             Player_db["person B"].myPrefab = playerPrefab;
 
-            Monster_db.Add("enemy A", new Monster(s_type.Necromancer));
+            Monster_db.Add("enemy A", goose);
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
-            Monster_db.Add("enemy B", new Monster(s_type.Thief));
+            Monster_db.Add("enemy B", goose);
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
+
+            // ADD SKILLS //
+            Participant p = new Player(s_type.Rogue);
+            addSkills(p);
+            p = new Player(s_type.Fighter);
+            addSkills(p);
+            p = new Player(s_type.Mage);
+            addSkills(p);
+            p = new Monster(s_type.Necromancer);
+            addSkills(p);
+            p = new Monster(s_type.Thief);
+            addSkills(p);
+            p = new Environment(s_type.Swamp, environmentPrefabs[2]);
+            addSkills(p);
+            p = new Environment(s_type.Desert, environmentPrefabs[2]);
+            addSkills(p);
 
             environments = new List<Environment>();
 
@@ -158,6 +187,18 @@ public class GameManager : MonoBehaviour
             environments.Add(new Environment(s_type.Desert,environmentPrefabs[0], desert_skills));
             environments.Add(new Environment(s_type.Swamp,environmentPrefabs[1], swamp_skills));
             environments.Add(new Environment(s_type.None,environmentPrefabs[2]));
+        }
+    }
+
+    public void addSkills(Participant p)
+    {
+        if (p.SkillTree == null)
+        {
+            return;
+        }
+        foreach (Skill skill in p.SkillTree)
+        {
+            Skill_db.Add(skill.Name, skill);
         }
     }
 

@@ -63,6 +63,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
     private PunTurnManager turnManager;
 
+    //Ai manager (new)
+    private AIManager aiManager;
+
     [SerializeField]
     private string localSelection;
 
@@ -107,7 +110,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             playerCount++;
         }
 
-        foreach(Monster monster in battle_monsters){
+        foreach(Monster monster in battle_monsters)
+        {
             GameObject newEnemy = Instantiate(monster.myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             newEnemy.transform.SetParent(GameObject.Find("Participants").transform);
             newEnemy.transform.position = enemySpawnPoints[enemyCount].transform.position;
@@ -332,6 +336,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         this.turnManager = this.gameObject.AddComponent<PunTurnManager>();
         this.turnManager.TurnManagerListener = this;
+        this.aiManager = this.gameObject.AddComponent<AIManager>();
 
     }
     #region Skill Handling
@@ -369,7 +374,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         if (needUI)
         {
-            //TODO Change to support ally targeting as well
             selectingEnemy = true;
             attackIndicator.SetActive(true);
             moveIndicator(0);
@@ -873,10 +877,31 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         foreach (Monster part in battle_monsters)
         {
-            Skill chosenEnemySkill = part.Skills[UnityEngine.Random.Range(0, part.Skills.Count)];
-            int targetIndex = UnityEngine.Random.Range(0, battle_players.Count);
-            queueSkill(chosenEnemySkill, part, new List<BattleParticipant>() { battle_players[targetIndex] });
-            enemySkillInfos += (chosenEnemySkill.Name + "," + targetIndex + ":");
+            Skill test = aiManager.chooseAttack(part, battle_players, battle_monsters);
+            //test.Name;
+            //if (aiManager.chooseAttack(part, battle_players, battle_monsters) != null)
+            //{
+            //    queueSkill(aiManager.chooseAttack(part, battle_players, battle_monsters),//enemy attack skill decision
+            //    part,
+            //    aiManager.selectTarget(part, battle_players, battle_monsters));
+            //}
+            Skill chosenEnemySkill = aiManager.chooseAttack(part, battle_players, battle_monsters);
+            Skill chosenEnemyUtil = aiManager.chooseUtil(part, battle_players, battle_monsters);
+            List<BattleParticipant> targets = aiManager.selectTarget(part, battle_players, battle_monsters);
+            queueSkill(chosenEnemySkill,//enemy attack skill decision
+                part,
+                targets);
+            Debug.Log("Skill queued: " +test.Name);
+            queueSkill(chosenEnemyUtil,//enemy util decision
+                part,
+                targets);
+            //Debug.Log("Skill queued: "+ )
+            //queueSkill(part.Skills[Random.Range(0, part.Skills.Count)],
+            //    part,
+            //    new List<BattleParticipant>() { battle_players[Random.Range(0, battle_players.Count)]});
+            
+            // TODO Fix enemy skill network synchronization
+            //enemySkillInfos += (chosenEnemySkill.Name + "," + targetIndex + ":");
             
         }
 
