@@ -11,6 +11,9 @@ namespace TwistedFeathers
         private int current_hp;
         private float defense;
         private float dodge;
+        private Dictionary<string, Skill> passiveSkills;
+        private Dictionary<string, Skill> utilitySkills;
+        private Dictionary<string, Skill> attackSkills;
         private List<BattleEffect> statuses;
         private List<BattleEffect> buffs;
 
@@ -20,6 +23,9 @@ namespace TwistedFeathers
             this.current_hp = 50;
             this.defense = 0.0f;
             this.dodge = 0.0f;
+            this.passiveSkills = new Dictionary<string, Skill>();
+            this.utilitySkills = new Dictionary<string, Skill>();
+            this.attackSkills = new Dictionary<string, Skill>();
             this.statuses = new List<BattleEffect>();
             this.buffs = new List<BattleEffect>();
 
@@ -31,6 +37,9 @@ namespace TwistedFeathers
             this.current_hp = 50;
             this.defense = 0.0f;
             this.dodge = 0.0f;
+            this.passiveSkills = new Dictionary<string, Skill>();
+            this.utilitySkills = new Dictionary<string, Skill>();
+            this.attackSkills = new Dictionary<string, Skill>();
             this.statuses = new List<BattleEffect>();
             this.buffs = new List<BattleEffect>();
         }
@@ -64,6 +73,24 @@ namespace TwistedFeathers
             get => statuses;
             set => statuses = value;
         }
+        public Dictionary<string, Skill> PassiveSkills { get => passiveSkills; set => passiveSkills = value; }
+        public Dictionary<string, Skill> UtilitySkills { get => utilitySkills; set => utilitySkills = value; }
+        public Dictionary<string, Skill> AttackSkills { get => attackSkills; set => attackSkills = value; }
+
+        public void addPassive(Skill passive)
+        {
+            this.passiveSkills.Add(passive.Name, passive);
+        }
+        public void addUtility(Skill util)
+        {
+            this.utilitySkills.Add(util.Name, util);
+        }
+
+        public void addAttack(Skill attack)
+        {
+            this.attackSkills.Add(attack.Name, attack);
+        }
+
         public List<BattleEffect> Buffs { get => buffs; set => buffs = value; }
 
         public float getStat(stat_type type)

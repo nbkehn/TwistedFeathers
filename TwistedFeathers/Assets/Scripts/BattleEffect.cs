@@ -67,6 +67,7 @@ namespace TwistedFeathers
         [SerializeField]
         private string specifier;
 
+        [SerializeField]
         private int turnstamp;
 
         [SerializeField]
@@ -269,7 +270,7 @@ namespace TwistedFeathers
                                     if (rand.Next(10) < 2)
                                     {
                                         bp = (BattleParticipant)User;
-                                        bp.Current_hp = Math.Max(bp.Max_hp, bp.Current_hp + (int)(damage * .2));
+                                        bp.Current_hp = bp.Current_hp - 20;
                                     }
                                     break;
                                 default:

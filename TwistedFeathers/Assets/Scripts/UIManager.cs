@@ -30,6 +30,8 @@ public class UIManager : MonoBehaviour
     public GameObject actionOverlay;
 
     public GameObject SkillInfos;
+    public GameObject selectionEntity;
+    public GameObject locationTracker;
 
     public void Start(){
         foreach(GameObject button in animateableButtons){
@@ -39,10 +41,14 @@ public class UIManager : MonoBehaviour
         }
         transitionAnimation.SetActive(true);
         transitionAnimation.GetComponent<Animator>().Play("TransitionAnimation2",0,0.7f);
-        StartCoroutine(finishStart());
+        beginFinish();
 
         turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(togglePlayerSkills);
         turnOptions.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(buttonHandler.SwitchEnvironment);
+    }
+
+    public void beginFinish(){
+        StartCoroutine(finishStart());
     }
 
     IEnumerator finishStart (){
@@ -89,6 +95,7 @@ public class UIManager : MonoBehaviour
         // mapTransform.anchoredPosition = new Vector3(-42f,119f,0);
         // mapTransform.pivot = new Vector2(1f, 0f);
         toggleTurnOptions(false);
+        animateableButtons[3].GetComponent<Button>().interactable = true;
         if(popups[2].activeSelf){
             toggleForecast();
         }
@@ -98,6 +105,7 @@ public class UIManager : MonoBehaviour
             }
         }
         closePopUps();
+        
     }
 
     public void toggleTurnOptions(bool bigMap){
@@ -133,7 +141,7 @@ public class UIManager : MonoBehaviour
     public void growMiniMap(){
         miniMap.SetActive(true);
         forecastButton.SetActive(false);
-
+        animateableButtons[3].GetComponent<Button>().interactable = false;
         miniMap.GetComponent<Animator>().Play("GrowPanel");
         // RectTransform mapTransform = miniMap.GetComponent<RectTransform>();
         // mapTransform.anchorMin = new Vector2(0.9f, 0.1f);
@@ -146,7 +154,13 @@ public class UIManager : MonoBehaviour
 
     public void togglePlayerSkills(){
         popups[0].SetActive(!popups[0].gameObject.activeSelf);
-
+        if(popups[0].activeSelf){
+            turnOptions.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Cancel";
+            turnOptions.transform.GetChild(1).GetComponent<Button>().interactable = false;
+        } else {
+            turnOptions.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Select Skill";
+            turnOptions.transform.GetChild(1).GetComponent<Button>().interactable = true;
+        }
         if(GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().GetBool("Open")){
             GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().Play("Pop Out");
             GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().SetBool("Open", false);
@@ -155,6 +169,10 @@ public class UIManager : MonoBehaviour
 
     public void toggleEnemySkills(){
         popups[1].SetActive(!popups[1].gameObject.activeSelf);
+        if(GameObject.Find("EnemySkillInfo").GetComponent<Animator>().GetBool("Open")){
+            GameObject.Find("EnemySkillInfo").GetComponent<Animator>().Play("Pop Out");
+            GameObject.Find("EnemySkillInfo").GetComponent<Animator>().SetBool("Open", false);
+        } 
     }
 
     public void toggleForecast(){

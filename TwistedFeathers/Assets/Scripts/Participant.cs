@@ -81,6 +81,12 @@ namespace TwistedFeathers
             set => skills = value;
         }
 
+        public Skill[] SkillTree
+        {
+            get => skillTree;
+            set => skillTree = value;
+        }
+
         public s_type Name
         {
             get => name;
