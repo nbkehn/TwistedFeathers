@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Splash.unity
+    guid: dcd2aabdffb2f4f39bb6c7f819954d43
+  - enabled: 1
+    path: Assets/Scenes/StartGame.unity
+    guid: 38949ccdcd23c43eb94b44c814c0aed0
+  - enabled: 1
+    path: Assets/Scenes/TestScene.unity
+    guid: 3009f7180a8b97e469baaa0fb6d6f4a5
+  - enabled: 1
+    path: Assets/Scenes/UpgradeScreen.unity
+    guid: 94af6b0cc3ca64863a58a12866187833
+  - enabled: 1
+    path: Assets/Scenes/TransitionScene.unity
+    guid: dc488d0af4e1a4036829557fdf5cdfab
+  - enabled: 1
+    path: Assets/Scenes/EnvironmentSwitching.unity
+    guid: 96450e896b8c045199fa7534eaf3817d
+  m_configObjects: {}
