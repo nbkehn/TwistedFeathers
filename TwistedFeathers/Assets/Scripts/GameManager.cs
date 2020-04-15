@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 using TwistedFeathers;
 
@@ -52,7 +53,7 @@ public class GameManager : MonoBehaviour
     // Awake is called before the first frame update and before Starts
     void Awake()
     {
-        if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == p_class.rogue){
+        if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
             GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[0];
             GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[1];
        } else {
@@ -106,14 +107,15 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("Adam's Skill", new Skill("Adam's Skill", "Does 15 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 15f, "This is A smarty") }));
             Skill_db.Add("Ben's Skill", new Skill("Ben's Skill", "Deals 10 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B smarty") }));
 
-            Player_db.Add("person A", new Player(s_type.Rogue));
+            
+            Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
             //Player_db["person A"].LoadSkillTree();
             //Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
             //Player_db["person A"].AddSkill(Skill_db["Sabotage"]);
             //Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
             //Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
             Player_db["person A"].myPrefab = playerPrefab;
-            Player_db.Add("person B", new Player(s_type.Rogue));
+            Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
             Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
             Player_db["person B"].myPrefab = playerPrefab;
 
@@ -179,8 +181,22 @@ public class GameManager : MonoBehaviour
         tutorial = !tutorial;
     }
 
-    public static void awardEXP(int exp){
-       GameObject.Find("PlayerManager").GetComponent<PlayerManager>().awardEXP(exp);
+    public void finishBattle(int exp){
+        GameObject.Find("PlayerManager").GetComponent<PlayerManager>().awardEXP(exp);
+        SceneManager.LoadScene("TestScene");
+        this.StartCoroutine("loadHub");
+    }
+
+    public IEnumerator loadHub()
+    {
+        int count = 0;
+        while(!(SceneManager.GetActiveScene ().name == "TestScene") && count < 4){
+            //WAIT
+            yield return new WaitForSeconds(.1f);
+        }
+        GameObject.Find("NumBattles").GetComponent<Text>().text = "" + numBattles;
+        GameObject.Find("player1EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.totalEXP;
+        GameObject.Find("player2EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.totalEXP;
     }
 }
 

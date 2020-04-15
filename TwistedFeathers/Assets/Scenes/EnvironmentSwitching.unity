@@ -2448,6 +2448,8 @@ MonoBehaviour:
   buttonHandler: {fileID: 889211434}
   actionOverlay: {fileID: 2069264934}
   SkillInfos: {fileID: 400484827}
+  selectionEntity: {fileID: 1830851587}
+  locationTracker: {fileID: 839706691}
 --- !u!4 &889211433
 Transform:
   m_ObjectHideFlags: 0
@@ -5612,6 +5614,11 @@ PrefabInstance:
       propertyPath: effectText
       value: 
       objectReference: {fileID: 467984160}
+    - target: {fileID: 1635477742820407398, guid: 19a7948af5eb3934aa4289189805b548,
+        type: 3}
+      propertyPath: selectionEntity
+      value: 
+      objectReference: {fileID: 1830851587}
     - target: {fileID: 1635477742820407399, guid: 19a7948af5eb3934aa4289189805b548,
         type: 3}
       propertyPath: m_LocalPosition.x

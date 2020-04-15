@@ -30,6 +30,8 @@ public class UIManager : MonoBehaviour
     public GameObject actionOverlay;
 
     public GameObject SkillInfos;
+    public GameObject selectionEntity;
+    public GameObject locationTracker;
 
     public void Start(){
         foreach(GameObject button in animateableButtons){
@@ -39,10 +41,14 @@ public class UIManager : MonoBehaviour
         }
         transitionAnimation.SetActive(true);
         transitionAnimation.GetComponent<Animator>().Play("TransitionAnimation2",0,0.7f);
-        StartCoroutine(finishStart());
+        beginFinish();
 
         turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(togglePlayerSkills);
         turnOptions.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(buttonHandler.SwitchEnvironment);
+    }
+
+    public void beginFinish(){
+        StartCoroutine(finishStart());
     }
 
     IEnumerator finishStart (){

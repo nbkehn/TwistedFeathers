@@ -265,11 +265,13 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         GameManager.numWaves+= 1;
         if(GameManager.numWaves == GameManager.wavesRequired){
+            passiveReset();
             GameManager.numBattles += 1;
             GameManager.numWaves = 0;
-            GameManager.awardEXP(EXPGained);
+            GameObject.Find("GameManager").GetComponent<GameManager>().finishBattle(EXPGained);
+        } else {
+            nextWave();
         }
-        SceneManager.LoadScene("TestScene");
         //SceneManager.SetActiveScene(SceneManager.GetSceneByName("TestScene"));
     }
     #endregion
@@ -293,6 +295,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         battle_players.Add((TwistedFeathers.Player)GameManager.Player_db["person B"]);
         battle_monsters.Add((Monster)GameManager.Monster_db["enemy B"]);
         battle_monsters.Add((Monster)GameManager.Monster_db["enemy A"]);
+
+
 
         waitingPlayer = false;
         Debug.Log("TURN BEGIN");
@@ -602,10 +606,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // We want to begin selecting our environment change, so update the flow
         selectingMap = true;
         // deactivate buttons for the time being
-        GameObject.Find("Board").transform.Find("SelectionEntity").gameObject.SetActive(true);
+        UIManager.selectionEntity.SetActive(true);
         // Enable the specific indicators for this portion
-        GameObject.Find("SelectionEntity").transform.SetAsFirstSibling(); //move to the front (on parent)
-        GameObject.Find("CurrentLocation").transform.SetAsLastSibling();
+        UIManager.selectionEntity.transform.SetAsFirstSibling(); //move to the front (on parent)
+        UIManager.selectionEntity.transform.SetAsLastSibling();
     }
 
     public void ConfirmSelecting(){
@@ -691,17 +695,17 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // if the UI is in the change environment mode there is a different flow for the update method
         else if(selectingMap){
             // We are now selecting where we want to move to so we need to activate and show it over our current changing position
-            GameObject.Find("SelectionEntity").GetComponent<RectTransform>().localPosition = new Vector3 (changingLocation.x*60, changingLocation.y*60, -10f);
+            UIManager.selectionEntity.GetComponent<RectTransform>().localPosition = new Vector3 (changingLocation.x*60, changingLocation.y*60, -10f);
             //Checks to see if our move is out of scope
             int totalMove = Abs((int)(currentLocation.x - changingLocation.x)) + Abs((int)(currentLocation.y - changingLocation.y));
             if(totalMove <= allowedMoves) {
                 // if the move is allowed the selection entity notifies the player by turning yellow and valid move is set to true
-                GameObject.Find("SelectionEntity").GetComponent<Image>().color = Color.yellow;
+                UIManager.selectionEntity.GetComponent<Image>().color = Color.yellow;
                 validMove = true;
             } else {
                 //otherwise its grey and false
                 validMove = false;
-                GameObject.Find("SelectionEntity").GetComponent<Image>().color = Color.grey;
+                UIManager.selectionEntity.GetComponent<Image>().color = Color.grey;
             }
             if (Input.GetKeyDown("a")) {
                 //if left is pressed move the changing location over 1 unless at the edge
@@ -805,10 +809,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         if (battle_players.Count == deadPlayers)
         {
             combatEnd(false);
+            waitingPlayer = true;
         }
         else if (battle_monsters.Count == deadMonsters)
         {
             combatEnd(true);
+            waitingPlayer = true;
         }
         else if(GameManager.singlePlayer || getPhotonPlayerListLength() == 1)
         {
@@ -1298,9 +1304,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 if(currentLocation.x == x && currentLocation.y ==y){
                     GameObject.Find("CurrentLocation").transform.SetParent (mapHolder);
                     GameObject.Find("CurrentLocation").GetComponent<RectTransform>().localPosition = new Vector3(x*60, y*60, 0f);
-                    GameObject.Find("SelectionEntity").transform.SetParent (mapHolder);
-                    GameObject.Find("SelectionEntity").GetComponent<RectTransform>().localPosition = new Vector3(x*60, y*60, 0f);
-                    GameObject.Find("SelectionEntity").SetActive(false); //move to the front (on parent)
+                    UIManager.selectionEntity.transform.SetParent (mapHolder);
+                    UIManager.selectionEntity.GetComponent<RectTransform>().localPosition = new Vector3(x*60, y*60, 0f);
+                    UIManager.selectionEntity.SetActive(false); //move to the front (on parent)
                     CurrentEnvironment = map[x,y];
                 }
             }
@@ -1311,5 +1317,72 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         mapHolder.GetComponent<RectTransform>().anchoredPosition = new Vector3(170, 230, 0f);
         GameObject.Find("Main Camera").GetComponent<SceneShift>().scene = CurrentEnvironment.envListIndex;
 
+    }
+
+    public void nextWave(){
+        UIManager.selectionEntity.transform.SetParent(GameObject.Find("Panel").transform);
+        UIManager.locationTracker.transform.SetParent(GameObject.Find("Panel").transform);
+        Destroy(GameObject.Find("Board"));
+        if (GameManager.singlePlayer)
+        {
+            buildMap(rows, cols);
+        }
+        else if (PhotonNetwork.PlayerList.Length == 1)
+        {
+            buildMap(rows, cols);
+        } else
+        {
+            Debug.Log("Player has joined existing game so we do not build map normally");
+        }
+        waitingPlayer = true;
+        currentTurn = 0;
+        deadPlayers = 0;
+        deadMonsters = 0;
+        UIManager.beginFinish();
+        effectText.GetComponent<Text>().text = "Beginning Wave" + (GameManager.numWaves+1);
+            
+            UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
+        foreach(TwistedFeathers.Monster mon in battle_monsters.ToArray()){
+            mon.isDead = false;
+            mon.Current_hp = mon.Max_hp;
+        }
+        foreach(TwistedFeathers.Player play in battle_players.ToArray()){
+            play.isDead = false;
+            play.Current_hp += 20;
+        }
+        for(int i = 1; i <= 4; i++){
+            GameObject.Find("Participants").transform.GetChild(i).gameObject.SetActive(true);
+        }
+        for(int i = 0; i < battle_monsters.Count; i++){
+            UIManager.enemyHealthBars[i].GetComponent<Animator>().enabled = true;
+            UIManager.enemyHealthBars[i].SetActive(true);
+            UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
+            UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
+        }
+        for(int i = 0; i < battle_players.Count; i++){
+            RectTransform healthBar = UIManager.playerHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
+            healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_players[i].Current_hp, 50f), 100);
+        }
+        Debug.Log("NumMonsters: " + battle_monsters.Count);
+        for(int i = 0; i < battle_monsters.Count; i++){
+            RectTransform healthBar = UIManager.enemyHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
+            Debug.Log("Monster " + i + "health: " + (float)battle_monsters[i].Current_hp);
+            healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_monsters[i].Current_hp, 50f), 100);
+        }
+
+    }
+
+    public void passiveReset(){
+        currentTurn = 0;
+        deadPlayers = 0;
+        deadMonsters = 0;
+        foreach(TwistedFeathers.Monster mon in battle_monsters.ToArray()){
+            mon.isDead = false;
+            mon.Current_hp = mon.Max_hp;
+        }
+        foreach(TwistedFeathers.Player play in battle_players.ToArray()){
+            play.isDead = false;
+            play.Current_hp = play.Max_hp;
+        }
     }
 }
