@@ -308,6 +308,9 @@ namespace TwistedFeathers
                                 case ("dodge"):
                                     tar.Dodge += Modifier;
                                     break;
+                                case ("vulnerable"):
+                                    tar.Defense += -1;
+                                    break;
                                 default:
                                     Debug.LogError("Error: Invalid stat buff specified");
                                     break;
