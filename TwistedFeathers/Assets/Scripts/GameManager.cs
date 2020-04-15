@@ -155,8 +155,12 @@ public class GameManager : MonoBehaviour
             p = new Environment(s_type.Desert, environmentPrefabs[2]);
             addSkills(p);
 
+            
+            //Environment setup
+
             environments = new List<Environment>();
 
+            // A do-nothing environment skill for weighted odds (chance of nothing happening)
             Skill environment_do_nothing = new Skill("Nothing", "Environment does nothing", p_type.environment, new List<BattleEffect>());
 
             List<KeyValuePair<int, Skill>> desert_skills = new List<KeyValuePair<int, Skill>>() 
@@ -168,12 +172,38 @@ public class GameManager : MonoBehaviour
                         new BattleEffect(e_type.buff, -0.25f, 3, "accuracy")
                     })
                 ),
-                new KeyValuePair<int, Skill>(1, environment_do_nothing)
+                new KeyValuePair<int, Skill>
+                (1,
+                    new Skill("Tailwind", "Increases attack power for allies, decreases for enemies", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.buff, 0.25f, 3, "attack", target_type.AllAllies),
+                        new BattleEffect(e_type.buff, -0.25f, 3, "attack", target_type.AllEnemies)
+
+                    })
+                ),
+                new KeyValuePair<int, Skill>
+                (1,
+                    new Skill("Headwind", "Decreases attack power for allies, increases for enemies", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.buff, -0.25f, 3, "attack", target_type.AllAllies),
+                        new BattleEffect(e_type.buff, 0.25f, 3, "attack", target_type.AllEnemies)
+
+                    })
+                ),
+                new KeyValuePair<int, Skill>
+                (2,
+                    new Skill("Oasis", "Heals everyone for a small amount", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.damage, -5, 0, "", target_type.All)
+
+                    })
+                ),
+                new KeyValuePair<int, Skill>(5, environment_do_nothing)
             };
             List<KeyValuePair<int, Skill>> swamp_skills = new List<KeyValuePair<int, Skill>>() 
             {
                 new KeyValuePair<int, Skill>
-                (2,
+                (3,
                     new Skill("Leeches", "Leeches latch onto you and deal minor damage for 3 turns", p_type.environment, new List<BattleEffect>()
                     {
                         new BattleEffect(e_type.damage, 1, 0, "", 0),
@@ -181,7 +211,14 @@ public class GameManager : MonoBehaviour
                         new BattleEffect(e_type.damage, 1, 0, "", 2)
                     })
                 ),
-                new KeyValuePair<int, Skill>(1, environment_do_nothing)
+                new KeyValuePair<int, Skill>
+                (1,
+                    new Skill("Swamp Spirit Aid", "A swamp spirit comes to your aid, granting allies increased attack for 2 turns", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.buff, 1.0f, 2, "attack", target_type.AllAllies)
+                    })
+                ),
+                new KeyValuePair<int, Skill>(5, environment_do_nothing)
             };
 
             environments.Add(new Environment(s_type.Desert,environmentPrefabs[0], desert_skills));
