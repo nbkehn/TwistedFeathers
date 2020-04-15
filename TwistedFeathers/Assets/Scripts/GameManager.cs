@@ -102,10 +102,17 @@ public class GameManager : MonoBehaviour
 
             //Enemy Type initialization
             Monster goose = new Monster(s_type.Thief, 1);
-            goose.addPassive(new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));//Evasive
-            goose.addAttack(new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Knife Attack") }));//Knife attack
-            goose.addUtility(new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.20f, 1, "defense") }));//Hiss
+            Skill hiss = new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>());
+            Skill kinfeAttack = new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") });
+            Skill hiss2 = new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.20f, 1, "defense") });
+            goose.addPassive(hiss);//Evasive
+            goose.addAttack(kinfeAttack);
+            goose.addUtility(hiss2);
             enemy_types.Add("Goose", goose);
+            Monster goose2 = new Monster(s_type.None, 1);
+            goose2.addPassive(hiss);//Evasive
+            goose2.addAttack(kinfeAttack);
+            goose2.addUtility(hiss2);
             Monster crow = new Monster(s_type.Necromancer, 2);
             //crow.addAttack();//Dark Magick
             //crow.addUtility();//Healing
@@ -135,7 +142,7 @@ public class GameManager : MonoBehaviour
             Monster_db.Add("enemy A", goose);
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
-            Monster_db.Add("enemy B", goose);
+            Monster_db.Add("enemy B", goose2);
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 
