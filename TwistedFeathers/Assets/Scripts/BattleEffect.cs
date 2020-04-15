@@ -341,6 +341,9 @@ namespace TwistedFeathers
                                 }
                             }
                             break;
+                        case (e_type.nothing):
+                            // do nothing
+                            break;
                         default:
                             //This is where special/unique effects need to be handled
                             Debug.LogError("Error: Invalid effect type specified");

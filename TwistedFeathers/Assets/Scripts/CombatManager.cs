@@ -455,7 +455,13 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     /// <returns></returns>
     public List<Skill> GetRemotePlayerSkills()
     {
-        return battle_players[protagonistIndex + 1].Skills;
+        // need to network all of the skills and create a list to send back to the remote client
+        // if we are the master client then return the ally skill list
+        if (isMasterClient())
+        {
+            return battle_players[protagonistIndex + 1].Skills;
+        }
+        return allySkills;
     }
 
     /// <summary>
@@ -464,7 +470,22 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     /// <returns></returns>
     public int getPhotonPlayerListLength()
     {
+        if (GameManager.singlePlayer)
+        {
+            return 0;
+        }
         return PhotonNetwork.PlayerList.Length;
+    }
+
+    // called in fill skills
+    public bool isMasterClient()
+    {
+        if (GameManager.singlePlayer)
+        {
+            return false;
+        }
+        return PhotonNetwork.IsMasterClient;
+
     }
 
     
@@ -496,21 +517,39 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     public void processNetEnemySkills(string enemySkills)
     {
         // relies on the fact that the enemies are already in the same order within battle_monsters
+        Debug.Log("Received enemy skills: " + enemySkills);
         int i = 0;
         string[] enemySkillArray = enemySkills.Split(':');
         foreach(Monster mon in battle_monsters)
         {
-            // index 0 is the name and index 1 is the target, user is the current monster in the loop
+            // index 0 is the attack name and index 1 is the util name, further indexes are the targets, user is the current monster in the loop
+            // currently only possible for the targets to be players so if the size is 4 then both players are targets 
             string[] enemySkillInfo = enemySkillArray[i].Split(',');
-            if (enemySkillInfo[0] != "") // if the skill info is not empty
+
+            if (enemySkillInfo[0] != "" && enemySkillInfo[1] != "") // if the skill info is not empty
             {
-                foreach (Skill sk in mon.Skills)
+                List<BattleParticipant> targets = new List<BattleParticipant>();
+                for (int k = 2; k < enemySkillInfo.Length; k++)
                 {
-                    if (enemySkillInfo[0].Equals(sk.Name))
+                    if(enemySkillInfo[k] != "")
                     {
-                        Debug.Log("Queueing enemy skill: " + mon.Name + " - "+ sk.Name);
-                        queueSkill(sk, mon, new List<BattleParticipant>() { battle_players[Convert.ToInt32(enemySkillInfo[1])] });
+                        Debug.Log("Enemy targets: " + enemySkillInfo[k]);
+                        targets.Add(battle_players[Convert.ToInt32(enemySkillInfo[k])]);
                     }
+                }
+
+                
+
+                TwistedFeathers.Skill result;
+                if (GameManager.Skill_db.TryGetValue(enemySkillInfo[0], out result))
+                {
+                    Debug.Log("Queueing enemy skill: " + result.Name);
+                    queueSkill(result, mon, targets);
+                }
+                if (GameManager.Skill_db.TryGetValue(enemySkillInfo[1], out result))
+                {
+                    Debug.Log("Queueing enemy skill: " + result.Name);
+                    queueSkill(result, mon, targets);
                 }
             }
             i++;
@@ -594,6 +633,38 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         waitingPlayer = false;
         waiting_effects = true;
+    }
+
+    // sends ally skills over the network
+    // string format skillName1,skillName2,skillName3
+    public void networkAllySkills()
+    {
+        Hashtable allySkillHash = new Hashtable();
+        TwistedFeathers.Player ally = (TwistedFeathers.Player)battle_players[1];
+        string allySkillInfo = "";
+        foreach (Skill sk in ally.Skills)
+        {
+            allySkillInfo += (sk.Name + ",");
+        }
+        Debug.Log("Sending ally skill info: " + allySkillInfo);
+        allySkillHash.Add("MasterAllySkills", allySkillInfo);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(allySkillHash); //update the room properties
+    }
+
+    private List<Skill> allySkills;
+
+    public void setAllySkills(String allySkillInfo)
+    {
+        this.allySkills = new List<Skill>();
+        string[] allySkillArray = allySkillInfo.Split(',');
+        TwistedFeathers.Skill result;
+        for(int i = 0; i < allySkillArray.Length; i++)
+        {
+            if (GameManager.Skill_db.TryGetValue(allySkillArray[i], out result))
+            {
+                allySkills.Add(result);
+            }
+        }
     }
 
     public void chooseRandomSkill(int index)
@@ -874,9 +945,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         queueSkill(chosenEnvSkill, CurrentEnvironment, getBattleParticipants());
         skillHash.Add("envSkill", chosenEnvSkill.Name); //only need the name of the environment skill
         // Choose enemy skills
-
+        
         foreach (Monster part in battle_monsters)
         {
+            string targetIndexList = "";
             Skill test = aiManager.chooseAttack(part, battle_players, battle_monsters);
             //test.Name;
             //if (aiManager.chooseAttack(part, battle_players, battle_monsters) != null)
@@ -895,16 +967,24 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             queueSkill(chosenEnemyUtil,//enemy util decision
                 part,
                 targets);
+
+            targetIndexList = serializeEnemyTargets(targets);
+            enemySkillInfos += (chosenEnemySkill.Name + "," + chosenEnemyUtil.Name + "," + targetIndexList + ":");
+            // need to network both the enemyskill and util
+            // create a list for the targets
+            // figure out the indexes of the targets
+            // add info to the string
+
             //Debug.Log("Skill queued: "+ )
             //queueSkill(part.Skills[Random.Range(0, part.Skills.Count)],
             //    part,
             //    new List<BattleParticipant>() { battle_players[Random.Range(0, battle_players.Count)]});
-            
+
             // TODO Fix enemy skill network synchronization
             //enemySkillInfos += (chosenEnemySkill.Name + "," + targetIndex + ":");
-            
-        }
 
+        }
+        Debug.Log("Chosen enemies skills: " + enemySkillInfos);
         skillHash.Add("enemySkills", enemySkillInfos);
         if (!GameManager.singlePlayer && getPhotonPlayerListLength() == 2)
         {
@@ -945,6 +1025,23 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     }
 
     #region TurnManager Callbacks
+    // so far only enemies can target players
+    string serializeEnemyTargets(List<BattleParticipant> targets)
+    {
+        string ret = "";
+        // battle participants have no unique identifier thus how does this work
+        for(int i = 0; i < battle_players.Count; i++)
+        {
+            foreach(BattleParticipant bp in targets)
+            {
+                if (bp.Name.Equals(battle_players[i].Name))
+                {
+                    ret += (i + ",");
+                }
+            }
+        }
+        return ret;
+    }
     /// <summary>Called when a turn begins (Master Client set a new Turn number).</summary>
     public void OnTurnBegins(int turn)
     {
@@ -1091,7 +1188,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         {
             
             Debug.Log("Other player arrived");
+            // this networks the map
             PhotonNetwork.CurrentRoom.SetCustomProperties(mapHash);
+            // this networks the allies skills
+            networkAllySkills();
             // clear the queue when player joins to avoid duplicate enemy skill selection
             pq.Clear();
             if (this.turnManager.Turn == 0)
@@ -1132,6 +1232,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             if (propertiesThatChanged.ContainsKey("enemySkills"))
             {
                 processNetEnemySkills((string)propertiesThatChanged["enemySkills"]);
+            }
+            if (propertiesThatChanged.ContainsKey("MasterAllySkills"))
+            {
+                setAllySkills((string)propertiesThatChanged["MasterAllySkills"]);
             }
         }
         // Both clients logic

@@ -111,6 +111,8 @@ public class GameManager : MonoBehaviour
             //crow.addUtility();//Healing
             //crow.addUtility();Fear Curse
             enemy_types.Add("Crow", crow);
+            Skill_db.Add("Hiss", new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));
+            Skill_db.Add("Knife Attack", new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Knife Attack") }));
 
 
             //Dummy values for testing purposes
