@@ -14,11 +14,6 @@ namespace TwistedFeathers
         public Player player1 = new Player();
         public Player player2 = new Player();
 
-        public enum player_type
-        {
-            rogue,
-            fighter
-        };
 
         // Start is called before the first frame update
         void Start()
@@ -39,19 +34,24 @@ namespace TwistedFeathers
 
         public void selectCharacter(int playerType){
             if (playerType == 1){
-                player1.setPlayerClass(p_class.fighter);
-                player2.setPlayerClass(p_class.rogue);
+                player1.setPlayerClass(s_type.Fighter);
+                player2.setPlayerClass(s_type.Rogue);
             } else {
-                player1.setPlayerClass(p_class.rogue);
-                player2.setPlayerClass(p_class.fighter);
+                player1.setPlayerClass(s_type.Rogue);
+                player2.setPlayerClass(s_type.Fighter);
             }
             Debug.Log(player1.getPlayerClass());
         }
 
         public void next(){
-            if(player1.getPlayerClass() != p_class.notAssigned){
+            if(player1.getPlayerClass() != s_type.None){
                 SceneManager.LoadScene("TestScene");
             }
+        }
+
+        public void awardEXP(int exp){
+            player1.totalEXP += exp;
+            player2.totalEXP += exp;
         }
     }
 }

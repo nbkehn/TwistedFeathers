@@ -135,6 +135,7 @@ namespace TwistedFeathers
             get => pre_req;
             set => pre_req = value;
         }
+      
         public List<BattleEffect> Passives { get => passives; set => passives = value; }
 
         // This method gets called when the skill is gained, it applies all the passives

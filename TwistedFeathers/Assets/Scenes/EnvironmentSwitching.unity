@@ -904,7 +904,7 @@ GameObject:
   - component: {fileID: 467984163}
   - component: {fileID: 467984162}
   m_Layer: 5
-  m_Name: Text
+  m_Name: EffectText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1783,7 +1783,7 @@ GameObject:
   m_Component:
   - component: {fileID: 646702842}
   m_Layer: 0
-  m_Name: SpawnEnemy2
+  m_Name: SpawnEnemy1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2448,6 +2448,8 @@ MonoBehaviour:
   buttonHandler: {fileID: 889211434}
   actionOverlay: {fileID: 2069264934}
   SkillInfos: {fileID: 400484827}
+  selectionEntity: {fileID: 1830851587}
+  locationTracker: {fileID: 839706691}
 --- !u!4 &889211433
 Transform:
   m_ObjectHideFlags: 0
@@ -2498,7 +2500,7 @@ GameObject:
   m_Component:
   - component: {fileID: 916734859}
   m_Layer: 0
-  m_Name: SpawnEnemy1
+  m_Name: SpawnEnemy2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2684,7 +2686,7 @@ GameObject:
   m_Component:
   - component: {fileID: 960998281}
   m_Layer: 0
-  m_Name: SpawnPlayer1
+  m_Name: SpawnPlayer2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2702,7 +2704,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1708584045}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &993556638
 GameObject:
@@ -4018,7 +4020,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1407712795}
   m_Layer: 0
-  m_Name: SpawnPlayer2
+  m_Name: SpawnPlayer1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4036,7 +4038,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1708584045}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1435721591
 GameObject:
@@ -5276,8 +5278,8 @@ Transform:
   m_LocalPosition: {x: -41.98, y: -0.14, z: -1.96}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1407712795}
   - {fileID: 960998281}
+  - {fileID: 1407712795}
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5591,22 +5593,32 @@ PrefabInstance:
         type: 3}
       propertyPath: playerSpawnPoints.Array.data[0]
       value: 
-      objectReference: {fileID: 960998280}
+      objectReference: {fileID: 1407712794}
     - target: {fileID: 1635477742820407398, guid: 19a7948af5eb3934aa4289189805b548,
         type: 3}
       propertyPath: playerSpawnPoints.Array.data[1]
       value: 
-      objectReference: {fileID: 1407712794}
+      objectReference: {fileID: 960998280}
     - target: {fileID: 1635477742820407398, guid: 19a7948af5eb3934aa4289189805b548,
         type: 3}
       propertyPath: enemySpawnPoints.Array.data[0]
       value: 
-      objectReference: {fileID: 916734858}
+      objectReference: {fileID: 646702841}
     - target: {fileID: 1635477742820407398, guid: 19a7948af5eb3934aa4289189805b548,
         type: 3}
       propertyPath: enemySpawnPoints.Array.data[1]
       value: 
-      objectReference: {fileID: 646702841}
+      objectReference: {fileID: 916734858}
+    - target: {fileID: 1635477742820407398, guid: 19a7948af5eb3934aa4289189805b548,
+        type: 3}
+      propertyPath: effectText
+      value: 
+      objectReference: {fileID: 467984160}
+    - target: {fileID: 1635477742820407398, guid: 19a7948af5eb3934aa4289189805b548,
+        type: 3}
+      propertyPath: selectionEntity
+      value: 
+      objectReference: {fileID: 1830851587}
     - target: {fileID: 1635477742820407399, guid: 19a7948af5eb3934aa4289189805b548,
         type: 3}
       propertyPath: m_LocalPosition.x
