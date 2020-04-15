@@ -237,6 +237,10 @@ public class GameManager : MonoBehaviour
         }
         foreach (Skill skill in p.SkillTree)
         {
+            if (skill_db.ContainsKey(skill.Name))
+            {
+                return;
+            }
             Skill_db.Add(skill.Name, skill);
         }
     }
