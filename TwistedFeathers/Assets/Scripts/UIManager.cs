@@ -58,7 +58,7 @@ public class UIManager : MonoBehaviour
     }
 
     IEnumerator stopHealthBars() {
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(2f);
         foreach(GameObject healthBar in playerHealthBars){
             healthBar.GetComponent<Animator>().enabled = false;
         }

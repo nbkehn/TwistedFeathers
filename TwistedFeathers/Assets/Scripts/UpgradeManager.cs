@@ -36,7 +36,7 @@ public class UpgradeManager : MonoBehaviour
 
     private void Start()
     {
-        upgrader = GameManager.Player_db["player1"];
+        upgrader = GameManager.Player_db["person A"];
         done = false;
         u1.name = "u1";
         u2.name = "u2";
@@ -118,24 +118,27 @@ public class UpgradeManager : MonoBehaviour
     { 
         Debug.Log("Attempting to Add Skill");
         string[] skillName;
-        string[] splitter = new string[] { " " };
+        string[] splitter = new string[] { dash };
         //learn skill based off name
         
         if (!done)
         {
             skillName = name.GetComponent<Text>().text.Split(splitter, System.StringSplitOptions.None);
+            Debug.Log("Skill upgrader is looking for: " + skillName[0]);
             for(int i = 0; i < pickUs.Count; i++)
             {
                 if(pickUs[i].Name == skillName[0])
                 {
-                    Debug.Log(pickUs[i].Name);
+                    Debug.Log("Skill found "+ pickUs[i].Name);
                     upgrader.AddSkill(pickUs[i]);
                     break;
                 }
             }
             //Skill picked = pickUs.
             done = true;
+            Debug.Log("Should have chosen skill by now");
             Invoke("FinishUpgrade", 1f);
+
         }
     }
 
@@ -156,6 +159,6 @@ public class UpgradeManager : MonoBehaviour
 
     private void FinishUpgrade()
     {
-        SceneManager.LoadScene("TransitionScene");
+        SceneManager.LoadScene("TestScene");
     }
 }

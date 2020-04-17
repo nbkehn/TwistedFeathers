@@ -255,17 +255,37 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         
     }
 
+
+    IEnumerator flyOut1(){
+        yield return new WaitForSeconds(0.5f);
+        UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
+        GameObject.Find("GameManager").GetComponent<GameManager>().finishBattle(EXPGained);
+    }
+
+    IEnumerator flyOut2(){
+        yield return new WaitForSeconds(0.5f);
+        UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
+        
+    }
     void combatEnd(bool isVictory)
     {
         if (isVictory)
         {
             Debug.Log("Victory!!!");
             EXPGained += 5;
+            effectText.GetComponent<Text>().text = "YOU WIN!" + (GameManager.numWaves+1);
+            UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
+            StartCoroutine("flyOut2");
         }
         else
         {
             Debug.Log("Defeat...");
             EXPGained = 3;
+            passiveReset();
+            GameManager.numWaves = 0;
+            effectText.GetComponent<Text>().text = "YOU LOSE!" + (GameManager.numWaves+1);
+            UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
+            StartCoroutine("flyOut1");
         }
         GameManager.numWaves+= 1;
         if(GameManager.numWaves == GameManager.wavesRequired){
@@ -710,7 +730,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             this.turnManager.SendMove((string)(""), true); // send an empty move to end their turn
         } else
         {
-            chooseRandomSkill(1); // choose a random skill for the ally
+            if(deadPlayers == 0){
+                chooseRandomSkill(1); // choose a random skill for the ally
+            }
         }
         // this is the usual two lines that end a turn
         waitingPlayer = false;
@@ -948,41 +970,33 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         
         foreach (Monster part in battle_monsters)
         {
-            string targetIndexList = "";
-            Skill test = aiManager.chooseAttack(part, battle_players, battle_monsters);
-            //test.Name;
-            //if (aiManager.chooseAttack(part, battle_players, battle_monsters) != null)
-            //{
-            //    queueSkill(aiManager.chooseAttack(part, battle_players, battle_monsters),//enemy attack skill decision
-            //    part,
-            //    aiManager.selectTarget(part, battle_players, battle_monsters));
-            //}
-            Skill chosenEnemySkill = aiManager.chooseAttack(part, battle_players, battle_monsters);
-            Skill chosenEnemyUtil = aiManager.chooseUtil(part, battle_players, battle_monsters);
-            List<BattleParticipant> targets = aiManager.selectTarget(part, battle_players, battle_monsters);
-            queueSkill(chosenEnemySkill,//enemy attack skill decision
-                part,
-                targets);
-            Debug.Log("Skill queued: " +test.Name);
-            queueSkill(chosenEnemyUtil,//enemy util decision
-                part,
-                targets);
-
-            targetIndexList = serializeEnemyTargets(targets);
-            enemySkillInfos += (chosenEnemySkill.Name + "," + chosenEnemyUtil.Name + "," + targetIndexList + ":");
-            // need to network both the enemyskill and util
-            // create a list for the targets
-            // figure out the indexes of the targets
-            // add info to the string
-
-            //Debug.Log("Skill queued: "+ )
-            //queueSkill(part.Skills[Random.Range(0, part.Skills.Count)],
-            //    part,
-            //    new List<BattleParticipant>() { battle_players[Random.Range(0, battle_players.Count)]});
-
-            // TODO Fix enemy skill network synchronization
-            //enemySkillInfos += (chosenEnemySkill.Name + "," + targetIndex + ":");
-
+            if(!part.isDead){
+                Skill test = aiManager.chooseAttack(part, battle_players, battle_monsters);
+                //test.Name;
+                //if (aiManager.chooseAttack(part, battle_players, battle_monsters) != null)
+                //{
+                //    queueSkill(aiManager.chooseAttack(part, battle_players, battle_monsters),//enemy attack skill decision
+                //    part,
+                //    aiManager.selectTarget(part, battle_players, battle_monsters));
+                //}
+                Skill chosenEnemySkill = aiManager.chooseAttack(part, battle_players, battle_monsters);
+                Skill chosenEnemyUtil = aiManager.chooseUtil(part, battle_players, battle_monsters);
+                List<BattleParticipant> targets = aiManager.selectTarget(part, battle_players, battle_monsters);
+                queueSkill(chosenEnemySkill,//enemy attack skill decision
+                    part,
+                    targets);
+                Debug.Log("Skill queued: " +test.Name);
+                queueSkill(chosenEnemyUtil,//enemy util decision
+                    part,
+                    targets);
+                //Debug.Log("Skill queued: "+ )
+                //queueSkill(part.Skills[Random.Range(0, part.Skills.Count)],
+                //    part,
+                //    new List<BattleParticipant>() { battle_players[Random.Range(0, battle_players.Count)]});
+                
+                // TODO Fix enemy skill network synchronization
+                //enemySkillInfos += (chosenEnemySkill.Name + "," + targetIndex + ":");
+            }
         }
         Debug.Log("Chosen enemies skills: " + enemySkillInfos);
         skillHash.Add("enemySkills", enemySkillInfos);
@@ -1469,15 +1483,18 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         deadMonsters = 0;
         UIManager.beginFinish();
         effectText.GetComponent<Text>().text = "Beginning Wave" + (GameManager.numWaves+1);
-            
-            UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
+        UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
         foreach(TwistedFeathers.Monster mon in battle_monsters.ToArray()){
             mon.isDead = false;
             mon.Current_hp = mon.Max_hp;
+            mon.Attack = 0f;
+            mon.Accuracy = 0f;
         }
         foreach(TwistedFeathers.Player play in battle_players.ToArray()){
             play.isDead = false;
-            play.Current_hp += 20;
+            play.Current_hp += 35;
+            play.Attack = 0f;
+            play.Accuracy = 0f;
         }
         for(int i = 1; i <= 4; i++){
             GameObject.Find("Participants").transform.GetChild(i).gameObject.SetActive(true);
@@ -1486,7 +1503,11 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             UIManager.enemyHealthBars[i].GetComponent<Animator>().enabled = true;
             UIManager.enemyHealthBars[i].SetActive(true);
             UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
-            UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
+        }
+        for(int i = 0; i < battle_players.Count; i++){
+            UIManager.playerHealthBars[i].GetComponent<Animator>().enabled = true;
+            UIManager.playerHealthBars[i].SetActive(true);
+            UIManager.playerHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
         }
         for(int i = 0; i < battle_players.Count; i++){
             RectTransform healthBar = UIManager.playerHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
@@ -1499,6 +1520,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_monsters[i].Current_hp, 50f), 100);
         }
 
+        UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
+
     }
 
     public void passiveReset(){
@@ -1508,10 +1531,15 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         foreach(TwistedFeathers.Monster mon in battle_monsters.ToArray()){
             mon.isDead = false;
             mon.Current_hp = mon.Max_hp;
+            mon.Attack = 0f;
+            mon.Accuracy = 0f;
         }
         foreach(TwistedFeathers.Player play in battle_players.ToArray()){
             play.isDead = false;
             play.Current_hp = play.Max_hp;
+            play.Attack = 0f;
+            play.Accuracy = 0f;
+            
         }
     }
 }

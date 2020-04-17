@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
             Monster_db = new Dictionary<string, Monster>();
 
             //Dummy values for testing purposes
-            Skill_db.Add("dummy A", new Skill("Acid", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            Skill_db.Add("dummy A", new Skill("Poison Weapons", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             Skill_db.Add("dummy B", new Skill("Poison", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             Skill_db.Add("dummy C", new Skill("Health Inc", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             Skill_db.Add("dummy D", new Skill("Fire Breath", "Does nothing", p_type.enemy, new List<BattleEffect>()));
@@ -87,25 +87,32 @@ public class GameManager : MonoBehaviour
             //player skills
             //Skill_db.Add("FeatherDagger", new Skill("Feather Dagger", "Deals 20 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Feather Dagger") }));
             //Skill_db.Add("Sabotage", new Skill("Sabotage", "Reduce enemy defense by 25% for 1 turn", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.25f, 3, "defense") }));
-            Skill_db.Add("DefensiveFeathers", new Skill("Defensive Feathers", "Increase defense by 10%", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, .1f, 3, "defense") }));
-            Skill_db.Add("smarty A", new Skill("Dagger", "Does nothing", p_type.player, new List<BattleEffect>()));
-            Skill_db.Add("smarty B", new Skill("Pollen Bombs", "Does nothing", p_type.player, new List<BattleEffect>()));
-            Skill_db.Add("smarty C", new Skill("Hover", "Does nothing", p_type.player, new List<BattleEffect>()));
-            Skill_db.Add("smarty D", new Skill("Flight", "Does nothing", p_type.player, new List<BattleEffect>()));
-            Skill_db.Add("smarty E", new Skill("Nectar Drunk", "Does nothing", p_type.player, new List<BattleEffect>()));
-            Skill_db.Add("smarty F", new Skill("Swift Wings", "Does nothing", p_type.player, new List<BattleEffect>()));
-            Skill_db.Add("smarty G", new Skill("Distraction", "Does nothing", p_type.player, new List<BattleEffect>()));
-            Skill_db.Add("smarty H", new Skill("Poison Rain", "Does nothing", p_type.player, new List<BattleEffect>()));
-            Skill_db.Add("smarty I", new Skill("Attack2", "Does nothing", p_type.player, new List<BattleEffect>()));
-            Skill_db.Add("smarty J", new Skill("Attack3", "Does nothing", p_type.player, new List<BattleEffect>()));
+            //Skill_db.Add("DefensiveFeathers", new Skill("Defensive Feathers", "Increase defense by 10%", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, .1f, 3, "defense") }));
+            //Skill_db.Add("smarty A", new Skill("Dagger", "Does nothing", p_type.player, new List<BattleEffect>()));
+            //Skill_db.Add("smarty B", new Skill("Pollen Bombs", "Does nothing", p_type.player, new List<BattleEffect>()));
+            //Skill_db.Add("smarty C", new Skill("Hover", "Does nothing", p_type.player, new List<BattleEffect>()));
+            //Skill_db.Add("smarty D", new Skill("Flight", "Does nothing", p_type.player, new List<BattleEffect>()));
+            //Skill_db.Add("smarty E", new Skill("Nectar Drunk", "Does nothing", p_type.player, new List<BattleEffect>()));
+            //Skill_db.Add("smarty F", new Skill("Swift Wings", "Does nothing", p_type.player, new List<BattleEffect>()));
+            //Skill_db.Add("smarty G", new Skill("Distraction", "Does nothing", p_type.player, new List<BattleEffect>()));
+            //Skill_db.Add("smarty H", new Skill("Poison Rain", "Does nothing", p_type.player, new List<BattleEffect>()));
+            //Skill_db.Add("smarty I", new Skill("Attack2", "Does nothing", p_type.player, new List<BattleEffect>()));
+            //Skill_db.Add("smarty J", new Skill("Attack3", "Does nothing", p_type.player, new List<BattleEffect>()));
 
 
             //Enemy Type initialization
             Monster goose = new Monster(s_type.Thief, 1);
-            goose.addPassive(new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));//Evasive
-            goose.addAttack(new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Knife Attack") }));//Knife attack
-            goose.addUtility(new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.20f, 1, "defense") }));//Hiss
+            Skill hiss = new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>());
+            Skill kinfeAttack = new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") });
+            Skill hiss2 = new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.20f, 1, "defense") });
+            goose.addPassive(hiss);//Evasive
+            goose.addAttack(kinfeAttack);
+            goose.addUtility(hiss2);
             enemy_types.Add("Goose", goose);
+            Monster goose2 = new Monster(s_type.None, 1);
+            goose2.addPassive(hiss);//Evasive
+            goose2.addAttack(kinfeAttack);
+            goose2.addUtility(hiss2);
             Monster crow = new Monster(s_type.Necromancer, 2);
             //crow.addAttack();//Dark Magick
             //crow.addUtility();//Healing
@@ -137,7 +144,7 @@ public class GameManager : MonoBehaviour
             Monster_db.Add("enemy A", goose);
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
-            Monster_db.Add("enemy B", goose);
+            Monster_db.Add("enemy B", goose2);
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 
@@ -157,8 +164,12 @@ public class GameManager : MonoBehaviour
             p = new Environment(s_type.Desert, environmentPrefabs[2]);
             addSkills(p);
 
+            
+            //Environment setup
+
             environments = new List<Environment>();
 
+            // A do-nothing environment skill for weighted odds (chance of nothing happening)
             Skill environment_do_nothing = new Skill("Nothing", "Environment does nothing", p_type.environment, new List<BattleEffect>());
 
             List<KeyValuePair<int, Skill>> desert_skills = new List<KeyValuePair<int, Skill>>() 
@@ -170,12 +181,38 @@ public class GameManager : MonoBehaviour
                         new BattleEffect(e_type.buff, -0.25f, 3, "accuracy")
                     })
                 ),
-                new KeyValuePair<int, Skill>(1, environment_do_nothing)
+                new KeyValuePair<int, Skill>
+                (1,
+                    new Skill("Tailwind", "Increases attack power for allies, decreases for enemies", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.buff, 0.25f, 3, "attack", target_type.AllAllies),
+                        new BattleEffect(e_type.buff, -0.25f, 3, "attack", target_type.AllEnemies)
+
+                    })
+                ),
+                new KeyValuePair<int, Skill>
+                (1,
+                    new Skill("Headwind", "Decreases attack power for allies, increases for enemies", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.buff, -0.25f, 3, "attack", target_type.AllAllies),
+                        new BattleEffect(e_type.buff, 0.25f, 3, "attack", target_type.AllEnemies)
+
+                    })
+                ),
+                new KeyValuePair<int, Skill>
+                (2,
+                    new Skill("Oasis", "Heals everyone for a small amount", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.damage, -5, 0, "", target_type.All)
+
+                    })
+                ),
+                new KeyValuePair<int, Skill>(5, environment_do_nothing)
             };
             List<KeyValuePair<int, Skill>> swamp_skills = new List<KeyValuePair<int, Skill>>() 
             {
                 new KeyValuePair<int, Skill>
-                (2,
+                (3,
                     new Skill("Leeches", "Leeches latch onto you and deal minor damage for 3 turns", p_type.environment, new List<BattleEffect>()
                     {
                         new BattleEffect(e_type.damage, 1, 0, "", 0),
@@ -183,7 +220,14 @@ public class GameManager : MonoBehaviour
                         new BattleEffect(e_type.damage, 1, 0, "", 2)
                     })
                 ),
-                new KeyValuePair<int, Skill>(1, environment_do_nothing)
+                new KeyValuePair<int, Skill>
+                (1,
+                    new Skill("Swamp Spirit Aid", "A swamp spirit comes to your aid, granting allies increased attack for 2 turns", p_type.environment, new List<BattleEffect>()
+                    {
+                        new BattleEffect(e_type.buff, 1.0f, 2, "attack", target_type.AllAllies)
+                    })
+                ),
+                new KeyValuePair<int, Skill>(5, environment_do_nothing)
             };
 
             environments.Add(new Environment(s_type.Desert,environmentPrefabs[0], desert_skills));
@@ -200,6 +244,10 @@ public class GameManager : MonoBehaviour
         }
         foreach (Skill skill in p.SkillTree)
         {
+            if (skill_db.ContainsKey(skill.Name))
+            {
+                return;
+            }
             Skill_db.Add(skill.Name, skill);
         }
     }
