@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
 using TwistedFeathers;
 
@@ -119,7 +120,7 @@ public class GameManager : MonoBehaviour
             //crow.addUtility();Fear Curse
             enemy_types.Add("Crow", crow);
             Skill_db.Add("Hiss", new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));
-            Skill_db.Add("Knife Attack", new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Knife Attack") }));
+            Skill_db.Add("Knife Attack", new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") }));
 
 
             //Dummy values for testing purposes
@@ -274,6 +275,10 @@ public class GameManager : MonoBehaviour
 
     public void finishBattle(int exp){
         GameObject.Find("PlayerManager").GetComponent<PlayerManager>().awardEXP(exp);
+        if (!singlePlayer)
+        {
+            PhotonNetwork.Disconnect();
+        }
         SceneManager.LoadScene("TestScene");
         this.StartCoroutine("loadHub");
     }
