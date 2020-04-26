@@ -9,7 +9,7 @@ namespace TwistedFeathers
 
     public class Player : BattleParticipant
     {
-        private static s_type playerClass;
+        private s_type playerClass;
         public int totalEXP;
 
         public bool isDead;
@@ -30,7 +30,7 @@ namespace TwistedFeathers
 
         public Player(s_type name) : base(p_type.player, name)
         {
-            playerClass = s_type.None;
+            playerClass = name;
             totalEXP = 0;
             isDead = false;
         }

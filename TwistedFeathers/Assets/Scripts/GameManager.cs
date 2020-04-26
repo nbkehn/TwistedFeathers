@@ -131,11 +131,7 @@ public class GameManager : MonoBehaviour
 
             
             Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
-            //Player_db["person A"].LoadSkillTree();
-            //Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
-            //Player_db["person A"].AddSkill(Skill_db["Sabotage"]);
-            //Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
-            //Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
+            
             Player_db["person A"].myPrefab = playerPrefab;
             Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
             Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
