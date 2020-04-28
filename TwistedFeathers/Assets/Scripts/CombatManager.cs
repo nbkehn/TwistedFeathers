@@ -163,8 +163,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                     }
                     break;
                 case target_type.Ally:
-                    Debug.LogError("Error: Ally targeting not supported");
-                    break;
                 case target_type.None: //TODO Remove this line
                 case target_type.Enemy:
                     real_target = target;
@@ -237,7 +235,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             foreach (BattleEffect status in bat_part.Statuses)
             {
                 status.run();
-                status.Duration -= 1;
             }
 
             bat_part.Statuses.RemoveAll(status => status.Duration <= 0);
@@ -871,7 +868,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             GameObject.Destroy(child.gameObject);
         }
         Debug.Log("TURN END");
-        Debug.Log(battle_players[protagonistIndex].displayBuffs());
+        Debug.Log(battle_players[1].displayBuffs());
+        Debug.Log(battle_players[1].displayStatuses());
+
         //Check for BattleParticipant deaths
         CheckBattleParticipantDeaths();
         

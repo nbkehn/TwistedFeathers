@@ -103,24 +103,24 @@ public class GameManager : MonoBehaviour
 
             //Enemy Type initialization
             Monster goose = new Monster(s_type.Thief, 1);
-            Skill hiss = new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>());
-            Skill kinfeAttack = new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") });
-            Skill hiss2 = new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.20f, 1, "defense") });
-            goose.addPassive(hiss);//Evasive
-            goose.addAttack(kinfeAttack);
-            goose.addUtility(hiss2);
-            enemy_types.Add("Goose", goose);
-            Monster goose2 = new Monster(s_type.None, 1);
-            goose2.addPassive(hiss);//Evasive
-            goose2.addAttack(kinfeAttack);
-            goose2.addUtility(hiss2);
-            Monster crow = new Monster(s_type.Necromancer, 2);
-            //crow.addAttack();//Dark Magick
-            //crow.addUtility();//Healing
-            //crow.addUtility();Fear Curse
-            enemy_types.Add("Crow", crow);
-            Skill_db.Add("Hiss", new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));
-            Skill_db.Add("Knife Attack", new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") }));
+            //Skill hiss = new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>());
+            //Skill kinfeAttack = new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") });
+            //Skill hiss2 = new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.20f, 1, "defense") });
+            //goose.addPassive(hiss);//Evasive
+            //goose.addAttack(kinfeAttack);
+            //goose.addUtility(hiss2);
+            //enemy_types.Add("Goose", goose);
+            Monster goose2 = new Monster(s_type.Thief, 1);
+            //goose2.addPassive(hiss);//Evasive
+            //goose2.addAttack(kinfeAttack);
+            //goose2.addUtility(hiss2);
+            //Monster crow = new Monster(s_type.Necromancer, 2);
+            ////crow.addAttack();//Dark Magick
+            ////crow.addUtility();//Healing
+            ////crow.addUtility();Fear Curse
+            //enemy_types.Add("Crow", crow);
+            //Skill_db.Add("Hiss", new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));
+            //Skill_db.Add("Knife Attack", new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") }));
 
 
             //Dummy values for testing purposes
