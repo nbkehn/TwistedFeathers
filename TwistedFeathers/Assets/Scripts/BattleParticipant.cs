@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace TwistedFeathers
@@ -28,6 +29,7 @@ namespace TwistedFeathers
             this.attackSkills = new Dictionary<string, Skill>();
             this.statuses = new List<BattleEffect>();
             this.buffs = new List<BattleEffect>();
+            LoadSkillTree();
 
         }
 
@@ -42,6 +44,7 @@ namespace TwistedFeathers
             this.attackSkills = new Dictionary<string, Skill>();
             this.statuses = new List<BattleEffect>();
             this.buffs = new List<BattleEffect>();
+            LoadSkillTree();
         }
 
         public int Max_hp
@@ -79,16 +82,25 @@ namespace TwistedFeathers
 
         public void addPassive(Skill passive)
         {
-            this.passiveSkills.Add(passive.Name, passive);
+            if (!this.passiveSkills.ContainsKey(passive.Name))
+            {
+                this.passiveSkills.Add(passive.Name, passive);
+            }
         }
         public void addUtility(Skill util)
         {
-            this.utilitySkills.Add(util.Name, util);
+            if (!this.utilitySkills.ContainsKey(util.Name))
+            {
+                this.utilitySkills.Add(util.Name, util);
+            }
         }
 
         public void addAttack(Skill attack)
         {
-            this.attackSkills.Add(attack.Name, attack);
+            if (!this.attackSkills.ContainsKey(attack.Name))
+            {
+                this.attackSkills.Add(attack.Name, attack);
+            }
         }
 
         public List<BattleEffect> Buffs { get => buffs; set => buffs = value; }
@@ -144,6 +156,57 @@ namespace TwistedFeathers
                     break;
             }
         }
+
+        public new void LoadSkillTree()
+        {
+            string path = "Assets/Scripts/SkillEditor/Data/" + name.ToString() + ".json";
+
+            string dataAsJson;
+            if (File.Exists(path))
+            {
+                // Read the json from the file into a string
+                dataAsJson = File.ReadAllText(path);
+
+                // Pass the json to JsonUtility, and tell it to create a SkillTree object from it
+                SkillTree skillData = JsonUtility.FromJson<SkillTree>(dataAsJson);
+
+                // Store the SkillTree as an array of Skill
+                skillTree = new Skill[skillData.skilltree.Length];
+                skillTree = skillData.skilltree;
+
+                for (int i = 0; i < skillTree.Length; i++)
+                {
+                    if (skillTree[i].Dependency > -1)
+                    {
+                        skillTree[i].Pre_req = skillTree[skillTree[i].Dependency];
+                    }
+                    skillTree[i].User_type = this.type;
+                    if (skillTree[i].Selected)
+                    {
+                        this.skills.Add(skillTree[i]);
+                        if (skillTree[i].SkillType == Skill_Type.Attack)
+                        {
+                            this.AttackSkills.Add(skillTree[i].Name, skillTree[i]);
+                            Debug.Log("New Attack Skill: " + skillTree[i].Name);
+                        }
+                        else if (skillTree[i].SkillType == Skill_Type.Utility)
+                        {
+                            this.UtilitySkills.Add(skillTree[i].Name, skillTree[i]);
+                            Debug.Log("New Utility Skill: " + skillTree[i].Name);
+                        }
+                        else if (skillTree[i].SkillType == Skill_Type.Passive)
+                        {
+                            //TODO CODE FOR APPLYING PASSIVE HERE
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError("A skill tree does not exist for: " + name.ToString());
+            }
+        }
+
         /*
          * Resets stats back to their default values
          * For use after a battle
