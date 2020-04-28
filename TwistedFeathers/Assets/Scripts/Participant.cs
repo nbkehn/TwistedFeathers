@@ -103,7 +103,7 @@ namespace TwistedFeathers
         public void LoadSkillTree()
         {
             string path = "Assets/Scripts/SkillEditor/Data/" + name.ToString() + ".json";
-
+            Debug.Log("Path to skilltree: " + path);
             string dataAsJson;
             if (File.Exists(path))
             {

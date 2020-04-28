@@ -43,10 +43,10 @@ public class UpgradeManager : MonoBehaviour
     {
         upgrader1 = GameManager.Player_db["person A"];
         upgrader2 = GameManager.Player_db["person B"];
-        Debug.Log("Player db info should be right below this******");
-        List<string> keys = GameManager.Player_db.Keys.ToList();
-        Debug.Log("Keys: <" + keys[0] + ">, <" + keys[1] + ">");
-        Debug.Log("Player_db size = " + GameManager.Player_db.Count);
+        //Debug.Log("Player db info should be right below this******");
+        //List<string> keys = GameManager.Player_db.Keys.ToList();
+        //Debug.Log("Keys: <" + keys[0] + ">, <" + keys[1] + ">");
+        //Debug.Log("Player_db size = " + GameManager.Player_db.Count);
         Debug.Log("Upgrader1: " + upgrader1.Name);
         Debug.Log("Upgrader2: " + upgrader2.Name);
         play2 = false;
@@ -74,8 +74,7 @@ public class UpgradeManager : MonoBehaviour
         //parse names, combine them with enemy skills
         //set names to text of buttons b1-b4
         Dictionary<string, Skill> skillPool = GameManager.Skill_db;
-        //skillNames = skillPool.Keys;
-        //int size = skillNames.count;
+        
         List<Skill> foundPlayerSkills = new List<Skill>();
         List<Skill> foundEnemySkills = new List<Skill>();
         pickUs = Enumerable.ToList(skillPool.Values);
@@ -161,17 +160,91 @@ public class UpgradeManager : MonoBehaviour
             skillName = name.GetComponent<Text>().text.Split(splitter, System.StringSplitOptions.None);
             Debug.Log("Skill upgrader is looking for: " + skillName[0]);
             Debug.Log("Skill Enemy is looking for: " + skillName[1]);
+            List<Monster> enemies = GameManager.Monster_db.Values.ToList();
             for (int i = 0; i < pickUs.Count; i++)
             {
                 if(pickUs[i].Name == skillName[0])
                 {
                     Debug.Log("Skill found "+ pickUs[i].Name);
-                    upgrader1.AddSkill(pickUs[i]);
+                    if (!play2)
+                    {
+                        upgrader1.AddSkill(pickUs[i]);
+                        if (pickUs[i].SkillType == Skill_Type.Attack)
+                        {
+                            upgrader1.addAttack(pickUs[i]);
+                            upgrader1.AddSkill(pickUs[i]);
+                        }
+                        else if (pickUs[i].SkillType == Skill_Type.Utility)
+                        {
+                            upgrader1.addUtility(pickUs[i]);
+                            upgrader1.AddSkill(pickUs[i]);
+                        }
+                        else if (pickUs[i].SkillType == Skill_Type.Passive)
+                        {
+                            upgrader1.addPassive(pickUs[i]);
+                            upgrader1.AddSkill(pickUs[i]);
+                        }
+                    }
+                    else
+                    {
+                        upgrader2.AddSkill(pickUs[i]);
+                        if (pickUs[i].SkillType == Skill_Type.Attack)
+                        {
+                            upgrader2.addAttack(pickUs[i]);
+                            upgrader2.AddSkill(pickUs[i]);
+                        }
+                        else if (pickUs[i].SkillType == Skill_Type.Utility)
+                        {
+                            upgrader2.addUtility(pickUs[i]);
+                            upgrader2.AddSkill(pickUs[i]);
+                        }
+                        else if (pickUs[i].SkillType == Skill_Type.Passive)
+                        {
+                            upgrader2.addPassive(pickUs[i]);
+                            upgrader2.AddSkill(pickUs[i]);
+                        }
+                    }
+                    
                     break;
                 }
                 if(pickUs[i].Name == skillName[1])
                 {
-                    //give the enemy thier skill
+                    //give the enemy their skill
+                    foreach(Monster enemy in enemies)
+                    {
+                        //Debug.Log(enemy.SkillTree[0].Name);
+                        Debug.Log("Enemy being upgraded: " + enemy.Name);
+                        if(enemy == null)
+                        {
+                            Debug.Log("The enemy");
+                        } else if(enemy.SkillTree == null)
+                        {
+                            Debug.Log("Skill tree");
+                        } else if (enemy.SkillTree[0] == null)
+                        {
+                            Debug.Log("Skill");
+                        } else if(enemy.SkillTree[0].Name == null)
+                        {
+                            Debug.Log("Name");
+                        }
+                        if (enemy.SkillTree.Contains<Skill>(pickUs[i]))
+                        {
+                            if(pickUs[i].SkillType == Skill_Type.Attack)
+                            {
+                                enemy.addAttack(pickUs[i]);
+                                enemy.AddSkill(pickUs[i]);
+                            } else if (pickUs[i].SkillType == Skill_Type.Utility)
+                            {
+                                enemy.addUtility(pickUs[i]);
+                                enemy.AddSkill(pickUs[i]);
+                            }
+                            else if(pickUs[i].SkillType == Skill_Type.Passive)
+                            {
+                                enemy.addPassive(pickUs[i]);
+                                enemy.AddSkill(pickUs[i]);
+                            }
+                        }
+                    }
                 }
             }
             //Skill picked = pickUs.
