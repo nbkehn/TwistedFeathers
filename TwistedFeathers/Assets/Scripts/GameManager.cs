@@ -150,20 +150,20 @@ public class GameManager : MonoBehaviour
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 
             // ADD SKILLS //
-            Participant p = new Player(s_type.Rogue);
+            BattleParticipant p = new Player(s_type.Rogue);
             addSkills(p);
             p = new Player(s_type.Fighter);
             addSkills(p);
-            p = new Player(s_type.Mage);
-            addSkills(p);
+            //p = new Player(s_type.Mage);
+            //addSkills(p);
             p = new Monster(s_type.Necromancer);
             addSkills(p);
             p = new Monster(s_type.Thief);
             addSkills(p);
-            p = new Environment(s_type.Swamp, environmentPrefabs[2]);
-            addSkills(p);
-            p = new Environment(s_type.Desert, environmentPrefabs[2]);
-            addSkills(p);
+            //p = new Environment(s_type.Swamp, environmentPrefabs[2]);
+            //addSkills(p);
+            //p = new Environment(s_type.Desert, environmentPrefabs[2]);
+            //addSkills(p);
 
             
             //Environment setup

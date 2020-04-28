@@ -30,7 +30,7 @@ namespace TwistedFeathers
 
         public Player(s_type name) : base(p_type.player, name)
         {
-            playerClass = s_type.None;
+            playerClass = name;
             totalEXP = 0;
             isDead = false;
         }
