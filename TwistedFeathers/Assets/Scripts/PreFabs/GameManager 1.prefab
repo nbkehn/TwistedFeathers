@@ -58,8 +58,8 @@ MonoBehaviour:
   rotate: 1
   tutorial: 1
   playerPics:
-  - {fileID: 21300000, guid: dd312266e041544f081e023fd3d03d74, type: 3}
-  - {fileID: 21300000, guid: 576cfb424be694ca591b1e3d83c720b3, type: 3}
+  - {fileID: 21300000, guid: a18a3f0b7afeb4396bacabb184f2ddd2, type: 3}
+  - {fileID: 21300000, guid: eddbc11b0152646409147c07c30403fc, type: 3}
 --- !u!114 &4461327919870986389
 MonoBehaviour:
   m_ObjectHideFlags: 0
