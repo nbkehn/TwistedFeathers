@@ -112,13 +112,7 @@ public class ButtonHandler : MonoBehaviour
 
     public void leaveRoom()
     {
-        if (GameManager.singlePlayer)
-        {
-            SceneManager.LoadScene("TestScene");
-        }
-        else
-        {
-            PhotonNetwork.LeaveRoom();
-        }
+        UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
+        GameObject.Find("GameManager").GetComponent<GameManager>().finishBattle(0);
     }
 }

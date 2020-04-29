@@ -163,8 +163,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                     }
                     break;
                 case target_type.Ally:
-                    Debug.LogError("Error: Ally targeting not supported");
-                    break;
                 case target_type.None: //TODO Remove this line
                 case target_type.Enemy:
                     real_target = target;
@@ -237,7 +235,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             foreach (BattleEffect status in bat_part.Statuses)
             {
                 status.run();
-                status.Duration -= 1;
             }
 
             bat_part.Statuses.RemoveAll(status => status.Duration <= 0);
@@ -361,7 +358,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     }
     #region Skill Handling
 
-    public void SkillTargetUI(Skill skill)
+    public bool NeedSkillTargetUI(Skill skill)
     {
         bool needUI = false;
         foreach (BattleEffect be in skill.Effects)
@@ -392,16 +389,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             }
         }
 
-        if (needUI)
-        {
-            selectingEnemy = true;
-            attackIndicator.SetActive(true);
-            moveIndicator(0);
-            UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
-            UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
-            UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
-            chosenSkill = skill;
-        }
+        return needUI;
+
 
     }
 
@@ -411,9 +400,15 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         UIManager.turnOptions.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Select Skill";
         if (GameManager.singlePlayer)
         {
-           if(deadMonsters < 1)
+           if(deadMonsters < 1 && NeedSkillTargetUI(skill))
            {
-                SkillTargetUI(skill);
+               selectingEnemy = true;
+               attackIndicator.SetActive(true);
+               moveIndicator(0);
+               UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
+               UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
+               UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
+               chosenSkill = skill;
                 UIManager.SkillInfos.transform.GetChild(0).GetComponent<Animator>().Play("Pop Out");
                 GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().SetBool("Open", false);
                 // TODO Need some way of seeing if thisd skill needs to be picked between enemies or not.  
@@ -425,8 +420,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         else if(PhotonNetwork.PlayerList.Length == 1)
         {
-            if(deadMonsters < 1){
-                SkillTargetUI(skill);
+            if(deadMonsters < 1 && NeedSkillTargetUI(skill)){
+                selectingEnemy = true;
+                attackIndicator.SetActive(true);
+                moveIndicator(0);
+                UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
+                chosenSkill = skill;
             }
             else  {
               singlePlayerChooseSkill(skill);
@@ -434,9 +435,15 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         else
         {
-            if (deadMonsters < 1)
+            if (deadMonsters < 1 && NeedSkillTargetUI(skill))
             {
-                SkillTargetUI(skill);
+                selectingEnemy = true;
+                attackIndicator.SetActive(true);
+                moveIndicator(0);
+                UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
+                chosenSkill = skill;
             }
             else
             {
@@ -648,8 +655,23 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         //Debug.Log("Chosen Enemy: " + (Convert.ToInt32(splitInfo[1])));
         if (skill != null)
         {
+            // added targeting fix from method chooseskill() when a monster dies
             Debug.Log("Queueing player skill: " + userP.Name + " - " + skill.Name);
-            queueSkill(skill, userP, new List<BattleParticipant>() { battle_monsters[Convert.ToInt32(splitInfo[1])] });
+            if (deadMonsters < 1)
+            {
+                queueSkill(skill, userP, new List<BattleParticipant>() { battle_monsters[Convert.ToInt32(splitInfo[1])] });
+            }
+            else
+            {
+                foreach (TwistedFeathers.Monster mon in battle_monsters.ToArray())
+                {
+                    if (!mon.isDead)
+                    {
+                        queueSkill(skill, userP, new List<BattleParticipant>() { mon });
+                    }
+                }
+            }
+            //queueSkill(skill, userP, new List<BattleParticipant>() { battle_monsters[Convert.ToInt32(splitInfo[1])] });
         }
         waitingPlayer = false;
         waiting_effects = true;
@@ -856,7 +878,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             GameObject.Destroy(child.gameObject);
         }
         Debug.Log("TURN END");
-        Debug.Log(battle_players[protagonistIndex].displayBuffs());
+        Debug.Log(battle_players[1].displayBuffs());
+        Debug.Log(battle_players[1].displayStatuses());
+
         //Check for BattleParticipant deaths
         CheckBattleParticipantDeaths();
         
@@ -899,6 +923,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                     GameObject.Find("Participants").transform.GetChild(3 + enemyCount).gameObject.SetActive(false);
                     mon.isDead = true;
                     deadMonsters++;
+                    Debug.Log("Monster died: " + deadMonsters);
                 }
             }
             enemyCount++;
@@ -966,12 +991,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         Skill chosenEnvSkill = CurrentEnvironment.Skills[random_index].Value;
         queueSkill(chosenEnvSkill, CurrentEnvironment, getBattleParticipants());
         skillHash.Add("envSkill", chosenEnvSkill.Name); //only need the name of the environment skill
+        Debug.Log("Sending env skill: " + chosenEnvSkill.Name);
         // Choose enemy skills
         
         foreach (Monster part in battle_monsters)
         {
             if(!part.isDead){
-                Skill test = aiManager.chooseAttack(part, battle_players, battle_monsters);
+                string targetIndexList = "";
+                //Skill test = aiManager.chooseAttack(part, battle_players, battle_monsters);
                 //test.Name;
                 //if (aiManager.chooseAttack(part, battle_players, battle_monsters) != null)
                 //{
@@ -985,7 +1012,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 queueSkill(chosenEnemySkill,//enemy attack skill decision
                     part,
                     targets);
-                Debug.Log("Skill queued: " +test.Name);
+                //Debug.Log("Skill queued: " +test.Name);
                 queueSkill(chosenEnemyUtil,//enemy util decision
                     part,
                     targets);
@@ -993,9 +1020,13 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 //queueSkill(part.Skills[Random.Range(0, part.Skills.Count)],
                 //    part,
                 //    new List<BattleParticipant>() { battle_players[Random.Range(0, battle_players.Count)]});
+                targetIndexList = serializeEnemyTargets(targets);
+                enemySkillInfos += (chosenEnemySkill.Name + "," + chosenEnemyUtil.Name + "," + targetIndexList + ":");
+                // need to network both the enemyskill and util
+                // create a list for the targets
+                // figure out the indexes of the targets
+                // add info to the string
                 
-                // TODO Fix enemy skill network synchronization
-                //enemySkillInfos += (chosenEnemySkill.Name + "," + targetIndex + ":");
             }
         }
         Debug.Log("Chosen enemies skills: " + enemySkillInfos);
@@ -1072,6 +1103,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         else //not the master client
         {
+            // need to do forecast stuff
+
             if (!allyAlive)
             {
                 this.turnManager.SendMove((string)(""), true);
@@ -1246,6 +1279,35 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             if (propertiesThatChanged.ContainsKey("enemySkills"))
             {
                 processNetEnemySkills((string)propertiesThatChanged["enemySkills"]);
+                // run forecast stuff after environment skills and enemy skills are processed Forecast
+                Debug.Log("Forecast Begins!");
+                numTexts = 0;
+                foreach (BattleEffect eff in pq)
+                {
+                    if (eff.Visible)
+                    {
+                        newText = Instantiate(textPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                        newText.transform.SetParent(forecastContent.transform, false);
+                        newText.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 1);
+                        newText.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 1);
+                        newText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0 - (40 * numTexts) - 30, 0);
+                        newText.GetComponent<RectTransform>().sizeDelta = new Vector2(1000, 45);
+                        string prediction = eff.Turnstamp - currentTurn + " turns away: " + eff.SkillName + " targeting: --";
+                        foreach (BattleParticipant tar in eff.Target)
+                        {
+                            prediction += tar.Name + "--";
+                        }
+                        newText.GetComponent<Text>().text = prediction;
+                        newText.GetComponent<Text>().color = Color.white;
+                        newText.GetComponent<Text>().fontSize = 32;
+
+
+                        numTexts++;
+                        Debug.Log(prediction);
+                    }
+                }
+                ForecastOpener.GetComponent<ButtonHandler>().newForecast();
+                Debug.Log("Forecast Over!");
             }
             if (propertiesThatChanged.ContainsKey("MasterAllySkills"))
             {
@@ -1270,8 +1332,21 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-
+            
+        } else
+        {
+            PhotonNetwork.Disconnect();
         }
+    }
+
+    /// <summary>
+    /// When the host disconnects the remote player becomes the master client and
+    /// should also disconnect.
+    /// </summary>
+    /// <param name="newMasterClient"></param>
+    public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
+    {
+        PhotonNetwork.Disconnect();
     }
 
 
@@ -1368,7 +1443,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         // add map array to the hashtable
         mapHash.Add("map", mapNetRep);
         //Debug.Log("Sent Array dimensions: " + cols + ", " + rows);
-        //Debug.Log("Sent Map Array Rep: " + mapNetRep);
+        Debug.Log("Sent Map Array Rep: " + mapNetRep);
 
         for (int i = 0; i < cols; i++){
             for(int j = 0; j < rows; j++){
@@ -1470,12 +1545,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         {
             buildMap(rows, cols);
         }
-        else if (PhotonNetwork.PlayerList.Length == 1)
+        else if (isMasterClient()) // only the master client should reset using build map which will update the room properties
         {
             buildMap(rows, cols);
+            // this networks the map to the other client
+            PhotonNetwork.CurrentRoom.SetCustomProperties(mapHash);
         } else
         {
-            Debug.Log("Player has joined existing game so we do not build map normally");
+            Debug.Log("Player is not the master client so we do not build map normally");
         }
         waitingPlayer = true;
         currentTurn = 0;
