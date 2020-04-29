@@ -121,7 +121,7 @@ public class GameManager : MonoBehaviour
             //enemy_types.Add("Crow", crow);
             //Skill_db.Add("Hiss", new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));
             //Skill_db.Add("Knife Attack", new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") }));
-
+            Monster crow = new Monster(s_type.Necromancer, 2);
 
             //Dummy values for testing purposes
 
@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviour
             Monster_db.Add("enemy A", goose);
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
-            Monster_db.Add("enemy B", goose2);
+            Monster_db.Add("enemy B", crow);
             Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 
