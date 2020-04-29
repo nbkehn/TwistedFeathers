@@ -41,7 +41,14 @@ public class FillSkills : MonoBehaviour
         {
             foreach (Skill sk in manager.GetComponent<CombatManager>().GetRemotePlayerSkills())
             {
-                skills.Add(sk.Name, sk);
+                if(skills.TryGetValue(sk.Name, out Skill value))
+                {
+                    // do nothing
+                } else
+                {
+                    skills.Add(sk.Name, sk);
+                }
+                
             }
         }
         int numButtons = 0;

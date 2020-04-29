@@ -30,13 +30,13 @@ namespace TwistedFeathers
 
     public abstract class Participant
     {
-        private p_type type;
+        protected p_type type;
         //private string name;
-        private s_type name;
-        private float attack;
-        private float accuracy;
-        private Skill[] skillTree;
-        private List<Skill> skills;
+        protected s_type name;
+        protected float attack;
+        protected float accuracy;
+        protected Skill[] skillTree;
+        protected List<Skill> skills;
         public GameObject myPrefab;
         public GameObject me;
 
@@ -47,7 +47,6 @@ namespace TwistedFeathers
             this.attack = 0f;
             this.accuracy = 0f;
             this.skills = new List<Skill>();
-            LoadSkillTree();
         }
 
         protected Participant(p_type type, s_type name)
@@ -57,7 +56,6 @@ namespace TwistedFeathers
             this.attack = 0f;
             this.accuracy = 0f;
             this.skills = new List<Skill>();
-            LoadSkillTree();
         }
         protected Participant(p_type type, s_type name, List<Skill> skills)
         {
@@ -66,7 +64,6 @@ namespace TwistedFeathers
             this.attack = 0f;
             this.accuracy = 0f;
             this.skills = skills;
-            LoadSkillTree();
         }
 
         public p_type Type
@@ -100,41 +97,7 @@ namespace TwistedFeathers
             this.skills.Add(new_skill);
         }
 
-        public void LoadSkillTree()
-        {
-            string path = "Assets/Scripts/SkillEditor/Data/" + name.ToString() + ".json";
-            Debug.Log("Path to skilltree: " + path);
-            string dataAsJson;
-            if (File.Exists(path))
-            {
-                // Read the json from the file into a string
-                dataAsJson = File.ReadAllText(path);
 
-                // Pass the json to JsonUtility, and tell it to create a SkillTree object from it
-                SkillTree skillData = JsonUtility.FromJson<SkillTree>(dataAsJson);
-
-                // Store the SkillTree as an array of Skill
-                skillTree = new Skill[skillData.skilltree.Length];
-                skillTree = skillData.skilltree;
-
-                for (int i = 0; i < skillTree.Length; i++)
-                {
-                    if (skillTree[i].Dependency > -1)
-                    {
-                        skillTree[i].Pre_req = skillTree[skillTree[i].Dependency];
-                    }
-                    skillTree[i].User_type = this.type;
-                    if (skillTree[i].Selected)
-                    {
-                        this.skills.Add(skillTree[i]);
-                    }
-                }
-            }
-            else
-            {
-                Debug.Log("A skill tree does not exist for: " + name.ToString());
-            }
-        }
     }
 }
 
