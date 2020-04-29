@@ -279,7 +279,7 @@ namespace TwistedFeathers
                             {
                                 case ("lifesteal"):
                                     bp = (BattleParticipant)User;
-                                    bp.Current_hp = Math.Max(bp.Max_hp, bp.Current_hp + (int)(damage*.2));
+                                    bp.Current_hp = Math.Min(bp.Max_hp, bp.Current_hp + (int)(damage*.2));
                                     break;
                                 case ("recoil"):
                                     System.Random rand = new System.Random();
