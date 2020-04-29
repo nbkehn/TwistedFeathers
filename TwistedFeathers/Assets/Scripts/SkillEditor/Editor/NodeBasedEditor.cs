@@ -335,10 +335,10 @@ public class NodeBasedEditor : EditorWindow
             if (effect.Show)
             {
                 // Effect Type Field
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel(new GUIContent("Type: ", "???"));
-                effect.Type = (e_type)EditorGUILayout.EnumPopup(effect.Type, GUILayout.Width(108));
-                GUILayout.EndHorizontal();
+                //GUILayout.BeginHorizontal();
+                //EditorGUILayout.PrefixLabel(new GUIContent("Type: ", "???"));
+                //effect.Type = (e_type)EditorGUILayout.EnumPopup(effect.Type, GUILayout.Width(108));
+                //GUILayout.EndHorizontal();
 
                 // Modifier Field
                 GUILayout.BeginHorizontal();
