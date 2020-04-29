@@ -153,22 +153,25 @@ public class UpgradeManager : MonoBehaviour
      * @param name name of the button
      *
      */
-    public void addSkill(GameObject name)
+    public void addSkill(GameObject plName, GameObject enName)
     { 
         Debug.Log("Attempting to Add Skill");
-        string skillName;
+        string plSkillName;
+        string enSkillName;
         string[] splitter = new string[] { dash };
         //learn skill based off name
         
         if (!done)
         {
-            skillName = name.GetComponent<Text>().text.Split(splitter, System.StringSplitOptions.None);
+            plSkillName = plName.GetComponent<Text>().text;
+            enSkillName = enName.GetComponent<Text>().text;
+            string [] skillName = new string[] {plSkillName, enSkillName};
             Debug.Log("Skill upgrader is looking for: " + skillName[0]);
             Debug.Log("Skill Enemy is looking for: " + skillName[1]);
             List<Monster> enemies = GameManager.Monster_db.Values.ToList();
             for (int i = 0; i < pickUs.Count; i++)
             {
-                if(pickUs[i].Name == skillName)
+                if(pickUs[i].Name == skillName[0])
                 {
                     Debug.Log("Skill found "+ pickUs[i].Name);
                     if (!play2)
