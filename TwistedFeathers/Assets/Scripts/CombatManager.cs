@@ -358,7 +358,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     }
     #region Skill Handling
 
-    public void SkillTargetUI(Skill skill)
+    public bool NeedSkillTargetUI(Skill skill)
     {
         bool needUI = false;
         foreach (BattleEffect be in skill.Effects)
@@ -389,16 +389,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             }
         }
 
-        if (needUI)
-        {
-            selectingEnemy = true;
-            attackIndicator.SetActive(true);
-            moveIndicator(0);
-            UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
-            UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
-            UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
-            chosenSkill = skill;
-        }
+        return needUI;
+
 
     }
 
@@ -408,9 +400,15 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         UIManager.turnOptions.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Select Skill";
         if (GameManager.singlePlayer)
         {
-           if(deadMonsters < 1)
+           if(deadMonsters < 1 && NeedSkillTargetUI(skill))
            {
-                SkillTargetUI(skill);
+               selectingEnemy = true;
+               attackIndicator.SetActive(true);
+               moveIndicator(0);
+               UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
+               UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
+               UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
+               chosenSkill = skill;
                 UIManager.SkillInfos.transform.GetChild(0).GetComponent<Animator>().Play("Pop Out");
                 GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().SetBool("Open", false);
                 // TODO Need some way of seeing if thisd skill needs to be picked between enemies or not.  
@@ -422,8 +420,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         else if(PhotonNetwork.PlayerList.Length == 1)
         {
-            if(deadMonsters < 1){
-                SkillTargetUI(skill);
+            if(deadMonsters < 1 && NeedSkillTargetUI(skill)){
+                selectingEnemy = true;
+                attackIndicator.SetActive(true);
+                moveIndicator(0);
+                UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
+                chosenSkill = skill;
             }
             else  {
               singlePlayerChooseSkill(skill);
@@ -431,9 +435,15 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         else
         {
-            if (deadMonsters < 1)
+            if (deadMonsters < 1 && NeedSkillTargetUI(skill))
             {
-                SkillTargetUI(skill);
+                selectingEnemy = true;
+                attackIndicator.SetActive(true);
+                moveIndicator(0);
+                UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
+                chosenSkill = skill;
             }
             else
             {
