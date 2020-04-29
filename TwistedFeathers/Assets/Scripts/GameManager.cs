@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> environmentPrefabs;
     public static List<Environment> environments;
 
-    public GameObject playerPrefab;
+    public List<GameObject> playerPrefabs;
     public GameObject enemyPrefab;
 
     public bool rotate = true;
@@ -141,16 +141,26 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("Ben's Skill", new Skill("Ben's Skill", "Deals 10 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B smarty") }));
 
 
-            Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
+            if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
+                Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
+                Player_db["person A"].myPrefab = playerPrefabs[0];
+                Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
+                Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
+                Player_db["person B"].myPrefab = playerPrefabs[1];
+            } else {
+                Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
+                Player_db["person A"].myPrefab = playerPrefabs[1];
+                Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
+                Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
+                Player_db["person B"].myPrefab = playerPrefabs[0];
+            }
+
             //Player_db["person A"].LoadSkillTree();
             //Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
             //Player_db["person A"].AddSkill(Skill_db["Sabotage"]);
             //Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
             //Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
-            Player_db["person A"].myPrefab = playerPrefab;
-            Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
-            Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
-            Player_db["person B"].myPrefab = playerPrefab;
+
 
             Monster_db.Add("enemy A", goose);
             Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);

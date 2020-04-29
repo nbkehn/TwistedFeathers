@@ -119,7 +119,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3507227555004961542}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.01, y: 2.57, z: 0}
+  m_LocalPosition: {x: 0, y: 2.5, z: 0}
   m_LocalScale: {x: 0.21704902, y: 0.21704902, z: 0.21704902}
   m_Children: []
   m_Father: {fileID: 1415463789097638716}
@@ -204,7 +204,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1415463789097638716}
   m_Layer: 0
-  m_Name: Player
+  m_Name: hummingbird
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
