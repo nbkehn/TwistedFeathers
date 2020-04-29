@@ -34,11 +34,11 @@ namespace TwistedFeathers
 
         public void selectCharacter(int playerType){
             if (playerType == 1){
-                player1.setPlayerClass(s_type.Fighter);
-                player2.setPlayerClass(s_type.Rogue);
+                player1 = new Player(s_type.Fighter);
+                player2 = new Player(s_type.Rogue);
             } else {
-                player1.setPlayerClass(s_type.Rogue);
-                player2.setPlayerClass(s_type.Fighter);
+                player1 = new Player(s_type.Rogue);
+                player2 = new Player(s_type.Fighter);
             }
             Debug.Log(player1.getPlayerClass());
         }
