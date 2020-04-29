@@ -6,7 +6,7 @@ namespace TwistedFeathers
 {
     public class Monster : BattleParticipant
     {
-
+        //private s_type enemyClass;
         public bool isDead;
         public int EnemyType;
 
@@ -26,6 +26,7 @@ namespace TwistedFeathers
         public Monster(s_type name, int EnemyType) : base(p_type.enemy, name)
         {
             isDead = false;
+            //this.enemyClass = name;
             this.EnemyType = EnemyType;
         }
 
