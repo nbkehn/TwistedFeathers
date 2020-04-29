@@ -27,7 +27,7 @@ public class UpgradeManager : MonoBehaviour
     public string opt1, opt2, opt3, opt4;
     //Strings of enemy skill options on buttons
     public string opte1, opte2, opte3, opte4, optReE;
-    public string constRe = "Reroll - ";
+    public string constRe = "Reroll";
     public string dash = " - ";
     //needs to:
     //  get the player's current skills
@@ -36,7 +36,7 @@ public class UpgradeManager : MonoBehaviour
 
     private void Start()
     {
-        upgrader = GameManager.Player_db["person A"];
+        upgrader = GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1;
         done = false;
         u1.name = "u1";
         u2.name = "u2";
@@ -100,11 +100,16 @@ public class UpgradeManager : MonoBehaviour
         optReE = foundEnemySkills[4].Name;
 
         //Use strings
-        u1.GetComponentInChildren<Text>().text = opt1 + dash + opte1;
-        u2.GetComponentInChildren<Text>().text = opt2 + dash + opte2;
-        u3.GetComponentInChildren<Text>().text = opt3 + dash + opte3;
-        u4.GetComponentInChildren<Text>().text = opt4 + dash + opte4;
-        Re.GetComponentInChildren<Text>().text = constRe + optReE;
+        u1.transform.GetChild(0).GetComponentInChildren<Text>().text = opt1;
+        u1.transform.GetChild(1).GetComponentInChildren<Text>().text = opte1;
+        u2.transform.GetChild(0).GetComponentInChildren<Text>().text = opt2;
+        u2.transform.GetChild(1).GetComponentInChildren<Text>().text = opte2;
+        u3.transform.GetChild(0).GetComponentInChildren<Text>().text = opt3;
+        u3.transform.GetChild(1).GetComponentInChildren<Text>().text = opte3;
+        u4.transform.GetChild(0).GetComponentInChildren<Text>().text = opt4;
+        u4.transform.GetChild(1).GetComponentInChildren<Text>().text = opte4;
+        Re.transform.GetChild(0).GetComponentInChildren<Text>().text = constRe;
+        Re.transform.GetChild(1).GetComponentInChildren<Text>().text = optReE;
     }
 
     /**Gets the text of the button, which has been set to the skill names.
@@ -117,17 +122,17 @@ public class UpgradeManager : MonoBehaviour
     public void addSkill(GameObject name)
     { 
         Debug.Log("Attempting to Add Skill");
-        string[] skillName;
+        string skillName;
         string[] splitter = new string[] { dash };
         //learn skill based off name
         
         if (!done)
         {
-            skillName = name.GetComponent<Text>().text.Split(splitter, System.StringSplitOptions.None);
-            Debug.Log("Skill upgrader is looking for: " + skillName[0]);
+            skillName = name.GetComponent<Text>().text;
+            Debug.Log("Skill upgrader is looking for: " + skillName);
             for(int i = 0; i < pickUs.Count; i++)
             {
-                if(pickUs[i].Name == skillName[0])
+                if(pickUs[i].Name == skillName)
                 {
                     Debug.Log("Skill found "+ pickUs[i].Name);
                     upgrader.AddSkill(pickUs[i]);
@@ -160,5 +165,11 @@ public class UpgradeManager : MonoBehaviour
     private void FinishUpgrade()
     {
         SceneManager.LoadScene("TestScene");
+        GameObject.Find("GameManager").GetComponent<GameManager>().comingBack();
+    }
+
+    public void goBack(){
+        SceneManager.LoadScene("TestScene");
+        GameObject.Find("GameManager").GetComponent<GameManager>().comingBack();
     }
 }

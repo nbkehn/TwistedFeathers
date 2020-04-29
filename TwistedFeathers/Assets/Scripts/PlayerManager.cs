@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace TwistedFeathers
 {
@@ -13,6 +14,7 @@ namespace TwistedFeathers
 
         public Player player1 = new Player();
         public Player player2 = new Player();
+        public GameObject gameManagerPrefab;
 
 
         // Start is called before the first frame update
@@ -33,7 +35,7 @@ namespace TwistedFeathers
         }
 
         public void selectCharacter(int playerType){
-            if (playerType == 1){
+            if (playerType == 2){
                 player1 = new Player(s_type.Fighter);
                 player2 = new Player(s_type.Rogue);
             } else {
@@ -46,7 +48,19 @@ namespace TwistedFeathers
         public void next(){
             if(player1.getPlayerClass() != s_type.None){
                 SceneManager.LoadScene("TestScene");
+                this.StartCoroutine("loadManager");
             }
+        }
+
+        public IEnumerator loadManager(){
+            int count = 0;
+            while(!(SceneManager.GetActiveScene ().name == "TestScene") && count < 10){
+                //WAIT
+                yield return new WaitForSeconds(.1f);
+            }
+            GameObject gameManager = GameObject.Instantiate(this.gameManagerPrefab, new Vector3(0,0,0), Quaternion.identity);
+            gameManager.name = "GameManager";
+
         }
 
         public void awardEXP(int exp){

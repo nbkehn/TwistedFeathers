@@ -49,26 +49,36 @@ public class GameManager : MonoBehaviour
 
     public static int numWaves;
 
-    public static int numBattles;
+    public static int numBattles = 0;
 
     public static int wavesRequired = 3;
 
     // Awake is called before the first frame update and before Starts
+    
+    public void onLoad(){
+        this.StartCoroutine("loadHub");
+    }
+    
     void Awake()
     {
-        if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
-            GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[0];
-            GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[1];
-       } else {
-            GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[1];
-            GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[0];
-       } 
-
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
         } else {
             _instance = this;
+
+            GameObject.Find("NumBattles").GetComponent<Text>().text = "" + numBattles;
+            GameObject.Find("player1EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.totalEXP;
+            GameObject.Find("player2EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.totalEXP;
+            if(SceneManager.GetActiveScene().name == "TestScene"){
+                if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
+                    GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[0];
+                    GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[1];
+                } else {
+                    GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[1];
+                    GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[0];
+                } 
+            }
 
             Skill_db = new Dictionary<string, Skill>();
             Participant_db = new Dictionary<string, Participant>();
@@ -130,7 +140,7 @@ public class GameManager : MonoBehaviour
             Skill_db.Add("Adam's Skill", new Skill("Adam's Skill", "Does 15 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 15f, "This is A smarty") }));
             Skill_db.Add("Ben's Skill", new Skill("Ben's Skill", "Deals 10 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B smarty") }));
 
-            
+
             Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
             //Player_db["person A"].LoadSkillTree();
             //Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
@@ -164,8 +174,8 @@ public class GameManager : MonoBehaviour
             //addSkills(p);
             //p = new Environment(s_type.Desert, environmentPrefabs[2]);
             //addSkills(p);
-
             
+
             //Environment setup
 
             environments = new List<Environment>();
@@ -266,7 +276,7 @@ public class GameManager : MonoBehaviour
             Instantiate(combater);
             inCombat = true;
         }
-
+        
     }
 
     public void toggleTutorial(){
@@ -283,6 +293,10 @@ public class GameManager : MonoBehaviour
         this.StartCoroutine("loadHub");
     }
 
+    public void comingBack(){
+        this.StartCoroutine("loadHub");
+    }
+
     public IEnumerator loadHub()
     {
         int count = 0;
@@ -293,6 +307,13 @@ public class GameManager : MonoBehaviour
         GameObject.Find("NumBattles").GetComponent<Text>().text = "" + numBattles;
         GameObject.Find("player1EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.totalEXP;
         GameObject.Find("player2EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.totalEXP;
+        if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
+            GameObject.Find("player1_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[0];
+            GameObject.Find("player2_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[1];
+        } else {
+            GameObject.Find("player1_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[1];
+            GameObject.Find("player2_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[0];
+        } 
     }
 }
 
