@@ -258,7 +258,7 @@ namespace TwistedFeathers
         }
 
         //Utility method for adding and removing passives
-        public void applyChanges(BattleParticipant user, float value)
+        private void applyChanges(BattleParticipant user, float value)
         {
             switch (Specifier)
             {
