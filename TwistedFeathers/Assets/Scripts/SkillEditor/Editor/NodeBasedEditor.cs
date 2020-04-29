@@ -226,6 +226,12 @@ public class NodeBasedEditor : EditorWindow
         selected.SkillType = (Skill_Type)EditorGUILayout.EnumPopup(selected.SkillType, GUILayout.Width(108));
         GUILayout.EndHorizontal();
 
+        // Repeatable Field
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel(new GUIContent("Repeatable: ", "If this skill is repeatable"));
+        selected.Repeatable = EditorGUILayout.Toggle(selected.Repeatable, GUILayout.Width(108));
+        GUILayout.EndHorizontal();
+
         // Level Field
         //GUILayout.BeginHorizontal();
         //EditorGUILayout.PrefixLabel(new GUIContent("Level: ", "Participant level at which this skill becomes available."));
