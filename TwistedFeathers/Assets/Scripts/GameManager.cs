@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> playerPrefabs;
     public GameObject enemyPrefab;
 
-    public bool rotate = true;
+    public bool rotate = false;
 
     public bool tutorial = true;
     public List<Sprite> playerPics;

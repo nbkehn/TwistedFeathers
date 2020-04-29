@@ -776,7 +776,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 0
+  m_IsOn: 1
 --- !u!114 &452267186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1035,7 +1035,8 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4461327919870986391, guid: a06403834fe5f41b1a12a003ca8cc26a,
+          type: 3}
         m_MethodName: toggleTutorial
         m_Mode: 1
         m_Arguments:
