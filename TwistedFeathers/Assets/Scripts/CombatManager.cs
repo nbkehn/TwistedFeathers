@@ -163,8 +163,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                     }
                     break;
                 case target_type.Ally:
-                    Debug.LogError("Error: Ally targeting not supported");
-                    break;
                 case target_type.None: //TODO Remove this line
                 case target_type.Enemy:
                     real_target = target;
@@ -237,7 +235,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             foreach (BattleEffect status in bat_part.Statuses)
             {
                 status.run();
-                status.Duration -= 1;
             }
 
             bat_part.Statuses.RemoveAll(status => status.Duration <= 0);
@@ -361,7 +358,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     }
     #region Skill Handling
 
-    public void SkillTargetUI(Skill skill)
+    public bool NeedSkillTargetUI(Skill skill)
     {
         bool needUI = false;
         foreach (BattleEffect be in skill.Effects)
@@ -392,16 +389,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             }
         }
 
-        if (needUI)
-        {
-            selectingEnemy = true;
-            attackIndicator.SetActive(true);
-            moveIndicator(0);
-            UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
-            UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
-            UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
-            chosenSkill = skill;
-        }
+        return needUI;
+
 
     }
 
@@ -411,9 +400,15 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         UIManager.turnOptions.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Select Skill";
         if (GameManager.singlePlayer)
         {
-           if(deadMonsters < 1)
+           if(deadMonsters < 1 && NeedSkillTargetUI(skill))
            {
-                SkillTargetUI(skill);
+               selectingEnemy = true;
+               attackIndicator.SetActive(true);
+               moveIndicator(0);
+               UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
+               UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
+               UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
+               chosenSkill = skill;
                 UIManager.SkillInfos.transform.GetChild(0).GetComponent<Animator>().Play("Pop Out");
                 GameObject.Find("PlayerSkillInfo").GetComponent<Animator>().SetBool("Open", false);
                 // TODO Need some way of seeing if thisd skill needs to be picked between enemies or not.  
@@ -425,8 +420,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         else if(PhotonNetwork.PlayerList.Length == 1)
         {
-            if(deadMonsters < 1){
-                SkillTargetUI(skill);
+            if(deadMonsters < 1 && NeedSkillTargetUI(skill)){
+                selectingEnemy = true;
+                attackIndicator.SetActive(true);
+                moveIndicator(0);
+                UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
+                chosenSkill = skill;
             }
             else  {
               singlePlayerChooseSkill(skill);
@@ -434,9 +435,15 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         else
         {
-            if (deadMonsters < 1)
+            if (deadMonsters < 1 && NeedSkillTargetUI(skill))
             {
-                SkillTargetUI(skill);
+                selectingEnemy = true;
+                attackIndicator.SetActive(true);
+                moveIndicator(0);
+                UIManager.animateableButtons[3].GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = false;
+                UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = false;
+                chosenSkill = skill;
             }
             else
             {
@@ -871,7 +878,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             GameObject.Destroy(child.gameObject);
         }
         Debug.Log("TURN END");
-        Debug.Log(battle_players[protagonistIndex].displayBuffs());
+        Debug.Log(battle_players[1].displayBuffs());
+        Debug.Log(battle_players[1].displayStatuses());
+
         //Check for BattleParticipant deaths
         CheckBattleParticipantDeaths();
         
