@@ -247,6 +247,33 @@ namespace TwistedFeathers
             return areCondMet();
         }
 
+        public void addPassive(BattleParticipant user)
+        {
+            applyChanges(user, Modifier);
+        }
+
+        public void removePassive(BattleParticipant user)
+        {
+            applyChanges(user, -Modifier);
+        }
+
+        //Utility method for adding and removing passives
+        private void applyChanges(BattleParticipant user, float value)
+        {
+            switch (Specifier)
+            {
+                case ("Dodge"):
+                    user.Dodge += value;
+                    break;
+                case ("Defense"):
+                    user.Defense += value;
+                    break;
+                default:
+                    Debug.LogError("Error: Invalid passive specified");
+                    break;
+            }
+        }
+
         public void run()
         {
 
