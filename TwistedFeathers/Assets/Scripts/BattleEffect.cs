@@ -323,13 +323,18 @@ namespace TwistedFeathers
                         case (e_type.status):
                             if (Visible)
                             {
-                                tar.Statuses.Add(new BattleEffect(this));
+                                BattleEffect status_effect = new BattleEffect(this);
+                                status_effect.Visible = false;
+                                status_effect.Target = new List<BattleParticipant>(){tar};
+                                status_effect.User = tar;
+                                tar.Statuses.Add(status_effect);
                             }
                             else
                             {
                                 switch (Specifier)
                                 {
                                     case "Poison":
+                                        tar.Current_hp -= 5;
                                         break;
                                     case "Burn":
                                         break;
@@ -339,6 +344,8 @@ namespace TwistedFeathers
                                         Debug.LogError("Error: Invalid status effect specified");
                                         break;
                                 }
+
+                                this.duration -= 1;
                             }
                             break;
                         case (e_type.nothing):
