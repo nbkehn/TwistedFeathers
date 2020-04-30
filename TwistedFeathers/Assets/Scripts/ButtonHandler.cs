@@ -22,7 +22,11 @@ public class ButtonHandler : MonoBehaviour
     }
 
     public void goToUpgrade(){
-        SceneManager.LoadScene("UpgradeScreen");
+        if(GameObject.Find("PlayerManager").GetComponent<TwistedFeathers.PlayerManager>().player1.totalEXP >= 10) {
+            GameObject.Find("PlayerManager").GetComponent<TwistedFeathers.PlayerManager>().player1.totalEXP -= 10;
+            GameObject.Find("PlayerManager").GetComponent<TwistedFeathers.PlayerManager>().player2.totalEXP -= 10;
+            SceneManager.LoadScene("UpgradeScreen");
+        }
     }
     
         // This is called when the change environment button is clicked
