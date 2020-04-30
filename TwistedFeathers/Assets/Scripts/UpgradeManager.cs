@@ -34,6 +34,9 @@ public class UpgradeManager : MonoBehaviour
     public string opte1, opte2, opte3, opte4, optReE;
     public string constRe = "Reroll";
     public string dash = " - ";
+
+    public Text playerSkillInfo;
+    public Text enemySkillInfo;
     //needs to:
     //  get the player's current skills
     //  get the pool of available skills
@@ -64,6 +67,45 @@ public class UpgradeManager : MonoBehaviour
     {
 
         
+    }
+
+    public void getInfo(GameObject dyad){
+        string[] skillName;
+        //learn skill based off name
+        string plSkill = dyad.transform.GetChild(0).GetComponentInChildren<Text>().text;
+        string enSkill = dyad.transform.GetChild(1).GetComponentInChildren<Text>().text;
+        skillName = new string[2] {plSkill, enSkill};
+        Debug.Log("Skill upgrader is looking for: " + skillName[0]);
+        Debug.Log("Skill Enemy is looking for: " + skillName[1]);
+        List<Monster> enemies = GameManager.Monster_db.Values.ToList();
+        Skill[] available;
+        if (!play2)
+        {
+            available = upgrader1.SkillTree;
+        }
+        else
+        {
+            available = upgrader2.SkillTree;
+        }
+        foreach(Skill skill in available)
+        {
+            if(skill.Name == skillName[0])
+            {
+                playerSkillInfo.text = skill.Name + " - "  + skill.Description;
+            }
+        }
+
+        foreach (Monster enemy in enemies)
+        {
+
+            foreach (Skill skill in enemy.SkillTree)
+            {
+                if (skill.Name == skillName[1])
+                {
+                    enemySkillInfo.text = skill.Name + " - "  + skill.Description;
+                }
+            }
+        }
     }
 
     public void populate()
@@ -309,6 +351,8 @@ public class UpgradeManager : MonoBehaviour
         play2 = true;
         playID.text = "Player 2 Upgrades";
         populate();
+        playerSkillInfo.text = "Now choose a skill dyad for Player 2";
+        enemySkillInfo.text = "Player 2 will gain the skill on the left, the monsters will gain the skill on the right.";
     }
 
     private void FinishUpgrade()

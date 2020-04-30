@@ -116,7 +116,6 @@ public class ButtonHandler : MonoBehaviour
 
     public void leaveRoom()
     {
-        UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
-        GameObject.Find("GameManager").GetComponent<GameManager>().finishBattle(0);
+        GameObject.Find("CombatManager").GetComponent<CombatManager>().combatEnd(false, 0);
     }
 }
