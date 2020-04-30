@@ -1701,7 +1701,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         for(int i = 0; i < battle_monsters.Count; i++){
             UIManager.enemyHealthBars[i].GetComponent<Animator>().enabled = true;
             UIManager.enemyHealthBars[i].SetActive(false);
-             UIManager.enemyHealthBars[i].SetActive(true);
+            UIManager.enemyHealthBars[i].SetActive(true); 
             UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
         }
         for(int i = 0; i < battle_players.Count; i++){
