@@ -87,12 +87,12 @@ public class GameManager : MonoBehaviour
             Monster_db = new Dictionary<string, Monster>();
 
             //Dummy values for testing purposes
-            Skill_db.Add("dummy A", new Skill("Poison Weapons", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            //Skill_db.Add("dummy A", new Skill("Poison Weapons", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             //Skill_db.Add("dummy B", new Skill("Poison", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-            Skill_db.Add("dummy C", new Skill("Max Health Inc", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            //Skill_db.Add("dummy C", new Skill("Max Health Inc", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             //Skill_db.Add("dummy D", new Skill("Fire Breath", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             //Skill_db.Add("dummy E", new Skill("Claws", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-            Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            //Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             //player skills
             //Skill_db.Add("FeatherDagger", new Skill("Feather Dagger", "Deals 20 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Feather Dagger") }));
             //Skill_db.Add("Sabotage", new Skill("Sabotage", "Reduce enemy defense by 25% for 1 turn", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.25f, 3, "defense") }));

@@ -88,10 +88,21 @@ public class UpgradeManager : MonoBehaviour
                 //XXX = ; //Random between 0-size
                 if (!upgrader1.Skills.Contains(available[i]))
                 {
-                    foundPlayerSkills.Add(available[i]);
+                    if (available[i].Pre_req != null)
+                    {
+                        Debug.Log("Pre-req skill chosen. Skill: " + available);
+                        if (upgrader1.Skills.Contains(available[i].Pre_req))
+                        {
+                            foundPlayerSkills.Add(available[i]);
+                        }
+                    }
+                    else
+                    {
+                        foundPlayerSkills.Add(available[i]);
+                    }
 
                 }
-                            }
+            }
         }
         else
         {
@@ -102,22 +113,58 @@ public class UpgradeManager : MonoBehaviour
                 //XXX = ; //Random between 0-size
                 if (!upgrader2.Skills.Contains(available[i]))
                 {
-                    foundPlayerSkills.Add(available[i]);
+                    if(available[i].Pre_req != null)
+                    {
+                        if (upgrader2.Skills.Contains(available[i].Pre_req))
+                        {
+                            foundPlayerSkills.Add(available[i]);
+                        }
+                    }
+                    else
+                    {
+                        foundPlayerSkills.Add(available[i]);
+                    }
                 }
             }
 
         }
-        while(foundEnemySkills.Count < 5)
+        List<Monster> enemies = GameManager.Monster_db.Values.ToList();
+        List<Skill> availableESkills = new List<Skill>();
+        foreach(Monster enemy in enemies)
         {
-            int i = (int)Random.Range(0, skillPool.Count - 1);
-            //XXX = ; //Random between 0-size
-            if (pickUs[i].User_type == p_type.enemy)
+            foreach(Skill skill in enemy.SkillTree)
             {
-                if (!foundEnemySkills.Contains(pickUs[i]) || pickUs[i].Repeatable)
+                availableESkills.Add(skill);
+            }
+        }
+        while (foundEnemySkills.Count < 5)
+        {
+            int i = (int)Random.Range(0, availableESkills.Count - 1);
+            if (!foundEnemySkills.Contains(availableESkills[i]) || availableESkills[i].Repeatable)
+            {
+                foreach (Monster enemy in enemies)
                 {
-                    foundEnemySkills.Add(pickUs[i]);
+                    if (enemy.SkillTree.Contains(availableESkills[i]))
+                    {
+                        if (!enemy.Skills.Contains(availableESkills[i]) || availableESkills[i].Repeatable)
+                        {
+                            if (availableESkills[i].Pre_req != null)
+                            {
+                                if (enemy.Skills.Contains(availableESkills[i].Pre_req))
+                                {
+                                    foundEnemySkills.Add(availableESkills[i]);
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                foundEnemySkills.Add(pickUs[i]);
+                            }
+                        }
+                    }
                 }
             }
+            
         }
         opt1 = foundPlayerSkills[0].Name;
         opt2 = foundPlayerSkills[1].Name;
@@ -152,15 +199,18 @@ public class UpgradeManager : MonoBehaviour
     public void addSkill(GameObject name)
     { 
         Debug.Log("Attempting to Add Skill");
-        string[] skillName;
+        string pskillName;
+        string eskillName;
         string[] splitter = new string[] { dash };
         //learn skill based off name
-        
+        Debug.Log(name);
         if (!done)
         {
-            skillName = name.GetComponent<Text>().text.Split(splitter, System.StringSplitOptions.None);
-            Debug.Log("Skill upgrader is looking for: " + skillName[0]);
-            Debug.Log("Skill Enemy is looking for: " + skillName[1]);
+            pskillName = name.transform.GetChild(0).GetComponentInChildren<Text>().text;
+            eskillName = name.transform.GetChild(1).GetComponentInChildren<Text>().text;
+            //skillName = name.GetComponent<Text>().text.Split(splitter, System.StringSplitOptions.None);
+            Debug.Log("Skill upgrader is looking for: " + pskillName);
+            Debug.Log("Skill Enemy is looking for: " + eskillName);
             List<Monster> enemies = GameManager.Monster_db.Values.ToList();
             Skill[] available;
             if (!play2)
@@ -174,11 +224,30 @@ public class UpgradeManager : MonoBehaviour
 
             foreach(Skill skill in available)
             {
-                if(skill.Name == skillName[0])
+                if(skill.Name == pskillName)
                 {
                     Debug.Log("Skill found "+ skill.Name);
                     if (!play2)
                     {
+                        if(skill.Pre_req != null)
+                        {
+                            Debug.Log("Attempting to remove pre-req skill");
+                            if(skill.Pre_req.SkillType == Skill_Type.Attack)
+                            {
+                                Debug.Log("Removing Attack");
+                                upgrader1.removeAttack(skill.Pre_req);
+                            } else if(skill.Pre_req.SkillType == Skill_Type.Utility)
+                            {
+                                Debug.Log("Removing Utility");
+                                upgrader1.removeUtility(skill.Pre_req);
+                            }
+                            else if (skill.Pre_req.SkillType == Skill_Type.Passive)
+                            {
+                                Debug.Log("Removing Passive");
+                                upgrader1.removePassive(skill.Pre_req);
+                            }
+                            
+                        }
                         upgrader1.AddSkill(skill);
                         if (skill.SkillType == Skill_Type.Attack)
                         {
@@ -195,6 +264,26 @@ public class UpgradeManager : MonoBehaviour
                     }
                     else
                     {
+                        if (skill.Pre_req != null)
+                        {
+                            Debug.Log("Attempting to remove pre-req skill");
+                            if (skill.Pre_req.SkillType == Skill_Type.Attack)
+                            {
+                                Debug.Log("Removing Attack");
+                                upgrader1.removeAttack(skill.Pre_req);
+                            }
+                            else if (skill.Pre_req.SkillType == Skill_Type.Utility)
+                            {
+                                Debug.Log("Removing Utility");
+                                upgrader1.removeUtility(skill.Pre_req);
+                            }
+                            else if (skill.Pre_req.SkillType == Skill_Type.Passive)
+                            {
+                                Debug.Log("Removing Passive");
+                                upgrader1.removePassive(skill.Pre_req);
+                            }
+
+                        }
                         upgrader2.AddSkill(skill);
                         if (skill.SkillType == Skill_Type.Attack)
                         {
@@ -221,29 +310,32 @@ public class UpgradeManager : MonoBehaviour
 
                 foreach (Skill skill in enemy.SkillTree)
                 {
-                    if (skill.Name == skillName[1])
+                    if (skill.Name == eskillName)
                     {
-                        ////Debug.Log(enemy.SkillTree[0].Name);
-                        Debug.Log("Enemy being upgraded: " + enemy.Name);
-                        if (enemy == null)
-                        {
-                            Debug.Log("The enemy");
-                        }
-                        else if (enemy.SkillTree == null)
-                        {
-                            Debug.Log("Skill tree");
-                        }
-                        else if (enemy.SkillTree[0] == null)
-                        {
-                            Debug.Log("Skill");
-                        }
-                        else if (enemy.SkillTree[0].Name == null)
-                        {
-                            Debug.Log("Name");
-                        }
+                        
                         Debug.Log("*******Skill Enemy is receiving: " + skill.Name);
-                        if (enemy.SkillTree.Contains<Skill>(skill))
+                        if (enemy.SkillTree.Contains(skill))
                         {
+                            if (skill.Pre_req != null)
+                            {
+                                Debug.Log("Attempting to remove pre-req skill");
+                                if (skill.Pre_req.SkillType == Skill_Type.Attack)
+                                {
+                                    Debug.Log("Removing Attack");
+                                    enemy.removeAttack(skill.Pre_req);
+                                }
+                                else if (skill.Pre_req.SkillType == Skill_Type.Utility)
+                                {
+                                    Debug.Log("Removing Utility");
+                                    enemy.removeUtility(skill.Pre_req);
+                                }
+                                else if (skill.Pre_req.SkillType == Skill_Type.Passive)
+                                {
+                                    Debug.Log("Removing Passive");
+                                    enemy.removePassive(skill.Pre_req);
+                                }
+
+                            }
                             enemy.AddSkill(skill);
                             if (skill.SkillType == Skill_Type.Attack)
                             {
