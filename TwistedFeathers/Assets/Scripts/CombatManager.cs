@@ -476,6 +476,20 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         return battle_players[protagonistIndex].Skills;
     }
 
+    public List<Skill> GetEnemySkills()
+    {
+        List<Skill> enemySK = new List<Skill>();
+        foreach(Monster mon in battle_monsters)
+        {
+            foreach(Skill sk in mon.Skills)
+            {
+                enemySK.Add(sk);
+                Debug.Log(sk.Name);
+            }
+        }
+        return enemySK;
+    }
+
     /// <summary>
     /// Useed to get the allies or remote player's skill list.
     /// </summary>

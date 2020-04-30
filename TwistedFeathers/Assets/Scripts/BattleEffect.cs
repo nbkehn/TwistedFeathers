@@ -91,6 +91,7 @@ namespace TwistedFeathers
         public string SkillName { get; set; }
         public int UID { get; set; }
         public List<Conditional> Conditions { get; set; }
+        public FillSkills fs;
 
         // Copy Constructor
         public BattleEffect(BattleEffect effect)
@@ -247,6 +248,33 @@ namespace TwistedFeathers
             return areCondMet();
         }
 
+        public void addPassive(BattleParticipant user)
+        {
+            applyChanges(user, Modifier);
+        }
+
+        public void removePassive(BattleParticipant user)
+        {
+            applyChanges(user, -Modifier);
+        }
+
+        //Utility method for adding and removing passives
+        private void applyChanges(BattleParticipant user, float value)
+        {
+            switch (Specifier)
+            {
+                case ("Dodge"):
+                    user.Dodge += value;
+                    break;
+                case ("Defense"):
+                    user.Defense += value;
+                    break;
+                default:
+                    Debug.LogError("Error: Invalid passive specified");
+                    break;
+            }
+        }
+
         public void run()
         {
 
@@ -310,6 +338,14 @@ namespace TwistedFeathers
                                     break;
                                 case ("vulnerable"):
                                     tar.Defense += -1;
+                                    break;
+                                case ("heal"):
+                                    tar.Current_hp += (int) Modifier;
+                                    break;
+                                case "FearCurse":
+                                    Debug.Log("Executing fear curse");
+                                    fs = GameObject.Find("OpenSkills").GetComponent<FillSkills>();
+                                    fs.DisableSkill = Random.Range(0, 4);
                                     break;
                                 default:
                                     Debug.LogError("Error: Invalid stat buff specified");

@@ -85,6 +85,7 @@ namespace TwistedFeathers
             if (!this.passiveSkills.ContainsKey(passive.Name))
             {
                 this.passiveSkills.Add(passive.Name, passive);
+                applyPassiveEffects(passive);
             }
         }
         public void addUtility(Skill util)
@@ -92,6 +93,7 @@ namespace TwistedFeathers
             if (!this.utilitySkills.ContainsKey(util.Name))
             {
                 this.utilitySkills.Add(util.Name, util);
+                applyPassiveEffects(util);
             }
         }
 
@@ -100,6 +102,50 @@ namespace TwistedFeathers
             if (!this.attackSkills.ContainsKey(attack.Name))
             {
                 this.attackSkills.Add(attack.Name, attack);
+                applyPassiveEffects(attack);
+            }
+        }
+
+        private void applyPassiveEffects(Skill current)
+        {
+            foreach (BattleEffect effect in current.Passives)
+            {
+                effect.addPassive(this);
+            }
+        }
+
+        public void removePassive(Skill passive)
+        {
+            if (this.passiveSkills.ContainsKey(passive.Name))
+            {
+                this.passiveSkills.Remove(passive.Name);
+                removePassiveEffects(passive);
+            }
+        }
+
+        public void removeUtility(Skill util)
+        {
+            if (!this.utilitySkills.ContainsKey(util.Name))
+            {
+                this.utilitySkills.Remove(util.Name);
+                removePassiveEffects(util);
+            }
+        }
+
+        public void removeAttack(Skill attack)
+        {
+            if (!this.attackSkills.ContainsKey(attack.Name))
+            {
+                this.attackSkills.Remove(attack.Name);
+                removePassiveEffects(attack);
+            }
+        }
+
+        private void removePassiveEffects(Skill current)
+        {
+            foreach (BattleEffect effect in current.Passives)
+            {
+                effect.removePassive(this);
             }
         }
 
