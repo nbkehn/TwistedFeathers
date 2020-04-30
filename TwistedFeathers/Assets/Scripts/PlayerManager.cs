@@ -33,14 +33,21 @@ namespace TwistedFeathers
         }
 
         public void selectCharacter(int playerType){
+            Debug.Log("Begin Character selection");
             if (playerType == 1){
-                player1 = new Player(s_type.Fighter);
-                player2 = new Player(s_type.Rogue);
+                player1.setPlayerClass(s_type.Rogue);
+                Debug.Log("Case 1: Player 1 is a: " + player1.getPlayerClass());
+                player2.setPlayerClass(s_type.Fighter);
+                Debug.Log("Case 1: Player 2 is a: " + player2.getPlayerClass());
             } else {
-                player1 = new Player(s_type.Rogue);
-                player2 = new Player(s_type.Fighter);
+                player1.setPlayerClass(s_type.Fighter);
+                Debug.Log("Case 2: Player 1 is a: " + player1.getPlayerClass());
+                player2.setPlayerClass(s_type.Rogue);
+                Debug.Log("Case 2: Player 2 is a: " + player2.getPlayerClass());
             }
-            Debug.Log(player1.getPlayerClass());
+            Debug.Log("Player 1 is a: " + player1.getPlayerClass());
+            Debug.Log("Player 2 is a: " + player2.getPlayerClass());
+            Debug.Log("End Character selection");
         }
 
         public void next(){
