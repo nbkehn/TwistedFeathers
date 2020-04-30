@@ -176,17 +176,14 @@ public class UpgradeManager : MonoBehaviour
                         if (skill.SkillType == Skill_Type.Attack)
                         {
                             upgrader1.addAttack(skill);
-                            upgrader1.AddSkill(skill);
                         }
                         else if (skill.SkillType == Skill_Type.Utility)
                         {
                             upgrader1.addUtility(skill);
-                            upgrader1.AddSkill(skill);
                         }
                         else if (skill.SkillType == Skill_Type.Passive)
                         {
                             upgrader1.addPassive(skill);
-                            upgrader1.AddSkill(skill);
                         }
                     }
                     else
@@ -195,17 +192,14 @@ public class UpgradeManager : MonoBehaviour
                         if (skill.SkillType == Skill_Type.Attack)
                         {
                             upgrader2.addAttack(skill);
-                            upgrader2.AddSkill(skill);
                         }
                         else if (skill.SkillType == Skill_Type.Utility)
                         {
                             upgrader2.addUtility(skill);
-                            upgrader2.AddSkill(skill);
                         }
                         else if (skill.SkillType == Skill_Type.Passive)
                         {
                             upgrader2.addPassive(skill);
-                            upgrader2.AddSkill(skill);
                         }
                     }
                     
