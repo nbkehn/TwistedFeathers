@@ -103,6 +103,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         int playerCount = 0;
         int enemyCount = 0;
         foreach(TwistedFeathers.Player player in battle_players){
+            GameObject.Find("player"+playerCount+"_name").GetComponent<Text>().text = player.getPlayerClass().ToString();
             GameObject newPlayer = Instantiate(player.myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             newPlayer.transform.SetParent(GameObject.Find("Participants").transform);
             newPlayer.transform.position = playerSpawnPoints[playerCount].transform.position;
@@ -112,6 +113,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
         foreach(Monster monster in battle_monsters)
         {
+            GameObject.Find("enemy"+enemyCount+"_name").GetComponent<Text>().text = monster.Name.ToString();
             GameObject newEnemy = Instantiate(monster.myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             newEnemy.transform.SetParent(GameObject.Find("Participants").transform);
             newEnemy.transform.position = enemySpawnPoints[enemyCount].transform.position;
@@ -254,14 +256,16 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
 
 
     IEnumerator flyOut1(){
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
+        yield return new WaitForSeconds(0.5f);
         GameObject.Find("GameManager").GetComponent<GameManager>().finishBattle(EXPGained);
     }
 
     IEnumerator flyOut2(){
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
+        yield return new WaitForSeconds(0.5f);
         
     }
     void combatEnd(bool isVictory)
@@ -270,7 +274,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         {
             Debug.Log("Victory!!!");
             EXPGained += 5;
-            effectText.GetComponent<Text>().text = "YOU WIN!" + (GameManager.numWaves+1);
+            effectText.GetComponent<Text>().text = "YOU WIN!";
             UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
             StartCoroutine("flyOut2");
         }
@@ -280,9 +284,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             EXPGained = 3;
             passiveReset();
             GameManager.numWaves = 0;
-            effectText.GetComponent<Text>().text = "YOU LOSE!" + (GameManager.numWaves+1);
+            effectText.GetComponent<Text>().text = "YOU LOSE!";
             UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
             StartCoroutine("flyOut1");
+            return;
         }
         GameManager.numWaves+= 1;
         if(GameManager.numWaves == GameManager.wavesRequired){
@@ -341,10 +346,20 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             animator.runtimeAnimatorController = Resources.Load("Animations/Empty") as RuntimeAnimatorController;
         }
         for(int i = 0; i < battle_monsters.Count; i++){
+            TwistedFeathers.Monster mon = battle_monsters[i];
+            mon.isDead = false;
+            mon.Current_hp = mon.Max_hp;
+            mon.Attack = 0f;
+            mon.Accuracy = 0f;
             UIManager.enemyHealthBars[i].SetActive(true);
             UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
         }
         for(int i = 0; i < battle_players.Count; i++){
+            TwistedFeathers.Player play = battle_players[i];
+            play.isDead = false;
+            play.Current_hp = play.Max_hp;
+            play.Attack = 0f;
+            play.Accuracy = 0f;
             UIManager.playerHealthBars[i].SetActive(true);
             UIManager.playerHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
         }
@@ -728,7 +743,13 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         //attackIndicator.SetActive(false);
         //selectingEnemy = false;
         TwistedFeathers.Player protag = (TwistedFeathers.Player) battle_players[index]; 
-        queueSkill(protag.Skills[UnityEngine.Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>() { battle_monsters[UnityEngine.Random.Range(0, battle_monsters.Count)] });
+        if(battle_monsters[0].isDead){
+            queueSkill(protag.Skills[UnityEngine.Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>() { battle_monsters[1] });
+        } else if(battle_monsters[1].isDead){
+            queueSkill(protag.Skills[UnityEngine.Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>() { battle_monsters[0] });
+        } else {
+            queueSkill(protag.Skills[UnityEngine.Random.Range(0, protag.Skills.Count)], protag, new List<BattleParticipant>() { battle_monsters[UnityEngine.Random.Range(0, battle_monsters.Count)] });
+        }
     }
     #endregion
 
@@ -1080,7 +1101,22 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         ForecastOpener.GetComponent<ButtonHandler>().newForecast();
         Debug.Log("Forecast Over!");
 
+        if(battle_players[0].isDead){
+            UIManager.youreDead();
+            StartCoroutine("simulateTurn");
+        } else {
+            waitingPlayer = true;
+            UIManager.youreAlive();
+        }
+    }
+
+    IEnumerator simulateTurn(){
         waitingPlayer = true;
+        yield return new WaitForSeconds(.5f);
+        chooseRandomSkill(1);
+        waitingPlayer = false;
+        waiting_effects = true;
+        
     }
 
     #region TurnManager Callbacks
@@ -1583,7 +1619,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         foreach(TwistedFeathers.Player play in battle_players.ToArray()){
             play.isDead = false;
-            play.Current_hp += 35;
+            play.Current_hp = play.Max_hp;
             play.Attack = 0f;
             play.Accuracy = 0f;
         }
@@ -1604,7 +1640,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             RectTransform healthBar = UIManager.playerHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
             healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_players[i].Current_hp, 50f), 100);
         }
-        Debug.Log("NumMonsters: " + battle_monsters.Count);
         for(int i = 0; i < battle_monsters.Count; i++){
             RectTransform healthBar = UIManager.enemyHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
             Debug.Log("Monster " + i + "health: " + (float)battle_monsters[i].Current_hp);
@@ -1623,12 +1658,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             mon.isDead = false;
             mon.Current_hp = mon.Max_hp;
             mon.Attack = 0f;
+            mon.Defense = 0f;
             mon.Accuracy = 0f;
         }
         foreach(TwistedFeathers.Player play in battle_players.ToArray()){
             play.isDead = false;
             play.Current_hp = play.Max_hp;
             play.Attack = 0f;
+            play.Defense = 0f;
             play.Accuracy = 0f;
             
         }

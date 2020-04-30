@@ -84,6 +84,16 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void youreDead(){
+        turnOptions.transform.GetChild(0).GetComponent<Button>().interactable = false;
+        turnOptions.transform.GetChild(0).GetComponent<Button>().interactable = false;
+    }
+
+    public void youreAlive(){
+        turnOptions.transform.GetChild(0).GetComponent<Button>().interactable = true;
+        turnOptions.transform.GetChild(0).GetComponent<Button>().interactable = true;
+    }
+
     //shirnks the miniMap after confirming selection
     public void shrinkMiniMap(){
         miniMap.GetComponent<Animator>().Play("ShrinkPanel");
