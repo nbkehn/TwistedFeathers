@@ -32,7 +32,7 @@ public class UpgradeManager : MonoBehaviour
     public string opt1, opt2, opt3, opt4;
     //Strings of enemy skill options on buttons
     public string opte1, opte2, opte3, opte4, optReE;
-    public string constRe = "Reroll - ";
+    public string constRe = "Reroll";
     public string dash = " - ";
     //needs to:
     //  get the player's current skills
@@ -51,7 +51,8 @@ public class UpgradeManager : MonoBehaviour
         Debug.Log("Upgrader2: " + upgrader2.Name);
         play2 = false;
         done = false;
-        playID.text = "Player 1";
+        Debug.Log("Player 1!!");
+        playID.text = "Player 1 Upgrades";
         u1.name = "u1";
         u2.name = "u2";
         u3.name = "u3";
@@ -134,11 +135,16 @@ public class UpgradeManager : MonoBehaviour
         optReE = foundEnemySkills[4].Name;
 
         //Use strings
-        u1.GetComponentInChildren<Text>().text = opt1 + dash + opte1;
-        u2.GetComponentInChildren<Text>().text = opt2 + dash + opte2;
-        u3.GetComponentInChildren<Text>().text = opt3 + dash + opte3;
-        u4.GetComponentInChildren<Text>().text = opt4 + dash + opte4;
-        Re.GetComponentInChildren<Text>().text = constRe + optReE;
+        u1.transform.GetChild(0).GetComponentInChildren<Text>().text = opt1;
+        u1.transform.GetChild(1).GetComponentInChildren<Text>().text = opte1;
+        u2.transform.GetChild(0).GetComponentInChildren<Text>().text = opt2;
+        u2.transform.GetChild(1).GetComponentInChildren<Text>().text = opte2;
+        u3.transform.GetChild(0).GetComponentInChildren<Text>().text = opt3;
+        u3.transform.GetChild(1).GetComponentInChildren<Text>().text = opte3;
+        u4.transform.GetChild(0).GetComponentInChildren<Text>().text = opt4;
+        u4.transform.GetChild(1).GetComponentInChildren<Text>().text = opte4;
+        Re.transform.GetChild(0).GetComponentInChildren<Text>().text = constRe;
+        Re.transform.GetChild(1).GetComponentInChildren<Text>().text = optReE;
     }
 
     /**Gets the text of the button, which has been set to the skill names.
@@ -148,16 +154,19 @@ public class UpgradeManager : MonoBehaviour
      * @param name name of the button
      *
      */
-    public void addSkill(GameObject name)
+    public void addSkill(GameObject button)
     { 
         Debug.Log("Attempting to Add Skill");
-        string[] skillName;
+        string plSkillName;
+        string enSkillName;
         string[] splitter = new string[] { dash };
         //learn skill based off name
         
         if (!done)
         {
-            skillName = name.GetComponent<Text>().text.Split(splitter, System.StringSplitOptions.None);
+            plSkillName = button.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text;
+            enSkillName = button.transform.GetChild(1).transform.GetChild(0).GetComponent<Text>().text;
+            string [] skillName = new string[] {plSkillName, enSkillName};
             Debug.Log("Skill upgrader is looking for: " + skillName[0]);
             Debug.Log("Skill Enemy is looking for: " + skillName[1]);
             List<Monster> enemies = GameManager.Monster_db.Values.ToList();
@@ -282,12 +291,18 @@ public class UpgradeManager : MonoBehaviour
     {
         done = false;
         play2 = true;
-        playID.text = "Player 2";
+        playID.text = "Player 2 Upgrades";
         populate();
     }
 
     private void FinishUpgrade()
     {
         SceneManager.LoadScene("TestScene");
+        GameObject.Find("GameManager").GetComponent<GameManager>().comingBack();
+    }
+
+    public void goBack(){
+        SceneManager.LoadScene("TestScene");
+        GameObject.Find("GameManager").GetComponent<GameManager>().comingBack();
     }
 }
