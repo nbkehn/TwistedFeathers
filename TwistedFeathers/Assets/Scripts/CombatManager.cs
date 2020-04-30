@@ -307,6 +307,9 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 UIManager.enemyHealthBars[enemyCount].SetActive(true);
                 GameObject.Find("Participants").transform.GetChild(3 + enemyCount).gameObject.SetActive(true);
                 mon.isDead = false;
+                mon.Attack = 0f;
+                mon.Defense = 0f;
+                mon.Accuracy = 0f;
                 deadMonsters--;
                 Debug.Log("Monster resurrected: " + deadMonsters);
                 return;
