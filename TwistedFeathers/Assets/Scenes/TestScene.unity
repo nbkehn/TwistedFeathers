@@ -215,7 +215,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 805186688}
+      - m_Target: {fileID: 4461327919870986391, guid: a06403834fe5f41b1a12a003ca8cc26a,
+          type: 3}
         m_MethodName: onSinglePlayer
         m_Mode: 1
         m_Arguments:
@@ -395,7 +396,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &232151129
 GameObject:
@@ -775,7 +776,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 0
+  m_IsOn: 1
 --- !u!114 &452267186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -852,7 +853,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &480557303
 GameObject:
@@ -1034,7 +1035,8 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 805186688}
+      - m_Target: {fileID: 4461327919870986391, guid: a06403834fe5f41b1a12a003ca8cc26a,
+          type: 3}
         m_MethodName: toggleTutorial
         m_Mode: 1
         m_Arguments:
@@ -1494,77 +1496,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 802795875}
   m_CullTransparentMesh: 0
---- !u!1 &805186687
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 805186689}
-  - component: {fileID: 805186688}
-  - component: {fileID: 805186690}
-  m_Layer: 0
-  m_Name: GameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &805186688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805186687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54279fb0de30ce84c8829a7c2a775681, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  combater: {fileID: 1635477742820407397, guid: 19a7948af5eb3934aa4289189805b548,
-    type: 3}
-  environmentPrefabs:
-  - {fileID: 2749972663444745878, guid: d24f07b35600840b28d11d1d454d4eb1, type: 3}
-  - {fileID: 6878414667720973492, guid: a7e9ad935fbd3448fbc54b8fb7e49997, type: 3}
-  - {fileID: 6558175892258665387, guid: b984a0d5aab904adbb3f464841aafdab, type: 3}
-  playerPrefab: {fileID: 6231222064021348454, guid: 5d51d6a1d011c43f0b307f73153e7354,
-    type: 3}
-  enemyPrefab: {fileID: 8361425163009145584, guid: 27bc3edfacd1d4c47835d5b9a562ecf3,
-    type: 3}
-  rotate: 0
-  tutorial: 1
-  playerPics:
-  - {fileID: 21300000, guid: dd312266e041544f081e023fd3d03d74, type: 3}
-  - {fileID: 21300000, guid: 576cfb424be694ca591b1e3d83c720b3, type: 3}
---- !u!4 &805186689
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805186687}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.0442424, y: 3.4786298, z: -8.255993}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &805186690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805186687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b4cf7da8dc974341bdf28fde45ab5b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &883983761
 GameObject:
   m_ObjectHideFlags: 0
@@ -2840,7 +2771,7 @@ RectTransform:
   - {fileID: 1051414615}
   - {fileID: 1556689788}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
