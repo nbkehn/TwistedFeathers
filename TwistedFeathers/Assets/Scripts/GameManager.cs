@@ -39,37 +39,45 @@ public class GameManager : MonoBehaviour
     public List<GameObject> environmentPrefabs;
     public static List<Environment> environments;
 
-    public GameObject playerPrefab;
+
+    public List<GameObject> playerPrefabs;
     public GameObject enemyPrefab;
 
-    public bool rotate = true;
+    public bool rotate = false;
 
     public bool tutorial = true;
     public List<Sprite> playerPics;
 
     public static int numWaves;
 
-    public static int numBattles;
+    public static int numBattles = 0;
 
     public static int wavesRequired = 3;
 
+    public void onLoad(){
+        this.StartCoroutine("loadHub");
+    }
+    
     // Awake is called before the first frame update and before Starts
     void Awake()
     {
-        if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
-            GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[0];
-            GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[1];
-       } else {
-            GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[1];
-            GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[0];
-       } 
-
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
         } else {
             _instance = this;
-
+            GameObject.Find("NumBattles").GetComponent<Text>().text = "" + numBattles;
+            GameObject.Find("player1EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.totalEXP;
+            GameObject.Find("player2EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.totalEXP;
+            if(SceneManager.GetActiveScene().name == "TestScene"){
+                if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
+                    GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[0];
+                    GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[1];
+                } else {
+                    GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[1];
+                    GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[0];
+                } 
+            }
             Skill_db = new Dictionary<string, Skill>();
             Participant_db = new Dictionary<string, Participant>();
             Player_db = new Dictionary<string, Player>();
@@ -122,7 +130,9 @@ public class GameManager : MonoBehaviour
             //enemy_types.Add("Crow", crow);
             //Skill_db.Add("Hiss", new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));
             //Skill_db.Add("Knife Attack", new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") }));
+
             Monster crow = new Monster(s_type.Necromancer, 2);
+
 
 
             //Dummy values for testing purposes
@@ -131,14 +141,24 @@ public class GameManager : MonoBehaviour
             //Skill_db.Add("Beelzebub's Skill", new Skill("Beelzebub's Skill", "Deals 10 damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B dummy") }));
             //Skill_db.Add("Adam's Skill", new Skill("Adam's Skill", "Does 15 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 15f, "This is A smarty") }));
             //Skill_db.Add("Ben's Skill", new Skill("Ben's Skill", "Deals 10 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B smarty") }));
+           
+            if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
+                Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
+                Player_db["person A"].myPrefab = playerPrefabs[0];
+                Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
+                Player_db["person B"].myPrefab = playerPrefabs[1];
+            } else {
+                Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
+                Player_db["person A"].myPrefab = playerPrefabs[1];
+                Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
+                Player_db["person B"].myPrefab = playerPrefabs[0];
+            }
 
-            
-            Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
-            
-            Player_db["person A"].myPrefab = playerPrefab;
-            Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
-            //Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
-            Player_db["person B"].myPrefab = playerPrefab;
+            //Player_db["person A"].LoadSkillTree();
+            //Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
+            //Player_db["person A"].AddSkill(Skill_db["Sabotage"]);
+            //Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
+            //Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
 
             Monster_db.Add("enemy A", goose);
             //Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
@@ -163,8 +183,6 @@ public class GameManager : MonoBehaviour
             //addSkills(p);
             //p = new Environment(s_type.Desert, environmentPrefabs[2]);
             //addSkills(p);
-
-            
             //Environment setup
 
             environments = new List<Environment>();
@@ -265,7 +283,6 @@ public class GameManager : MonoBehaviour
             Instantiate(combater);
             inCombat = true;
         }
-
     }
 
     public void toggleTutorial(){
@@ -282,6 +299,10 @@ public class GameManager : MonoBehaviour
         this.StartCoroutine("loadHub");
     }
 
+    public void comingBack(){
+        this.StartCoroutine("loadHub");
+    }
+
     public IEnumerator loadHub()
     {
         int count = 0;
@@ -292,7 +313,13 @@ public class GameManager : MonoBehaviour
         GameObject.Find("NumBattles").GetComponent<Text>().text = "" + numBattles;
         GameObject.Find("player1EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.totalEXP;
         GameObject.Find("player2EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.totalEXP;
+        if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
+            GameObject.Find("player1_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[0];
+            GameObject.Find("player2_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[1];
+        } else {
+            GameObject.Find("player1_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[1];
+            GameObject.Find("player2_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[0];
+        } 
     }
 }
-
 
