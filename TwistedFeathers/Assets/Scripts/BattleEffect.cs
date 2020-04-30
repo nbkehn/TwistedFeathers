@@ -387,6 +387,9 @@ namespace TwistedFeathers
                                 switch (Specifier)
                                 {
                                     case "Poison":
+                                        tar.Current_hp -= 3;
+                                        break;
+                                    case "Bleed":
                                         tar.Current_hp -= 5;
                                         break;
                                     case "Burn":
