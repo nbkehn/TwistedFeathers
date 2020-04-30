@@ -32,7 +32,7 @@ public class UpgradeManager : MonoBehaviour
     public string opt1, opt2, opt3, opt4;
     //Strings of enemy skill options on buttons
     public string opte1, opte2, opte3, opte4, optReE;
-    public string constRe = "Reroll - ";
+    public string constRe = "Reroll";
     public string dash = " - ";
     //needs to:
     //  get the player's current skills
@@ -51,7 +51,8 @@ public class UpgradeManager : MonoBehaviour
         Debug.Log("Upgrader2: " + upgrader2.Name);
         play2 = false;
         done = false;
-        playID.text = "Player 1";
+        Debug.Log("Player 1!!");
+        playID.text = "Player 1 Upgrades";
         u1.name = "u1";
         u2.name = "u2";
         u3.name = "u3";
@@ -88,9 +89,9 @@ public class UpgradeManager : MonoBehaviour
                 if (!upgrader1.Skills.Contains(available[i]))
                 {
                     foundPlayerSkills.Add(available[i]);
+
                 }
-                
-            }
+                            }
         }
         else
         {
@@ -104,6 +105,7 @@ public class UpgradeManager : MonoBehaviour
                     foundPlayerSkills.Add(available[i]);
                 }
             }
+
         }
         while(foundEnemySkills.Count < 5)
         {
@@ -201,6 +203,7 @@ public class UpgradeManager : MonoBehaviour
                         {
                             upgrader2.addPassive(skill);
                         }
+
                     }
                     
                     break;
@@ -291,12 +294,18 @@ public class UpgradeManager : MonoBehaviour
     {
         done = false;
         play2 = true;
-        playID.text = "Player 2";
+        playID.text = "Player 2 Upgrades";
         populate();
     }
 
     private void FinishUpgrade()
     {
         SceneManager.LoadScene("TestScene");
+        GameObject.Find("GameManager").GetComponent<GameManager>().comingBack();
+    }
+
+    public void goBack(){
+        SceneManager.LoadScene("TestScene");
+        GameObject.Find("GameManager").GetComponent<GameManager>().comingBack();
     }
 }
