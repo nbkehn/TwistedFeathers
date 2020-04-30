@@ -144,7 +144,7 @@ public class UpgradeManager : MonoBehaviour
         u4.transform.GetChild(0).GetComponentInChildren<Text>().text = opt4;
         u4.transform.GetChild(1).GetComponentInChildren<Text>().text = opte4;
         Re.transform.GetChild(0).GetComponentInChildren<Text>().text = constRe;
-        Re.transform.GetChild(1).GetComponentInChildren<Text>().text = optReE;
+        Re.transform.GetChild(1).GetComponentInChildren<Text>().text = optReE; 
     }
 
     /**Gets the text of the button, which has been set to the skill names.
