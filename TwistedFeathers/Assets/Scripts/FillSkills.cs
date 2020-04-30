@@ -8,14 +8,24 @@ public class FillSkills : MonoBehaviour
 {
     public GameObject Content;
     private Dictionary<string, Skill> skills;
+    Dictionary<string, Skill> checkESkills;
     public GameObject buttonPrefab;
     private GameObject newButton;
     public CombatManager manager;
     private string clickedSkill = "";
     private string clickedEnemySkill = "";
+    // used for the necromancer skill fear curse
+    private int disableSkill;
+
+    public int DisableSkill
+    {
+        get => disableSkill;
+        set => disableSkill = value;
+    }
 
     void Start(){
         skills = new Dictionary<string, Skill>();
+        checkESkills = new Dictionary<string, Skill>();
         if (GameManager.singlePlayer)
         {
             foreach (Skill sk in manager.GetComponent<CombatManager>().GetActivePlayerSkills())
@@ -29,6 +39,8 @@ public class FillSkills : MonoBehaviour
                 skills.Add(sk.Name, sk);
             }
         }
+
+        disableSkill = int.MinValue;
     }
     
     // Update is called once per frame
@@ -52,6 +64,9 @@ public class FillSkills : MonoBehaviour
             }
         }
         int numButtons = 0;
+        
+        int disableCounter = 0;
+
         foreach(System.Collections.Generic.KeyValuePair<string, Skill> sk in skills){
             newButton = Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             newButton.transform.SetParent(Content.transform, false);
@@ -87,12 +102,32 @@ public class FillSkills : MonoBehaviour
                 }
                 clickedSkill = sk.Value.Name;
             });
+            if(disableSkill == disableCounter)
+            {
+                newButton.GetComponent<Button>().interactable = false; // disable the button if the necromancer skill is used
+                Debug.Log("Disabled skill: " + sk.Value.Name);
+            }
+            disableCounter++;
         }
     }
 
-        public void FillEnemyList(){
+    public void FillEnemyList(){
+        foreach (Skill sk in manager.GetComponent<CombatManager>().GetEnemySkills())
+        {
+            if (checkESkills.TryGetValue(sk.Name, out Skill value))
+            {
+                // do nothing
+            }
+            else
+            {
+                checkESkills.Add(sk.Name, sk);
+            }
+
+        }
         int numButtons = 0;
-        foreach(System.Collections.Generic.KeyValuePair<string, Skill> sk in skills){
+        foreach(System.Collections.Generic.KeyValuePair<string, Skill> sk in checkESkills)
+        {
+            Debug.Log(sk.Value.Name);
             newButton = Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             newButton.transform.SetParent(Content.transform, false);
             newButton.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);

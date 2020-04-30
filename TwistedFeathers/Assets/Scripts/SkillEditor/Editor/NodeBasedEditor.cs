@@ -341,10 +341,10 @@ public class NodeBasedEditor : EditorWindow
             if (effect.Show)
             {
                 // Effect Type Field
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel(new GUIContent("Type: ", "???"));
-                effect.Type = (e_type)EditorGUILayout.EnumPopup(effect.Type, GUILayout.Width(108));
-                GUILayout.EndHorizontal();
+                //GUILayout.BeginHorizontal();
+                //EditorGUILayout.PrefixLabel(new GUIContent("Type: ", "???"));
+                //effect.Type = (e_type)EditorGUILayout.EnumPopup(effect.Type, GUILayout.Width(108));
+                //GUILayout.EndHorizontal();
 
                 // Modifier Field
                 GUILayout.BeginHorizontal();
@@ -678,11 +678,11 @@ public class NodeBasedEditor : EditorWindow
         {
             // We fill with as many skills as nodes we have
             skillTree.skilltree = new Skill[nodes.Count];
-            int dependency = -1;
 
             // Iterate over all of the nodes. Populating the skills with the node info
             for (int i = 0; i < nodes.Count; ++i)
             {
+                int dependency = -1;
                 if (connections != null)
                 {
                     List<Connection> connectionsToRemove = new List<Connection>();

@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> environmentPrefabs;
     public static List<Environment> environments;
 
+
     public List<GameObject> playerPrefabs;
     public GameObject enemyPrefab;
 
@@ -53,12 +54,11 @@ public class GameManager : MonoBehaviour
 
     public static int wavesRequired = 3;
 
-    // Awake is called before the first frame update and before Starts
-    
     public void onLoad(){
         this.StartCoroutine("loadHub");
     }
     
+    // Awake is called before the first frame update and before Starts
     void Awake()
     {
         if (_instance != null && _instance != this)
@@ -66,7 +66,6 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
         } else {
             _instance = this;
-
             GameObject.Find("NumBattles").GetComponent<Text>().text = "" + numBattles;
             GameObject.Find("player1EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.totalEXP;
             GameObject.Find("player2EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.totalEXP;
@@ -79,7 +78,6 @@ public class GameManager : MonoBehaviour
                     GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[0];
                 } 
             }
-
             Skill_db = new Dictionary<string, Skill>();
             Participant_db = new Dictionary<string, Participant>();
             Player_db = new Dictionary<string, Player>();
@@ -133,6 +131,8 @@ public class GameManager : MonoBehaviour
             //Skill_db.Add("Hiss", new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));
             //Skill_db.Add("Knife Attack", new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") }));
 
+            Monster crow = new Monster(s_type.Necromancer, 2);
+
 
 
             //Dummy values for testing purposes
@@ -160,10 +160,12 @@ public class GameManager : MonoBehaviour
             //Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
             //Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
 
-
             Monster_db.Add("enemy A", goose);
+            //Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
-            Monster_db.Add("enemy B", goose2);
+            //Monster_db.Add("enemy B", goose2);
+            Monster_db.Add("enemy B", crow);
+            //Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 
             // ADD SKILLS //
@@ -181,8 +183,6 @@ public class GameManager : MonoBehaviour
             //addSkills(p);
             //p = new Environment(s_type.Desert, environmentPrefabs[2]);
             //addSkills(p);
-            
-
             //Environment setup
 
             environments = new List<Environment>();
@@ -283,7 +283,6 @@ public class GameManager : MonoBehaviour
             Instantiate(combater);
             inCombat = true;
         }
-        
     }
 
     public void toggleTutorial(){
@@ -323,3 +322,4 @@ public class GameManager : MonoBehaviour
         } 
     }
 }
+

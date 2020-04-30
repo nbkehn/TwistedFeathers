@@ -27,7 +27,7 @@ namespace TwistedFeathers
             }
             else if (type == 2) //necro crow
             {
-                Debug.Log("Shouldn't be here");
+                //Debug.Log("Shouldn't be here");
                 //choose attack
                 //  if Paralysis Spell
                 //      "flip coin"
