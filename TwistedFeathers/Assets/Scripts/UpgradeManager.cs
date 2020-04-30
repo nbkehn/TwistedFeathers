@@ -239,20 +239,18 @@ public class UpgradeManager : MonoBehaviour
                         Debug.Log("*******Skill Enemy is receiving: " + skill.Name);
                         if (enemy.SkillTree.Contains<Skill>(skill))
                         {
+                            enemy.AddSkill(skill);
                             if (skill.SkillType == Skill_Type.Attack)
                             {
                                 enemy.addAttack(skill);
-                                enemy.AddSkill(skill);
                             }
                             else if (skill.SkillType == Skill_Type.Utility)
                             {
                                 enemy.addUtility(skill);
-                                enemy.AddSkill(skill);
                             }
                             else if (skill.SkillType == Skill_Type.Passive)
                             {
                                 enemy.addPassive(skill);
-                                enemy.AddSkill(skill);
                             }
                         }
                     }
