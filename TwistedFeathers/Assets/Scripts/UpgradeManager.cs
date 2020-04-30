@@ -200,7 +200,9 @@ public class UpgradeManager : MonoBehaviour
         
         if (!done)
         {
-            skillName = name.GetComponent<Text>().text.Split(splitter, System.StringSplitOptions.None);
+            string plSkill = name.transform.GetChild(0).GetComponentInChildren<Text>().text;
+            string enSkill = name.transform.GetChild(1).GetComponentInChildren<Text>().text;
+            skillName = new string[2] {plSkill, enSkill}; 
             Debug.Log("Skill upgrader is looking for: " + skillName[0]);
             Debug.Log("Skill Enemy is looking for: " + skillName[1]);
             List<Monster> enemies = GameManager.Monster_db.Values.ToList();
