@@ -16,11 +16,18 @@ public class FillSkills : MonoBehaviour
     private string clickedEnemySkill = "";
     // used for the necromancer skill fear curse
     private int disableSkill;
+    private bool disableAllSkills;
 
     public int DisableSkill
     {
         get => disableSkill;
         set => disableSkill = value;
+    }
+
+    public bool DisableAllSkills
+    {
+        get => disableAllSkills;
+        set => disableAllSkills = value;
     }
 
     void Start(){
@@ -39,7 +46,7 @@ public class FillSkills : MonoBehaviour
                 skills.Add(sk.Name, sk);
             }
         }
-
+        disableAllSkills = false;
         disableSkill = int.MinValue;
     }
     
@@ -102,12 +109,16 @@ public class FillSkills : MonoBehaviour
                 }
                 clickedSkill = sk.Value.Name;
             });
-            if(disableSkill == disableCounter)
+            if(disableSkill == disableCounter || disableAllSkills)
             {
                 newButton.GetComponent<Button>().interactable = false; // disable the button if the necromancer skill is used
                 Debug.Log("Disabled skill: " + sk.Value.Name);
             }
             disableCounter++;
+        }
+        if (disableAllSkills)
+        {
+            manager.GetComponent<CombatManager>().SelectSkill(null);
         }
     }
 

@@ -339,13 +339,30 @@ namespace TwistedFeathers
                                 case ("vulnerable"):
                                     tar.Defense += -1;
                                     break;
-                                case ("heal"):
-                                    tar.Current_hp += (int) Modifier;
+                                case ("HealEnemy"):
+                                    GameObject.Find("CombatManager").GetComponent<CombatManager>().healEnemy((int) Modifier);
                                     break;
                                 case "FearCurse":
-                                    Debug.Log("Executing fear curse");
+                                    // Change inequality to adjust percentage chance of occuring
+                                    if(Random.Range(0.0f, 1.0f) < 0.5f)
+                                    {
+                                        fs = GameObject.Find("OpenSkills").GetComponent<FillSkills>();
+                                        fs.DisableSkill = Random.Range(0, 4);
+                                    }
+                                    break;
+                                case "FearCurse2":
                                     fs = GameObject.Find("OpenSkills").GetComponent<FillSkills>();
                                     fs.DisableSkill = Random.Range(0, 4);
+                                    break;
+                                case "Paralysis":
+                                    if (Random.Range(0.0f, 1.0f) < 0.2f)
+                                    {
+                                        fs = GameObject.Find("OpenSkills").GetComponent<FillSkills>();
+                                        fs.DisableAllSkills = true;
+                                    }
+                                    break;
+                                case "Resurrect":
+                                    GameObject.Find("CombatManager").GetComponent<CombatManager>().resurrectEnemy();
                                     break;
                                 default:
                                     Debug.LogError("Error: Invalid stat buff specified");
