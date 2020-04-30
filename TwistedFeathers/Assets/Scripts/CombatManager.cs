@@ -300,6 +300,52 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         //SceneManager.SetActiveScene(SceneManager.GetSceneByName("TestScene"));
     }
+
+    public void resurrectEnemy()
+    {
+        int enemyCount = 0;
+        foreach (Monster mon in battle_monsters.ToArray())
+        {
+            if (mon.isDead)
+            {
+                mon.Current_hp = mon.Max_hp;
+                UIManager.enemyHealthBars[enemyCount].SetActive(true);
+                GameObject.Find("Participants").transform.GetChild(3 + enemyCount).gameObject.SetActive(true);
+                mon.isDead = false;
+                mon.Attack = 0f;
+                mon.Defense = 0f;
+                mon.Accuracy = 0f;
+                deadMonsters--;
+                Debug.Log("Monster resurrected: " + deadMonsters);
+                return;
+            }
+            enemyCount++;
+        }
+    }
+
+    public bool checkForDeadEnemy()
+    {
+        foreach (Monster mon in battle_monsters.ToArray())
+        {
+            if (mon.isDead)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void healEnemy(int healing)
+    {
+        foreach (Monster enem in battle_monsters.ToArray())
+        {
+            if (((float)enem.Current_hp / (float)enem.Max_hp) <= .5)
+            {
+                enem.Current_hp += healing;
+                return;
+            }
+        }
+    }
     #endregion
     // Start is called before the first frame update
     void Awake()
@@ -376,6 +422,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     public bool NeedSkillTargetUI(Skill skill)
     {
         bool needUI = false;
+        if(skill == null)
+        {
+            return needUI;
+        }
         foreach (BattleEffect be in skill.Effects)
         {
             List<BattleParticipant> target = new List<BattleParticipant>();
@@ -415,7 +465,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         UIManager.turnOptions.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Select Skill";
         if (GameManager.singlePlayer)
         {
-           if(deadMonsters < 1 && NeedSkillTargetUI(skill))
+           if(deadMonsters < 1 && NeedSkillTargetUI(skill) )
            {
                selectingEnemy = true;
                attackIndicator.SetActive(true);
@@ -624,13 +674,21 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         attackIndicator.SetActive(false);
         selectingEnemy = false;
         TwistedFeathers.Player protag = (TwistedFeathers.Player) battle_players[index];
-        Debug.Log("Queueing player skill: " + protag.Name + " - " + skill.Name);
-        if(deadMonsters < 1){
-            queueSkill(skill, protag, new List<BattleParticipant>() { battle_monsters[chosenEnemy] });
-        } else {
-            foreach (TwistedFeathers.Monster mon in battle_monsters.ToArray()){
-                if(!mon.isDead){
-                    queueSkill(skill, protag, new List<BattleParticipant>() { mon });
+        if (skill != null)
+        {
+            Debug.Log("Queueing player skill: " + protag.Name + " - " + skill.Name);
+            if (deadMonsters < 1)
+            {
+                queueSkill(skill, protag, new List<BattleParticipant>() { battle_monsters[chosenEnemy] });
+            }
+            else
+            {
+                foreach (TwistedFeathers.Monster mon in battle_monsters.ToArray())
+                {
+                    if (!mon.isDead)
+                    {
+                        queueSkill(skill, protag, new List<BattleParticipant>() { mon });
+                    }
                 }
             }
         }
@@ -1237,7 +1295,13 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     /// </summary>
     public void MakeTurn(Skill selection)
     {
-        this.turnManager.SendMove((string)(selection.Name + "," + chosenEnemy), true);
+        if (selection != null)
+        {
+            this.turnManager.SendMove((string)(selection.Name + "," + chosenEnemy), true);
+        } else
+        {
+            this.turnManager.SendMove((string)(""), true);
+        }
     }
     /// <summary>
     /// Begins the next turn once all turns are finished.
