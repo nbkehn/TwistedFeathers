@@ -130,11 +130,16 @@ public class UpgradeManager : MonoBehaviour
         optReE = foundEnemySkills[4].Name;
 
         //Use strings
-        u1.GetComponentInChildren<Text>().text = opt1 + dash + opte1;
-        u2.GetComponentInChildren<Text>().text = opt2 + dash + opte2;
-        u3.GetComponentInChildren<Text>().text = opt3 + dash + opte3;
-        u4.GetComponentInChildren<Text>().text = opt4 + dash + opte4;
-        Re.GetComponentInChildren<Text>().text = constRe + optReE;
+        u1.transform.GetChild(0).GetComponentInChildren<Text>().text = opt1;
+        u1.transform.GetChild(1).GetComponentInChildren<Text>().text = opte1;
+        u2.transform.GetChild(0).GetComponentInChildren<Text>().text = opt2;
+        u2.transform.GetChild(1).GetComponentInChildren<Text>().text = opte2;
+        u3.transform.GetChild(0).GetComponentInChildren<Text>().text = opt3;
+        u3.transform.GetChild(1).GetComponentInChildren<Text>().text = opte3;
+        u4.transform.GetChild(0).GetComponentInChildren<Text>().text = opt4;
+        u4.transform.GetChild(1).GetComponentInChildren<Text>().text = opte4;
+        Re.transform.GetChild(0).GetComponentInChildren<Text>().text = constRe;
+        Re.transform.GetChild(1).GetComponentInChildren<Text>().text = optReE; 
     }
 
     /**Gets the text of the button, which has been set to the skill names.
