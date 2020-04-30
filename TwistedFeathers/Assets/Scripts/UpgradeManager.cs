@@ -51,7 +51,8 @@ public class UpgradeManager : MonoBehaviour
         Debug.Log("Upgrader2: " + upgrader2.Name);
         play2 = false;
         done = false;
-        playID.text = "Player 1";
+        Debug.Log("Player 1!!");
+        playID.text = "Player 1 Upgrades";
         u1.name = "u1";
         u2.name = "u2";
         u3.name = "u3";
@@ -153,7 +154,7 @@ public class UpgradeManager : MonoBehaviour
      * @param name name of the button
      *
      */
-    public void addSkill(GameObject plName, GameObject enName)
+    public void addSkill(GameObject button)
     { 
         Debug.Log("Attempting to Add Skill");
         string plSkillName;
@@ -163,8 +164,8 @@ public class UpgradeManager : MonoBehaviour
         
         if (!done)
         {
-            plSkillName = plName.GetComponent<Text>().text;
-            enSkillName = enName.GetComponent<Text>().text;
+            plSkillName = button.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text;
+            enSkillName = button.transform.GetChild(1).transform.GetChild(0).GetComponent<Text>().text;
             string [] skillName = new string[] {plSkillName, enSkillName};
             Debug.Log("Skill upgrader is looking for: " + skillName[0]);
             Debug.Log("Skill Enemy is looking for: " + skillName[1]);
@@ -290,7 +291,7 @@ public class UpgradeManager : MonoBehaviour
     {
         done = false;
         play2 = true;
-        playID.text = "Player 2";
+        playID.text = "Player 2 Upgrades";
         populate();
     }
 

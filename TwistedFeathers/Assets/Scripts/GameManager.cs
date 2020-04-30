@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -146,13 +146,11 @@ public class GameManager : MonoBehaviour
                 Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
                 Player_db["person A"].myPrefab = playerPrefabs[0];
                 Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
-                Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
                 Player_db["person B"].myPrefab = playerPrefabs[1];
             } else {
                 Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
                 Player_db["person A"].myPrefab = playerPrefabs[1];
                 Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
-                Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
                 Player_db["person B"].myPrefab = playerPrefabs[0];
             }
 
@@ -164,10 +162,8 @@ public class GameManager : MonoBehaviour
 
 
             Monster_db.Add("enemy A", goose);
-            Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
             Monster_db.Add("enemy B", goose2);
-            Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 
             // ADD SKILLS //
