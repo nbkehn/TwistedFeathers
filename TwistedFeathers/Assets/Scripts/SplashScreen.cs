@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SplashScreen : MonoBehaviour
 {
+
+    public GameObject creditsObjects;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -15,5 +19,12 @@ public class SplashScreen : MonoBehaviour
     void Update()
     {
         
+    }
+    public void hideTitle(){
+        creditsObjects.SetActive(true);
+    }
+
+    public void showTitle(){
+        creditsObjects.SetActive(false);
     }
 }
