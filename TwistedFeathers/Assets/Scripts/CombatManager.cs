@@ -202,28 +202,44 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     IEnumerator spaceOutEffects() {
         while (pq.Count != 0 && pq.Min.Turnstamp <= currentTurn) {
             Debug.Log("Resolving: " + pq.Min.SkillName);
-            pq.Min.run();
-            effectText.GetComponent<Text>().text = pq.Min.SkillName;
-            attacker.text = pq.Min.User.Name.ToString();;
-            recipient.text = "";
-            foreach(Participant p in pq.Min.Target){
-                recipient.text += p.Name.ToString() + " ";
+            GameObject user = pq.Min.User.me;
+            bool dontRun = false;
+            foreach(BattleParticipant bat_part in getBattleParticipants()){
+                if(bat_part.me == user){
+                    if(bat_part.Current_hp <= 0){
+                        dontRun = true;
+                        break;
+                    }
+                }
             }
-            pq.Remove(pq.Min);
-            UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
-            for(int i = 0; i < battle_players.Count; i++){
-                RectTransform healthBar = UIManager.playerHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
-                healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_players[i].Current_hp, 50f), 100);
+            if(!dontRun){
+                pq.Min.run();
+                effectText.GetComponent<Text>().text = pq.Min.SkillName;
+                attacker.text = pq.Min.User.Name.ToString();;
+                recipient.text = "";
+                foreach(Participant p in pq.Min.Target){
+                    recipient.text += p.Name.ToString() + " ";
+                }
+                pq.Remove(pq.Min);
+                UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
+                for(int i = 0; i < battle_players.Count; i++){
+                    RectTransform healthBar = UIManager.playerHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
+                    healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_players[i].Current_hp, 50f), 100);
+                }
+                Debug.Log("NumMonsters: " + battle_monsters.Count);
+                for(int i = 0; i < battle_monsters.Count; i++){
+                    RectTransform healthBar = UIManager.enemyHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
+                    Debug.Log("Monster " + i + "defense: " + (float)battle_monsters[i].Defense);
+                    healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_monsters[i].Current_hp, 50f), 100);
+                }
+                yield return new WaitForSeconds(1f);
+                UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
+                yield return new WaitForSeconds(.5f);
+            } else {
+                Debug.Log("USER IS DEAD");
+                pq.Remove(pq.Min);
             }
-            Debug.Log("NumMonsters: " + battle_monsters.Count);
-            for(int i = 0; i < battle_monsters.Count; i++){
-                RectTransform healthBar = UIManager.enemyHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
-                Debug.Log("Monster " + i + "defense: " + (float)battle_monsters[i].Defense);
-                healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_monsters[i].Current_hp, 50f), 100);
-            }
-            yield return new WaitForSeconds(1f);
-            UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
-            yield return new WaitForSeconds(.5f);
+            
         }
         Debug.Log("Effects Resolved");
         UIManager.animateableButtons[3].GetComponent<Button>().interactable = true;
