@@ -196,11 +196,19 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         StartCoroutine(spaceOutEffects());
     }
 
+    public Text attacker;
+    public Text recipient;
+
     IEnumerator spaceOutEffects() {
         while (pq.Count != 0 && pq.Min.Turnstamp <= currentTurn) {
             Debug.Log("Resolving: " + pq.Min.SkillName);
             pq.Min.run();
             effectText.GetComponent<Text>().text = pq.Min.SkillName;
+            attacker.text = pq.Min.User.Name.ToString();;
+            recipient.text = "";
+            foreach(Participant p in pq.Min.Target){
+                recipient.text += p.Name.ToString() + " ";
+            }
             pq.Remove(pq.Min);
             UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
             for(int i = 0; i < battle_players.Count; i++){
@@ -210,10 +218,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             Debug.Log("NumMonsters: " + battle_monsters.Count);
             for(int i = 0; i < battle_monsters.Count; i++){
                 RectTransform healthBar = UIManager.enemyHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
-                Debug.Log("Monster " + i + "health: " + (float)battle_monsters[i].Current_hp);
+                Debug.Log("Monster " + i + "defense: " + (float)battle_monsters[i].Defense);
                 healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_monsters[i].Current_hp, 50f), 100);
             }
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(1f);
             UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
             yield return new WaitForSeconds(.5f);
         }
@@ -268,12 +276,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         yield return new WaitForSeconds(0.5f);
         
     }
-    void combatEnd(bool isVictory)
+    public void combatEnd(bool isVictory, int EXP)
     {
         if (isVictory)
         {
             Debug.Log("Victory!!!");
-            EXPGained += 5;
+            EXPGained += EXP;
             effectText.GetComponent<Text>().text = "YOU WIN!";
             UIManager.actionOverlay.GetComponent<Animator>().Play("flyIn");
             StartCoroutine("flyOut2");
@@ -281,7 +289,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         else
         {
             Debug.Log("Defeat...");
-            EXPGained = 3;
+            EXPGained = EXP;
             passiveReset();
             GameManager.numWaves = 0;
             effectText.GetComponent<Text>().text = "YOU LOSE!";
@@ -991,7 +999,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
                 if (play.Current_hp <= 0)
                 {
                     Debug.Log("HE DED");
-                    UIManager.playerHealthBars[playerCount].SetActive(false);
                     GameObject.Find("Participants").transform.GetChild(playerCount + 1).gameObject.SetActive(false);
                     if(playerCount == 0)
                     {
@@ -1012,7 +1019,6 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             if(!mon.isDead){
                 if (mon.Current_hp <= 0)
                 {
-                    UIManager.enemyHealthBars[enemyCount].SetActive(false);
                     GameObject.Find("Participants").transform.GetChild(3 + enemyCount).gameObject.SetActive(false);
                     mon.isDead = true;
                     deadMonsters++;
@@ -1023,12 +1029,12 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         if (battle_players.Count == deadPlayers)
         {
-            combatEnd(false);
+            combatEnd(false, 3);
             waitingPlayer = true;
         }
         else if (battle_monsters.Count == deadMonsters)
         {
-            combatEnd(true);
+            combatEnd(true, 5);
             waitingPlayer = true;
         }
         else if(GameManager.singlePlayer || getPhotonPlayerListLength() == 1)
@@ -1679,12 +1685,14 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             mon.isDead = false;
             mon.Current_hp = mon.Max_hp;
             mon.Attack = 0f;
+            mon.Defense = 0f;
             mon.Accuracy = 0f;
         }
         foreach(TwistedFeathers.Player play in battle_players.ToArray()){
             play.isDead = false;
             play.Current_hp = play.Max_hp;
             play.Attack = 0f;
+            play.Defense = 0f;
             play.Accuracy = 0f;
         }
         for(int i = 1; i <= 4; i++){
@@ -1692,24 +1700,10 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
         }
         for(int i = 0; i < battle_monsters.Count; i++){
             UIManager.enemyHealthBars[i].GetComponent<Animator>().enabled = true;
-            UIManager.enemyHealthBars[i].SetActive(true);
+            UIManager.enemyHealthBars[i].SetActive(false);
+            UIManager.enemyHealthBars[i].SetActive(true); 
             UIManager.enemyHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
         }
-        for(int i = 0; i < battle_players.Count; i++){
-            UIManager.playerHealthBars[i].GetComponent<Animator>().enabled = true;
-            UIManager.playerHealthBars[i].SetActive(true);
-            UIManager.playerHealthBars[i].GetComponent<Animator>().SetBool("enter", true);
-        }
-        for(int i = 0; i < battle_players.Count; i++){
-            RectTransform healthBar = UIManager.playerHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
-            healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_players[i].Current_hp, 50f), 100);
-        }
-        for(int i = 0; i < battle_monsters.Count; i++){
-            RectTransform healthBar = UIManager.enemyHealthBars[i].transform.GetChild(0).GetComponent<RectTransform>();
-            Debug.Log("Monster " + i + "health: " + (float)battle_monsters[i].Current_hp);
-            healthBar.sizeDelta = new Vector2(getHealthBarLengh((float)battle_monsters[i].Current_hp, 50f), 100);
-        }
-
         UIManager.actionOverlay.GetComponent<Animator>().Play("flyOut");
 
     }

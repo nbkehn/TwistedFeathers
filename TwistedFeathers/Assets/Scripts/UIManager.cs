@@ -61,9 +61,13 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
         foreach(GameObject healthBar in playerHealthBars){
             healthBar.GetComponent<Animator>().enabled = false;
+            RectTransform healthBarSize = healthBar.transform.GetChild(0).GetComponent<RectTransform>();
+            healthBarSize.sizeDelta = new Vector2(100, 100);
         }
         foreach(GameObject healthBar in enemyHealthBars){
             healthBar.GetComponent<Animator>().enabled = false;
+            RectTransform healthBarSize = healthBar.transform.GetChild(0).GetComponent<RectTransform>();
+            healthBarSize.sizeDelta = new Vector2(100, 100);
         }
     }
 
