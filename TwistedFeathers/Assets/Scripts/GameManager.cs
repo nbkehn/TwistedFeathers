@@ -61,10 +61,13 @@ public class GameManager : MonoBehaviour
     // Awake is called before the first frame update and before Starts
     void Awake()
     {
+        
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
         } else {
+            GameObject.FindGameObjectWithTag("Music1").GetComponent<Music>().StopMusic();
+            GameObject.FindGameObjectWithTag("Music2").GetComponent<Music>().PlayMusic();
             _instance = this;
             GameObject.Find("NumBattles").GetComponent<Text>().text = "" + numBattles;
             GameObject.Find("player1EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.totalEXP;
