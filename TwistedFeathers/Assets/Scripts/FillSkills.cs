@@ -8,14 +8,35 @@ public class FillSkills : MonoBehaviour
 {
     public GameObject Content;
     private Dictionary<string, Skill> skills;
+    Dictionary<string, Skill> checkESkills;
     public GameObject buttonPrefab;
     private GameObject newButton;
     public CombatManager manager;
     private string clickedSkill = "";
     private string clickedEnemySkill = "";
+    // used for the necromancer skill fear curse
+    private int disableSkill;
+    private bool disableAllSkills;
+
+    public GameObject headerPrefab;
+
+    public GameObject paralyzedText;
+
+    public int DisableSkill
+    {
+        get => disableSkill;
+        set => disableSkill = value;
+    }
+
+    public bool DisableAllSkills
+    {
+        get => disableAllSkills;
+        set => disableAllSkills = value;
+    }
 
     void Start(){
         skills = new Dictionary<string, Skill>();
+        checkESkills = new Dictionary<string, Skill>();
         if (GameManager.singlePlayer)
         {
             foreach (Skill sk in manager.GetComponent<CombatManager>().GetActivePlayerSkills())
@@ -29,6 +50,8 @@ public class FillSkills : MonoBehaviour
                 skills.Add(sk.Name, sk);
             }
         }
+        disableAllSkills = false;
+        disableSkill = int.MinValue;
     }
     
     // Update is called once per frame
@@ -41,51 +64,155 @@ public class FillSkills : MonoBehaviour
         {
             foreach (Skill sk in manager.GetComponent<CombatManager>().GetRemotePlayerSkills())
             {
-                skills.Add(sk.Name, sk);
+                if(skills.TryGetValue(sk.Name, out Skill value))
+                {
+                    // do nothing
+                } else
+                {
+                    skills.Add(sk.Name, sk);
+                }
+                
             }
         }
         int numButtons = 0;
-        foreach(System.Collections.Generic.KeyValuePair<string, Skill> sk in skills){
-            newButton = Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-            newButton.transform.SetParent(Content.transform, false);
-            newButton.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            newButton.GetComponent<RectTransform>().anchorMin = new Vector2(0f, 1.0f);
-            newButton.GetComponent<RectTransform>().anchorMax = new Vector2(0f, 1.0f);
-            newButton.GetComponent<RectTransform>().pivot = new Vector2(0f, 1.0f);
-            newButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(20, -1 * (40*numButtons + 20) , 0);
-            numButtons++;
-            newButton.transform.GetChild(0).GetComponent<Text>().text = sk.Value.Name;
-            newButton.GetComponent<Button>().onClick.AddListener(() => {
-                manager.GetComponent<CombatManager>().SelectSkill(sk.Value);
-            });
-            newButton.GetComponent<Button>().onClick.AddListener(() => {
-                Close();
-            });
-            newButton.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => {
-                GameObject.Find("PlayerSkillInfo").transform.GetChild(0).GetComponent<Text>().text =sk.Value.Description;
-                string clicked = sk.Value.Name;
+        
+        int disableCounter = 0;
 
-                Animator skillInfoAnimator = GameObject.Find("PlayerSkillInfo").GetComponent<Animator>();
-            
-                if(!skillInfoAnimator.GetBool("Open"))
+        newButton = Instantiate(headerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        newButton.transform.SetParent(Content.transform, false);
+        newButton.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        newButton.GetComponent<RectTransform>().anchorMin = new Vector2(0f, 1.0f);
+        newButton.GetComponent<RectTransform>().anchorMax = new Vector2(0f, 1.0f);
+        newButton.GetComponent<RectTransform>().pivot = new Vector2(0f, 1.0f);
+        newButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(20, -1 * (40*numButtons + 20) , 0);
+        numButtons++;
+        newButton.GetComponentInChildren<Text>().text = "Attack Skills";
+        foreach(System.Collections.Generic.KeyValuePair<string, Skill> sk in skills){
+            if(sk.Value.SkillType == Skill_Type.Attack){
+                newButton = Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                newButton.transform.SetParent(Content.transform, false);
+                newButton.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                newButton.GetComponent<RectTransform>().anchorMin = new Vector2(0f, 1.0f);
+                newButton.GetComponent<RectTransform>().anchorMax = new Vector2(0f, 1.0f);
+                newButton.GetComponent<RectTransform>().pivot = new Vector2(0f, 1.0f);
+                newButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(20, -1 * (40*numButtons + 20) , 0);
+                numButtons++;
+                newButton.transform.GetChild(0).GetComponent<Text>().text = sk.Value.Name;
+                newButton.GetComponent<Button>().onClick.AddListener(() => {
+                    manager.GetComponent<CombatManager>().SelectSkill(sk.Value);
+                });
+                newButton.GetComponent<Button>().onClick.AddListener(() => {
+                    Close();
+                });
+                newButton.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => {
+                    GameObject.Find("PlayerSkillInfo").transform.GetChild(0).GetComponent<Text>().text =sk.Value.Description;
+                    string clicked = sk.Value.Name;
+
+                    Animator skillInfoAnimator = GameObject.Find("PlayerSkillInfo").GetComponent<Animator>();
+                
+                    if(!skillInfoAnimator.GetBool("Open"))
+                    {
+                        
+                        skillInfoAnimator.Play("Click");
+                        skillInfoAnimator.SetBool("Open", true);
+                    }
+                    else if(skillInfoAnimator.GetBool("Open") && clicked == clickedSkill){
+                        
+                        skillInfoAnimator.Play("Pop Out");
+                        skillInfoAnimator.SetBool("Open", false);
+                    }
+                    clickedSkill = sk.Value.Name;
+                });
+                if(disableSkill == disableCounter || disableAllSkills)
                 {
-                    
-                    skillInfoAnimator.Play("Click");
-                    skillInfoAnimator.SetBool("Open", true);
+                    newButton.GetComponent<Button>().interactable = false; // disable the button if the necromancer skill is used
+                    Debug.Log("Disabled skill: " + sk.Value.Name);
                 }
-                else if(skillInfoAnimator.GetBool("Open") && clicked == clickedSkill){
-                    
-                    skillInfoAnimator.Play("Pop Out");
-                    skillInfoAnimator.SetBool("Open", false);
-                }
-                clickedSkill = sk.Value.Name;
-            });
+                disableCounter++;  
+            }
         }
+
+        newButton = Instantiate(headerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        newButton.transform.SetParent(Content.transform, false);
+        newButton.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        newButton.GetComponent<RectTransform>().anchorMin = new Vector2(0f, 1.0f);
+        newButton.GetComponent<RectTransform>().anchorMax = new Vector2(0f, 1.0f);
+        newButton.GetComponent<RectTransform>().pivot = new Vector2(0f, 1.0f);
+        newButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(20, -1 * (40*numButtons + 20) , 0);
+        numButtons++;
+        newButton.GetComponentInChildren<Text>().text = "Utility Skills";
+        foreach(System.Collections.Generic.KeyValuePair<string, Skill> sk in skills){
+            if(sk.Value.SkillType == Skill_Type.Utility){
+                newButton = Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                newButton.transform.SetParent(Content.transform, false);
+                newButton.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                newButton.GetComponent<RectTransform>().anchorMin = new Vector2(0f, 1.0f);
+                newButton.GetComponent<RectTransform>().anchorMax = new Vector2(0f, 1.0f);
+                newButton.GetComponent<RectTransform>().pivot = new Vector2(0f, 1.0f);
+                newButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(20, -1 * (40*numButtons + 20) , 0);
+                numButtons++;
+                newButton.transform.GetChild(0).GetComponent<Text>().text = sk.Value.Name;
+                newButton.GetComponent<Button>().onClick.AddListener(() => {
+                    manager.GetComponent<CombatManager>().SelectSkill(sk.Value);
+                });
+                newButton.GetComponent<Button>().onClick.AddListener(() => {
+                    Close();
+                });
+                newButton.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => {
+                    GameObject.Find("PlayerSkillInfo").transform.GetChild(0).GetComponent<Text>().text =sk.Value.Description;
+                    string clicked = sk.Value.Name;
+
+                    Animator skillInfoAnimator = GameObject.Find("PlayerSkillInfo").GetComponent<Animator>();
+                
+                    if(!skillInfoAnimator.GetBool("Open"))
+                    {
+                        
+                        skillInfoAnimator.Play("Click");
+                        skillInfoAnimator.SetBool("Open", true);
+                    }
+                    else if(skillInfoAnimator.GetBool("Open") && clicked == clickedSkill){
+                        
+                        skillInfoAnimator.Play("Pop Out");
+                        skillInfoAnimator.SetBool("Open", false);
+                    }
+                    clickedSkill = sk.Value.Name;
+                });
+                if(disableSkill == disableCounter || disableAllSkills)
+                {
+                    newButton.GetComponent<Button>().interactable = false; // disable the button if the necromancer skill is used
+                    Debug.Log("Disabled skill: " + sk.Value.Name);
+                }
+                disableCounter++;  
+            }
+        }
+        if (disableAllSkills)
+        {
+            paralyzedText.SetActive(true);
+            manager.GetComponent<CombatManager>().SelectSkill(null);
+        } else {
+            GameObject.Find("UIManager").GetComponent<UIManager>().togglePlayerSkills();
+        }
+        disableAllSkills = false;
+        
     }
 
-        public void FillEnemyList(){
+    public void FillEnemyList(){
+        foreach (Skill sk in manager.GetComponent<CombatManager>().GetEnemySkills())
+        {
+            if (checkESkills.TryGetValue(sk.Name, out Skill value))
+            {
+                // do nothing
+            }
+            else
+            {
+                checkESkills.Add(sk.Name, sk);
+            }
+
+        }
         int numButtons = 0;
-        foreach(System.Collections.Generic.KeyValuePair<string, Skill> sk in skills){
+        foreach(System.Collections.Generic.KeyValuePair<string, Skill> sk in checkESkills)
+        {
+            Debug.Log(sk.Value.Name);
             newButton = Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             newButton.transform.SetParent(Content.transform, false);
             newButton.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);

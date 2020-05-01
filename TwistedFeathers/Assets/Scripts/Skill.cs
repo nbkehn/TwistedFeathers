@@ -20,6 +20,8 @@ namespace TwistedFeathers
         [SerializeField]
         private int id;
         [SerializeField]
+        private bool repeatable;
+        [SerializeField]
         private int dependency;
         [SerializeField]
         private string description;
@@ -122,6 +124,12 @@ namespace TwistedFeathers
         {
             get => selected;
             set => selected = value;
+        }
+
+        public bool Repeatable
+        {
+            get => repeatable;
+            set => repeatable = value;
         }
 
         public int Level_req

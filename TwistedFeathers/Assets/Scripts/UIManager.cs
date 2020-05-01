@@ -33,6 +33,8 @@ public class UIManager : MonoBehaviour
     public GameObject selectionEntity;
     public GameObject locationTracker;
 
+    public GameObject fillSkillHolder;
+
     public void Start(){
         foreach(GameObject button in animateableButtons){
             if(button.activeSelf){
@@ -42,8 +44,8 @@ public class UIManager : MonoBehaviour
         transitionAnimation.SetActive(true);
         transitionAnimation.GetComponent<Animator>().Play("TransitionAnimation2",0,0.7f);
         beginFinish();
-
-        turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(togglePlayerSkills);
+        Debug.Log("ADDING LISTENERS");
+        turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(fillSkillHolder.GetComponent<FillSkills>().FillSkillList);
         turnOptions.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(buttonHandler.SwitchEnvironment);
     }
 
@@ -61,9 +63,13 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
         foreach(GameObject healthBar in playerHealthBars){
             healthBar.GetComponent<Animator>().enabled = false;
+            RectTransform healthBarSize = healthBar.transform.GetChild(0).GetComponent<RectTransform>();
+            healthBarSize.sizeDelta = new Vector2(100, 100);
         }
         foreach(GameObject healthBar in enemyHealthBars){
             healthBar.GetComponent<Animator>().enabled = false;
+            RectTransform healthBarSize = healthBar.transform.GetChild(0).GetComponent<RectTransform>();
+            healthBarSize.sizeDelta = new Vector2(100, 100);
         }
     }
 
@@ -82,6 +88,16 @@ public class UIManager : MonoBehaviour
         foreach(GameObject button in buttons){
             button.gameObject.SetActive(show);
         }
+    }
+
+    public void youreDead(){
+        turnOptions.transform.GetChild(0).GetComponent<Button>().interactable = false;
+        turnOptions.transform.GetChild(0).GetComponent<Button>().interactable = false;
+    }
+
+    public void youreAlive(){
+        turnOptions.transform.GetChild(0).GetComponent<Button>().interactable = true;
+        turnOptions.transform.GetChild(0).GetComponent<Button>().interactable = true;
     }
 
     //shirnks the miniMap after confirming selection
@@ -112,7 +128,7 @@ public class UIManager : MonoBehaviour
         if(bigMap){
             turnOptions.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "Cancel";
             turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(buttonHandler.CancelMapSelect);
-            turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.RemoveListener (togglePlayerSkills);
+            turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.RemoveListener (fillSkillHolder.GetComponent<FillSkills>().FillSkillList);
 
             turnOptions.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Confirm";
             turnOptions.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(buttonHandler.ConfirmMapSelect);
@@ -122,7 +138,7 @@ public class UIManager : MonoBehaviour
             turnOptions.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Change Environment";
 
             turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.RemoveListener(buttonHandler.CancelMapSelect);
-            turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.AddListener (togglePlayerSkills);
+            turnOptions.transform.GetChild(0).GetComponent<Button>().onClick.AddListener (fillSkillHolder.GetComponent<FillSkills>().FillSkillList);
 
             turnOptions.transform.GetChild(1).GetComponent<Button>().onClick.RemoveListener(buttonHandler.ConfirmMapSelect);
             turnOptions.transform.GetChild(1).GetComponent<Button>().onClick.AddListener (buttonHandler.SwitchEnvironment);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
 using TwistedFeathers;
 
@@ -38,37 +39,48 @@ public class GameManager : MonoBehaviour
     public List<GameObject> environmentPrefabs;
     public static List<Environment> environments;
 
-    public GameObject playerPrefab;
+
+    public List<GameObject> playerPrefabs;
     public GameObject enemyPrefab;
 
-    public bool rotate = true;
+    public bool rotate = false;
 
     public bool tutorial = true;
     public List<Sprite> playerPics;
 
     public static int numWaves;
 
-    public static int numBattles;
+    public static int numBattles = 0;
 
     public static int wavesRequired = 3;
 
+    public void onLoad(){
+        this.StartCoroutine("loadHub");
+    }
+    
     // Awake is called before the first frame update and before Starts
     void Awake()
     {
-        if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
-            GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[0];
-            GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[1];
-       } else {
-            GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[1];
-            GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[0];
-       } 
-
+        
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
         } else {
+            GameObject.FindGameObjectWithTag("Music1").GetComponent<Music>().StopMusic();
+            GameObject.FindGameObjectWithTag("Music2").GetComponent<Music>().PlayMusic();
             _instance = this;
-
+            GameObject.Find("NumBattles").GetComponent<Text>().text = "" + numBattles;
+            GameObject.Find("player1EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.totalEXP;
+            GameObject.Find("player2EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.totalEXP;
+            if(SceneManager.GetActiveScene().name == "TestScene"){
+                if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
+                    GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[0];
+                    GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[1];
+                } else {
+                    GameObject.Find("player1_pic").GetComponent<Image>().sprite = playerPics[1];
+                    GameObject.Find("player2_pic").GetComponent<Image>().sprite = playerPics[0];
+                } 
+            }
             Skill_db = new Dictionary<string, Skill>();
             Participant_db = new Dictionary<string, Participant>();
             Player_db = new Dictionary<string, Player>();
@@ -78,12 +90,12 @@ public class GameManager : MonoBehaviour
             Monster_db = new Dictionary<string, Monster>();
 
             //Dummy values for testing purposes
-            Skill_db.Add("dummy A", new Skill("Poison Weapons", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-            Skill_db.Add("dummy B", new Skill("Poison", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-            Skill_db.Add("dummy C", new Skill("Health Inc", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-            Skill_db.Add("dummy D", new Skill("Fire Breath", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-            Skill_db.Add("dummy E", new Skill("Claws", "Does nothing", p_type.enemy, new List<BattleEffect>()));
-            Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            //Skill_db.Add("dummy A", new Skill("Poison Weapons", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            //Skill_db.Add("dummy B", new Skill("Poison", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            //Skill_db.Add("dummy C", new Skill("Max Health Inc", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            //Skill_db.Add("dummy D", new Skill("Fire Breath", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            //Skill_db.Add("dummy E", new Skill("Claws", "Does nothing", p_type.enemy, new List<BattleEffect>()));
+            //Skill_db.Add("dummy F", new Skill("Enraged", "Does nothing", p_type.enemy, new List<BattleEffect>()));
             //player skills
             //Skill_db.Add("FeatherDagger", new Skill("Feather Dagger", "Deals 20 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Feather Dagger") }));
             //Skill_db.Add("Sabotage", new Skill("Sabotage", "Reduce enemy defense by 25% for 1 turn", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.25f, 3, "defense") }));
@@ -102,69 +114,78 @@ public class GameManager : MonoBehaviour
 
             //Enemy Type initialization
             Monster goose = new Monster(s_type.Thief, 1);
-            Skill hiss = new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>());
-            Skill kinfeAttack = new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") });
-            Skill hiss2 = new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.20f, 1, "defense") });
-            goose.addPassive(hiss);//Evasive
-            goose.addAttack(kinfeAttack);
-            goose.addUtility(hiss2);
-            enemy_types.Add("Goose", goose);
-            Monster goose2 = new Monster(s_type.None, 1);
-            goose2.addPassive(hiss);//Evasive
-            goose2.addAttack(kinfeAttack);
-            goose2.addUtility(hiss2);
+
+            //Skill hiss = new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>());
+            //Skill kinfeAttack = new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") });
+            //Skill hiss2 = new Skill("Hiss", "Reduces Player's attack", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.buff, -.20f, 1, "defense") });
+            //goose.addPassive(hiss);//Evasive
+            //goose.addAttack(kinfeAttack);
+            //goose.addUtility(hiss2);
+            //enemy_types.Add("Goose", goose);
+            Monster goose2 = new Monster(s_type.Thief, 1);
+            //goose2.addPassive(hiss);//Evasive
+            //goose2.addAttack(kinfeAttack);
+            //goose2.addUtility(hiss2);
+            //Monster crow = new Monster(s_type.Necromancer, 2);
+            ////crow.addAttack();//Dark Magick
+            ////crow.addUtility();//Healing
+            ////crow.addUtility();Fear Curse
+            //enemy_types.Add("Crow", crow);
+            //Skill_db.Add("Hiss", new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));
+            //Skill_db.Add("Knife Attack", new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "Knife Attack") }));
+
             Monster crow = new Monster(s_type.Necromancer, 2);
-            //crow.addAttack();//Dark Magick
-            //crow.addUtility();//Healing
-            //crow.addUtility();Fear Curse
-            enemy_types.Add("Crow", crow);
-            Skill_db.Add("Hiss", new Skill("Hiss", "Increases Dodge Chance", p_type.enemy, new List<BattleEffect>()));
-            Skill_db.Add("Knife Attack", new Skill("Knife Attack", "Deals damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 20f, "Knife Attack") }));
+
 
 
             //Dummy values for testing purposes
 
-            Skill_db.Add("Azazel's Skill", new Skill("Azazel's Skill", "Does nothing", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, 0, "This is A dummy") }));
-            Skill_db.Add("Beelzebub's Skill", new Skill("Beelzebub's Skill", "Deals 10 damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B dummy") }));
-            Skill_db.Add("Adam's Skill", new Skill("Adam's Skill", "Does 15 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 15f, "This is A smarty") }));
-            Skill_db.Add("Ben's Skill", new Skill("Ben's Skill", "Deals 10 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B smarty") }));
+            //Skill_db.Add("Azazel's Skill", new Skill("Azazel's Skill", "Does nothing", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.nothing, 0f, 0, "This is A dummy") }));
+            //Skill_db.Add("Beelzebub's Skill", new Skill("Beelzebub's Skill", "Deals 10 damage", p_type.enemy, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B dummy") }));
+            //Skill_db.Add("Adam's Skill", new Skill("Adam's Skill", "Does 15 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 15f, "This is A smarty") }));
+            //Skill_db.Add("Ben's Skill", new Skill("Ben's Skill", "Deals 10 damage", p_type.player, new List<BattleEffect>() { new BattleEffect(e_type.damage, 10f, "This is B smarty") }));
+           
+            if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
+                Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
+                Player_db["person A"].myPrefab = playerPrefabs[0];
+                Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
+                Player_db["person B"].myPrefab = playerPrefabs[1];
+            } else {
+                Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
+                Player_db["person A"].myPrefab = playerPrefabs[1];
+                Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
+                Player_db["person B"].myPrefab = playerPrefabs[0];
+            }
 
-            
-            Player_db.Add("person A", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass()));
             //Player_db["person A"].LoadSkillTree();
             //Player_db["person A"].AddSkill(Skill_db["Adam's Skill"]);
             //Player_db["person A"].AddSkill(Skill_db["Sabotage"]);
             //Player_db["person A"].AddSkill(Skill_db["DefensiveFeathers"]);
             //Player_db["person A"].AddSkill(Skill_db["FeatherDagger"]);
-            Player_db["person A"].myPrefab = playerPrefab;
-            Player_db.Add("person B", new Player(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.getPlayerClass()));
-            Player_db["person B"].AddSkill(Skill_db["Ben's Skill"]);
-            Player_db["person B"].myPrefab = playerPrefab;
 
             Monster_db.Add("enemy A", goose);
-            Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
+            //Monster_db["enemy A"].AddSkill(Skill_db["Azazel's Skill"]);
             Monster_db["enemy A"].myPrefab = enemyPrefab;
-            Monster_db.Add("enemy B", goose2);
-            Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
+            //Monster_db.Add("enemy B", goose2);
+            Monster_db.Add("enemy B", crow);
+            //Monster_db["enemy B"].AddSkill(Skill_db["Beelzebub's Skill"]);
             Monster_db["enemy B"].myPrefab = enemyPrefab;
 
             // ADD SKILLS //
-            Participant p = new Player(s_type.Rogue);
+            BattleParticipant p = new Player(s_type.Rogue);
             addSkills(p);
             p = new Player(s_type.Fighter);
             addSkills(p);
-            p = new Player(s_type.Mage);
-            addSkills(p);
+            //p = new Player(s_type.Mage);
+            //addSkills(p);
             p = new Monster(s_type.Necromancer);
             addSkills(p);
             p = new Monster(s_type.Thief);
             addSkills(p);
-            p = new Environment(s_type.Swamp, environmentPrefabs[2]);
-            addSkills(p);
-            p = new Environment(s_type.Desert, environmentPrefabs[2]);
-            addSkills(p);
-
-            
+            //p = new Environment(s_type.Swamp, environmentPrefabs[2]);
+            //addSkills(p);
+            //p = new Environment(s_type.Desert, environmentPrefabs[2]);
+            //addSkills(p);
             //Environment setup
 
             environments = new List<Environment>();
@@ -265,7 +286,6 @@ public class GameManager : MonoBehaviour
             Instantiate(combater);
             inCombat = true;
         }
-
     }
 
     public void toggleTutorial(){
@@ -274,7 +294,15 @@ public class GameManager : MonoBehaviour
 
     public void finishBattle(int exp){
         GameObject.Find("PlayerManager").GetComponent<PlayerManager>().awardEXP(exp);
+        if (!singlePlayer)
+        {
+            PhotonNetwork.Disconnect();
+        }
         SceneManager.LoadScene("TestScene");
+        this.StartCoroutine("loadHub");
+    }
+
+    public void comingBack(){
         this.StartCoroutine("loadHub");
     }
 
@@ -288,7 +316,13 @@ public class GameManager : MonoBehaviour
         GameObject.Find("NumBattles").GetComponent<Text>().text = "" + numBattles;
         GameObject.Find("player1EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.totalEXP;
         GameObject.Find("player2EXP").GetComponent<Text>().text = "EXP    " + GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player2.totalEXP;
+        if(GameObject.Find("PlayerManager").GetComponent<PlayerManager>().player1.getPlayerClass() == s_type.Rogue){
+            GameObject.Find("player1_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[0];
+            GameObject.Find("player2_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[1];
+        } else {
+            GameObject.Find("player1_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[1];
+            GameObject.Find("player2_pic").GetComponent<Image>().sprite = GameObject.Find("GameManager").GetComponent<GameManager>().playerPics[0];
+        } 
     }
 }
-
 

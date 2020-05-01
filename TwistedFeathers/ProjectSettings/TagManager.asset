@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Desert
   - Swamp
+  - Music1
+  - Music2
   layers:
   - Default
   - TransparentFX

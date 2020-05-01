@@ -91,6 +91,7 @@ namespace TwistedFeathers
         public string SkillName { get; set; }
         public int UID { get; set; }
         public List<Conditional> Conditions { get; set; }
+        public FillSkills fs;
 
         // Copy Constructor
         public BattleEffect(BattleEffect effect)
@@ -247,6 +248,33 @@ namespace TwistedFeathers
             return areCondMet();
         }
 
+        public void addPassive(BattleParticipant user)
+        {
+            applyChanges(user, Modifier);
+        }
+
+        public void removePassive(BattleParticipant user)
+        {
+            applyChanges(user, -Modifier);
+        }
+
+        //Utility method for adding and removing passives
+        private void applyChanges(BattleParticipant user, float value)
+        {
+            switch (Specifier)
+            {
+                case ("Dodge"):
+                    user.Dodge += value;
+                    break;
+                case ("Defense"):
+                    user.Defense += value;
+                    break;
+                default:
+                    Debug.LogError("Error: Invalid passive specified");
+                    break;
+            }
+        }
+
         public void run()
         {
 
@@ -279,7 +307,7 @@ namespace TwistedFeathers
                             {
                                 case ("lifesteal"):
                                     bp = (BattleParticipant)User;
-                                    bp.Current_hp = Math.Max(bp.Max_hp, bp.Current_hp + (int)(damage*.2));
+                                    bp.Current_hp = Math.Min(bp.Max_hp, bp.Current_hp + (int)(damage*.2));
                                     break;
                                 case ("recoil"):
                                     System.Random rand = new System.Random();
@@ -311,6 +339,31 @@ namespace TwistedFeathers
                                 case ("vulnerable"):
                                     tar.Defense += -1;
                                     break;
+                                case ("HealEnemy"):
+                                    GameObject.Find("CombatManager").GetComponent<CombatManager>().healEnemy((int) Modifier);
+                                    break;
+                                case "FearCurse":
+                                    // Change inequality to adjust percentage chance of occuring
+                                    if(Random.Range(0.0f, 1.0f) < 0.5f)
+                                    {
+                                        fs = GameObject.Find("OpenSkills").GetComponent<FillSkills>();
+                                        fs.DisableSkill = Random.Range(0, 4);
+                                    }
+                                    break;
+                                case "FearCurse2":
+                                    fs = GameObject.Find("OpenSkills").GetComponent<FillSkills>();
+                                    fs.DisableSkill = Random.Range(0, 4);
+                                    break;
+                                case "Paralysis":
+                                    if (Random.Range(0.0f, 1.0f) < 0.2f)
+                                    {
+                                        fs = GameObject.Find("OpenSkills").GetComponent<FillSkills>();
+                                        fs.DisableAllSkills = true;
+                                    }
+                                    break;
+                                case "Resurrect":
+                                    GameObject.Find("CombatManager").GetComponent<CombatManager>().resurrectEnemy();
+                                    break;
                                 default:
                                     Debug.LogError("Error: Invalid stat buff specified");
                                     break;
@@ -323,13 +376,21 @@ namespace TwistedFeathers
                         case (e_type.status):
                             if (Visible)
                             {
-                                tar.Statuses.Add(new BattleEffect(this));
+                                BattleEffect status_effect = new BattleEffect(this);
+                                status_effect.Visible = false;
+                                status_effect.Target = new List<BattleParticipant>(){tar};
+                                status_effect.User = tar;
+                                tar.Statuses.Add(status_effect);
                             }
                             else
                             {
                                 switch (Specifier)
                                 {
                                     case "Poison":
+                                        tar.Current_hp -= 3;
+                                        break;
+                                    case "Bleed":
+                                        tar.Current_hp -= 5;
                                         break;
                                     case "Burn":
                                         break;
@@ -339,6 +400,8 @@ namespace TwistedFeathers
                                         Debug.LogError("Error: Invalid status effect specified");
                                         break;
                                 }
+
+                                this.duration -= 1;
                             }
                             break;
                         case (e_type.nothing):

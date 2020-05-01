@@ -27,7 +27,7 @@ namespace TwistedFeathers
             }
             else if (type == 2) //necro crow
             {
-                Debug.Log("Shouldn't be here");
+                //Debug.Log("Shouldn't be here");
                 //choose attack
                 //  if Paralysis Spell
                 //      "flip coin"
@@ -35,6 +35,10 @@ namespace TwistedFeathers
                 //      else-> Paralysis Spell//attack secondary
                 //  else
                 //      Dark Magic//attack primary
+                if (enemy.AttackSkills.ContainsKey("Dark Magic II"))
+                {
+                    selected = enemy.AttackSkills["Dark Magic II"];
+                }
                 if (enemy.AttackSkills.ContainsKey("Paralysis Spell"))
                 {
                     System.Random rand = new System.Random();
@@ -43,12 +47,8 @@ namespace TwistedFeathers
                     {
                         selected = enemy.AttackSkills["Paralysis Spell"];
                     }
-                    else
-                    {
-                        selected = enemy.AttackSkills["Dark Magic"];
-                    }
                 }
-                else
+                else if(selected == null)
                 {
                     selected = enemy.AttackSkills["Dark Magic"];
                 }
@@ -107,15 +107,25 @@ namespace TwistedFeathers
                 //          Healing// utility primary
                 //      else
                 //          Fear Curse//utility secondary
-                foreach (Monster enem in battle_enemy)
+                if (enemy.UtilitySkills.ContainsKey("Resurrection") && GameObject.Find("CombatManager").GetComponent<CombatManager>().checkForDeadEnemy())
                 {
-                    if (((float) enem.Current_hp / (float) enem.Max_hp) <= .5)
+                    selected = enemy.UtilitySkills["Resurrection"];
+                }
+                else
+                {
+                    foreach (Monster enem in battle_enemy)
                     {
-                        selected = enemy.UtilitySkills["Healing"];
+                        if (((float)enem.Current_hp / (float)enem.Max_hp) <= .5)
+                        {
+                            selected = enemy.UtilitySkills["Healing"];
+                        }
                     }
                 }
-
-                if (selected == null)
+                
+                if (selected == null && enemy.UtilitySkills.ContainsKey("Fear Curse II"))
+                {
+                    selected = enemy.UtilitySkills["Fear Curse II"];
+                } else
                 {
                     selected = enemy.UtilitySkills["Fear Curse"];
                 }
