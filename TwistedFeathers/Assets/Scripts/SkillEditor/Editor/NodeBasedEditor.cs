@@ -154,7 +154,7 @@ public class NodeBasedEditor : EditorWindow
         if (!newTree.Equals(treeName))
         {
             treeName = newTree;
-            skillPath = "Assets/Scripts/SkillEditor/Data/" + treeName.ToString() + ".json";
+            skillPath = Application.streamingAssetsPath + "/Scripts/SkillEditor/Data/" + treeName.ToString() + ".json";
             if (File.Exists(skillPath))
             {
                 string nodeDirectory = System.IO.Path.GetDirectoryName(skillPath);
