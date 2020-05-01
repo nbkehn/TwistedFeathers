@@ -79,6 +79,8 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
     private int deadMonsters = 0;
     private int deadPlayers = 0;
 
+    public GameObject paralyzedText;
+
     #endregion
 
     #region Battle Methods
@@ -226,6 +228,7 @@ public class CombatManager : MonoBehaviourPunCallbacks, IPunTurnManagerCallbacks
             yield return new WaitForSeconds(.5f);
         }
         Debug.Log("Effects Resolved");
+        paralyzedText.SetActive(false);
         UIManager.animateableButtons[3].GetComponent<Button>().interactable = true;
         UIManager.turnOptions.transform.GetChild(0).transform.GetComponent<Button>().interactable = true;
         UIManager.turnOptions.transform.GetChild(1).transform.GetComponent<Button>().interactable = true;

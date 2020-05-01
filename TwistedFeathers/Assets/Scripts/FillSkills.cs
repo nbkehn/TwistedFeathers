@@ -20,6 +20,8 @@ public class FillSkills : MonoBehaviour
 
     public GameObject headerPrefab;
 
+    public GameObject paralyzedText;
+
     public int DisableSkill
     {
         get => disableSkill;
@@ -183,64 +185,15 @@ public class FillSkills : MonoBehaviour
                 disableCounter++;  
             }
         }
-
-        // newButton = Instantiate(headerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-        // newButton.transform.SetParent(Content.transform, false);
-        // newButton.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
-        // newButton.GetComponent<RectTransform>().anchorMin = new Vector2(0f, 1.0f);
-        // newButton.GetComponent<RectTransform>().anchorMax = new Vector2(0f, 1.0f);
-        // newButton.GetComponent<RectTransform>().pivot = new Vector2(0f, 1.0f);
-        // newButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(20, -1 * (40*numButtons + 20) , 0);
-        // numButtons++;
-        // newButton.GetComponentInChildren<Text>().text = "Passive Skills";
-        // foreach(System.Collections.Generic.KeyValuePair<string, Skill> sk in skills){
-        //     if(sk.Value.SkillType == Skill_Type.Passive){
-        //         newButton = Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-        //         newButton.transform.SetParent(Content.transform, false);
-        //         newButton.GetComponent<RectTransform>().localScale = new Vector3(1.0f, 1.0f, 1.0f);
-        //         newButton.GetComponent<RectTransform>().anchorMin = new Vector2(0f, 1.0f);
-        //         newButton.GetComponent<RectTransform>().anchorMax = new Vector2(0f, 1.0f);
-        //         newButton.GetComponent<RectTransform>().pivot = new Vector2(0f, 1.0f);
-        //         newButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(20, -1 * (40*numButtons + 20) , 0);
-        //         numButtons++;
-        //         newButton.transform.GetChild(0).GetComponent<Text>().text = sk.Value.Name;
-        //         newButton.GetComponent<Button>().onClick.AddListener(() => {
-        //             manager.GetComponent<CombatManager>().SelectSkill(sk.Value);
-        //         });
-        //         newButton.GetComponent<Button>().onClick.AddListener(() => {
-        //             Close();
-        //         });
-        //         newButton.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() => {
-        //             GameObject.Find("PlayerSkillInfo").transform.GetChild(0).GetComponent<Text>().text =sk.Value.Description;
-        //             string clicked = sk.Value.Name;
-
-        //             Animator skillInfoAnimator = GameObject.Find("PlayerSkillInfo").GetComponent<Animator>();
-                
-        //             if(!skillInfoAnimator.GetBool("Open"))
-        //             {
-                        
-        //                 skillInfoAnimator.Play("Click");
-        //                 skillInfoAnimator.SetBool("Open", true);
-        //             }
-        //             else if(skillInfoAnimator.GetBool("Open") && clicked == clickedSkill){
-                        
-        //                 skillInfoAnimator.Play("Pop Out");
-        //                 skillInfoAnimator.SetBool("Open", false);
-        //             }
-        //             clickedSkill = sk.Value.Name;
-        //         });
-        //         if(disableSkill == disableCounter || disableAllSkills)
-        //         {
-        //             newButton.GetComponent<Button>().interactable = false; // disable the button if the necromancer skill is used
-        //             Debug.Log("Disabled skill: " + sk.Value.Name);
-        //         }
-        //         disableCounter++;  
-        //     }
-        // }
         if (disableAllSkills)
         {
+            paralyzedText.SetActive(true);
             manager.GetComponent<CombatManager>().SelectSkill(null);
+        } else {
+            GameObject.Find("UIManager").GetComponent<UIManager>().togglePlayerSkills();
         }
+        disableAllSkills = false;
+        
     }
 
     public void FillEnemyList(){
