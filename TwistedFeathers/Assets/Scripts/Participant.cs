@@ -97,6 +97,11 @@ namespace TwistedFeathers
             this.skills.Add(new_skill);
         }
 
+        public void RemoveSkill(Skill skill)
+        {
+            this.skills.Remove(skill);
+        }
+
 
     }
 }
