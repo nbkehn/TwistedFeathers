@@ -39,6 +39,7 @@ namespace TwistedFeathers
         protected List<Skill> skills;
         public GameObject myPrefab;
         public GameObject me;
+        private List<Skill> removedSkills;
 
         protected Participant()
         {
@@ -47,6 +48,7 @@ namespace TwistedFeathers
             this.attack = 0f;
             this.accuracy = 0f;
             this.skills = new List<Skill>();
+            this.removedSkills = new List<Skill>();
         }
 
         protected Participant(p_type type, s_type name)
@@ -56,6 +58,8 @@ namespace TwistedFeathers
             this.attack = 0f;
             this.accuracy = 0f;
             this.skills = new List<Skill>();
+            this.removedSkills = new List<Skill>();
+
         }
         protected Participant(p_type type, s_type name, List<Skill> skills)
         {
@@ -64,6 +68,8 @@ namespace TwistedFeathers
             this.attack = 0f;
             this.accuracy = 0f;
             this.skills = skills;
+            this.removedSkills = new List<Skill>();
+
         }
 
         public p_type Type
@@ -77,6 +83,13 @@ namespace TwistedFeathers
             get => skills;
             set => skills = value;
         }
+
+        public List<Skill> RemovedSkills
+        {
+            get => removedSkills;
+            set => removedSkills = value;
+        }
+
 
         public Skill[] SkillTree
         {
@@ -98,6 +111,7 @@ namespace TwistedFeathers
         }
         public void RemoveSkill(Skill skill)
         {
+            removedSkills.Add(skill);
             this.skills.Remove(skill);
         }
     }

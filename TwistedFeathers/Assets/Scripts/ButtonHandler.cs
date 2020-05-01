@@ -22,9 +22,9 @@ public class ButtonHandler : MonoBehaviour
     }
 
     public void goToUpgrade(){
-        if(GameObject.Find("PlayerManager").GetComponent<TwistedFeathers.PlayerManager>().player1.totalEXP >= 10) {
-            GameObject.Find("PlayerManager").GetComponent<TwistedFeathers.PlayerManager>().player1.totalEXP -= 10;
-            GameObject.Find("PlayerManager").GetComponent<TwistedFeathers.PlayerManager>().player2.totalEXP -= 10;
+        if(GameObject.Find("PlayerManager").GetComponent<TwistedFeathers.PlayerManager>().player1.totalEXP >= 0) {
+            GameObject.Find("PlayerManager").GetComponent<TwistedFeathers.PlayerManager>().player1.totalEXP -= 0;
+            GameObject.Find("PlayerManager").GetComponent<TwistedFeathers.PlayerManager>().player2.totalEXP -= 0;
             SceneManager.LoadScene("UpgradeScreen");
         }
     }

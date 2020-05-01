@@ -128,7 +128,7 @@ public class UpgradeManager : MonoBehaviour
             {
                 int i = (int)Random.Range(0, available.Length - 1);
                 //XXX = ; //Random between 0-size
-                if (!upgrader1.Skills.Contains(available[i]))
+                if ((!upgrader1.Skills.Contains(available[i])) &&(!upgrader1.RemovedSkills.Contains(available[i])))
                 {
                     if (available[i].Pre_req != null)
                     {
@@ -154,7 +154,7 @@ public class UpgradeManager : MonoBehaviour
             {
                 int i = (int)Random.Range(0, available.Length - 1);
                 //XXX = ; //Random between 0-size
-                if (!upgrader2.Skills.Contains(available[i]))
+                if ((!upgrader2.Skills.Contains(available[i]))&&(!upgrader2.RemovedSkills.Contains(available[i])));
                 {
                     if(available[i].Pre_req != null)
                     {
