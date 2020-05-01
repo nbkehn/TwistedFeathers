@@ -7,8 +7,8 @@ public class SplashScreen : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        GameObject.FindGameObjectWithTag("Music2").GetComponent<Music>().StopMusic();
         GameObject.FindGameObjectWithTag("Music1").GetComponent<Music>().PlayMusic();
-        //GameObject.FindGameObjectWithTag("Music2").GetComponent<Music>().StopMusic();
     }
 
     // Update is called once per frame
